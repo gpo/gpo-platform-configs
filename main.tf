@@ -24,3 +24,15 @@ resource "github_actions_secret" "SSH_HOST" {
   secret_name      = "SSH_HOST"
   plaintext_value = var.secure_gpo_ca_secret_ssh_host
 }
+
+resource "github_actions_secret" "SSH_PRIVATE_KEY" {
+  repository       = "secure.gpo.ca"
+  secret_name      = "SSH_PRIVATE_KEY"
+  plaintext_value  = var.secure_gpo_ca_secret_ssh_private_key
+}
+
+resource "github_actions_secret" "SSH_PUBLIC_KEY" {
+  repository       = "secure.gpo.ca"
+  secret_name      = "SSH_PUBLIC_KEY"
+  plaintext_value  = var.secure_gpo_ca_secret_ssh_public_key
+}
