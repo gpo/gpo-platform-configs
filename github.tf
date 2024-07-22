@@ -47,6 +47,12 @@ resource "github_issue_labels" "secure_gpo_ca" {
   repository = "secure.gpo.ca"
 
   label {
+    name        = "Drupal"
+    description = "A change related to Drupal"
+    color       = "0678be"
+  }
+
+  label {
     color       = "0075ca"
     description = "Improvements or additions to documentation"
     name        = "documentation"
