@@ -19,8 +19,14 @@ resource "github_actions_secret" "SSH_USER" {
   plaintext_value = var.secure_gpo_ca_secret_ssh_user
 }
 
-resource "github_actions_secret" "SSH_HOST" {
+resource "github_actions_secret" "SSH_HOST_STAGE" {
   repository =   "secure.gpo.ca"
-  secret_name      = "SSH_HOST"
-  plaintext_value = var.secure_gpo_ca_secret_ssh_host
+  secret_name      = "SSH_HOST_STAGE"
+  plaintext_value = var.secure_gpo_ca_stage_secret_ssh_host
+}
+
+resource "github_actions_secret" "SSH_HOST_PROD" {
+  repository =   "secure.gpo.ca"
+  secret_name      = "SSH_HOST_PROD"
+  plaintext_value = var.secure_gpo_ca_prod_secret_ssh_host
 }
