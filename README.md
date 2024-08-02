@@ -10,3 +10,4 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 # Requirements
 
 * gh with an authenticated session
+* aws environment variables: AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
