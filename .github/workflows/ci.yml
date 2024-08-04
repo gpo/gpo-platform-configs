@@ -20,6 +20,9 @@ jobs:
       - name: Tofu Format
         run: tofu fmt
 
+      - name: Set env
+        run: echo "PCT_TFPATH=$(which tofu)" >> $GITHUB_ENV
+
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
 
