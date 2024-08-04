@@ -17,36 +17,8 @@ jobs:
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
 
-      - name: Tofu Format
-        run: tofu fmt
-
       - name: Set env
         run: echo "PCT_TFPATH=$(which tofu)" >> $GITHUB_ENV
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
-
-      - name: Tofu Init
-        run: tofu init
-
-      - name: Tofu Validate
-        run: tofu validate
-
-      - name: Tofu Plan
-        id: plan
-        run: tofu plan -no-color -out=tfplan
-
-      - name: Post Plan to PR Comment
-        uses: unsplash/comment-on-pr@v1.3.0
-        with:
-          check_for_duplicate_msg: true
-          delete_prev_regex_msg: true
-          duplicate_msg_pattern: "\\*\\*Terraform Plan Result\\:\\*\\*.*"
-          msg: |
-            **Terraform Plan Result:**
-
-            ```
-            $ terraform plan
-
-            ${{ steps.plan.outputs.stdout }}
-            ```
