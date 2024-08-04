@@ -1,4 +1,4 @@
-name: Validate and Plan
+name: CI Format and Validate
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - synchronize
 
 jobs:
-  validate-and-plan:
+  format-and-validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
 
-      - name: Set env
+      - name: Use OpenTofu for Terraform
         run: echo "PCT_TFPATH=$(which tofu)" >> $GITHUB_ENV
 
       - name: Run pre-commit

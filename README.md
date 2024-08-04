@@ -21,14 +21,10 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 
 ## set up environment
 
-1. run pre-commit init
+1. run `tofu init`
+1. run `pre-commit install`
 1. `export PCT_TFPATH=$(which tofu)`
 
-
-```
-tofu init
-pre-commit install
-```
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
