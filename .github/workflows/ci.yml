@@ -1,0 +1,50 @@
+name: Validate and Plan
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  validate-and-plan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Tofu Format
+        run: tofu fmt
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+      - name: Tofu Init
+        run: tofu init
+
+      - name: Tofu Validate
+        run: tofu validate
+
+      - name: Tofu Plan
+        id: plan
+        run: tofu plan -no-color -out=tfplan
+
+      - name: Post Plan to PR Comment
+        uses: unsplash/comment-on-pr@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check_for_duplicate_msg: true
+          delete_prev_regex_msg: true
+          duplicate_msg_pattern: "\\*\\*Terraform Plan Result\\:\\*\\*.*"
+          message: |
+            **Terraform Plan Result:**
+
+            ```
+            $ terraform plan
+
+            ${{ steps.plan.outputs.stdout }}
+            ```
