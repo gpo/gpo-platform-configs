@@ -34,13 +34,12 @@ jobs:
         run: tofu plan -no-color -out=tfplan
 
       - name: Post Plan to PR Comment
-        uses: unsplash/comment-on-pr@v1
+        uses: unsplash/comment-on-pr@v1.3.0
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           check_for_duplicate_msg: true
           delete_prev_regex_msg: true
           duplicate_msg_pattern: "\\*\\*Terraform Plan Result\\:\\*\\*.*"
-          message: |
+          msg: |
             **Terraform Plan Result:**
 
             ```
