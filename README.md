@@ -45,6 +45,9 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_default_github_labels_for_gpo_ca"></a> [default\_github\_labels\_for\_gpo\_ca](#module\_default\_github\_labels\_for\_gpo\_ca) | ./default_github_labels_module | n/a |
+| <a name="module_default_github_labels_for_gpo_platform_configs"></a> [default\_github\_labels\_for\_gpo\_platform\_configs](#module\_default\_github\_labels\_for\_gpo\_platform\_configs) | ./default_github_labels_module | n/a |
+| <a name="module_default_github_labels_for_readme"></a> [default\_github\_labels\_for\_readme](#module\_default\_github\_labels\_for\_readme) | ./default_github_labels_module | n/a |
 | <a name="module_default_github_labels_for_secure_gpo_ca"></a> [default\_github\_labels\_for\_secure\_gpo\_ca](#module\_default\_github\_labels\_for\_secure\_gpo\_ca) | ./default_github_labels_module | n/a |
 
 ## Resources

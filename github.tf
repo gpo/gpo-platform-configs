@@ -38,7 +38,17 @@ module "default_github_labels_for_secure_gpo_ca" {
   repository = "secure.gpo.ca"
 }
 
-moved {
-  from = github_issue_labels.secure_gpo_ca
-  to   = module.default_github_labels_for_secure_gpo_ca.github_issue_labels.labels
+module "default_github_labels_for_gpo_ca" {
+  source     = "./default_github_labels_module"
+  repository = "gpo.ca"
+}
+
+module "default_github_labels_for_readme" {
+  source     = "./default_github_labels_module"
+  repository = "readme"
+}
+
+module "default_github_labels_for_gpo_platform_configs" {
+  source     = "./default_github_labels_module"
+  repository = "gpo-platform-configs"
 }
