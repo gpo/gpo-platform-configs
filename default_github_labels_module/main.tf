@@ -15,12 +15,6 @@ resource "github_issue_labels" "labels" {
   repository = var.repository
 
   label {
-    name        = "Drupal"
-    description = "A change related to Drupal"
-    color       = "0678be"
-  }
-
-  label {
     color       = "0075ca"
     description = "Improvements or additions to documentation"
     name        = "documentation"
