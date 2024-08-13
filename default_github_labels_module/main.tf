@@ -15,6 +15,12 @@ resource "github_issue_labels" "labels" {
   repository = var.repository
 
   label {
+    name        = "Epic"
+    description = "A large project that needs to be broken into parts"
+    color       = "5319E7"
+  }
+
+  label {
     color       = "0075ca"
     description = "Improvements or additions to documentation"
     name        = "documentation"
