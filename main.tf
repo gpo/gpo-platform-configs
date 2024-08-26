@@ -19,3 +19,8 @@ terraform {
     encrypt        = true
   }
 }
+
+# requires authorized gh
+provider "github" {
+  owner = "gpo"
+}
