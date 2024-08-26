@@ -63,16 +63,23 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 | [github_actions_secret.SSH_PRIVATE_KEY](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.SSH_PUBLIC_KEY](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_actions_secret.SSH_USER](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_HOST_PROD1](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_HOST_PROD2](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_HOST_STAGE](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_PRIVATE_KEY](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_PUBLIC_KEY](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.gpo_ca_SSH_USER](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_secure_gpo_ca_prod_secret_ssh_host"></a> [secure\_gpo\_ca\_prod\_secret\_ssh\_host](#input\_secure\_gpo\_ca\_prod\_secret\_ssh\_host) | SSH host for secure.gpo.ca | `string` | n/a | yes |
-| <a name="input_secure_gpo_ca_secret_ssh_private_key"></a> [secure\_gpo\_ca\_secret\_ssh\_private\_key](#input\_secure\_gpo\_ca\_secret\_ssh\_private\_key) | SSH private key for secure.gpo.ca | `string` | n/a | yes |
-| <a name="input_secure_gpo_ca_secret_ssh_public_key"></a> [secure\_gpo\_ca\_secret\_ssh\_public\_key](#input\_secure\_gpo\_ca\_secret\_ssh\_public\_key) | SSH public key for secure.gpo.ca | `string` | n/a | yes |
-| <a name="input_secure_gpo_ca_secret_ssh_user"></a> [secure\_gpo\_ca\_secret\_ssh\_user](#input\_secure\_gpo\_ca\_secret\_ssh\_user) | SSH user for secure.gpo.ca | `string` | n/a | yes |
-| <a name="input_secure_gpo_ca_stage_secret_ssh_host"></a> [secure\_gpo\_ca\_stage\_secret\_ssh\_host](#input\_secure\_gpo\_ca\_stage\_secret\_ssh\_host) | SSH host for secure.gpo.ca | `string` | n/a | yes |
+| <a name="input_prod1_ip_address"></a> [prod1\_ip\_address](#input\_prod1\_ip\_address) | Prod1 server IP address | `string` | n/a | yes |
+| <a name="input_prod2_ip_address"></a> [prod2\_ip\_address](#input\_prod2\_ip\_address) | Prod2 server IP address | `string` | n/a | yes |
+| <a name="input_ssh_private_key"></a> [ssh\_private\_key](#input\_ssh\_private\_key) | SSH private key | `string` | n/a | yes |
+| <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | SSH public key | `string` | n/a | yes |
+| <a name="input_ssh_user"></a> [ssh\_user](#input\_ssh\_user) | SSH user for gpo.ca | `string` | n/a | yes |
+| <a name="input_staging_ip_address"></a> [staging\_ip\_address](#input\_staging\_ip\_address) | staging server IP address | `string` | n/a | yes |
 
 ## Outputs
 
