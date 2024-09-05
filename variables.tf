@@ -31,3 +31,19 @@ variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
 }
+
+variable "do_token" {
+  description = "Digital Ocean Token"
+  type        = string
+  sensitive   = true
+}
+variable "do_spaces_access_id" {
+  description = "Digital Ocean Spaces Access ID"
+  type        = string
+  sensitive   = true
+}
+variable "do_spaces_secret_key" {
+  description = "Digital Ocean Spaces Secret Key"
+  type        = string
+  sensitive   = true
+}
