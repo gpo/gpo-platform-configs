@@ -1,6 +1,11 @@
 module "default_github_labels_for_secure_gpo_ca" {
   source     = "./default_github_labels_module"
   repository = "secure.gpo.ca"
+
+  labels = [
+    { name = "CiviCRM" },
+    { name = "Drupal" },
+  ]
 }
 
 module "default_github_labels_for_gpo_ca" {

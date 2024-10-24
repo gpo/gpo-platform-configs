@@ -18,6 +18,16 @@ locals {
   }
 }
 
+# custom lables for repository specific lables
+resource "github_issue_label" "custom_labels" {
+  for_each = { for label in var.labels : label.name => label }
+
+  repository  = var.repository
+  name        = each.value.name
+  description = each.value.description
+  color       = coalesce(each.value.color, local.colors.repo_specific_color)
+}
+
 resource "github_issue_label" "epic" {
   repository  = var.repository
   name        = "Epic"
