@@ -22,3 +22,8 @@ module "default_github_labels_for_gpo_platform_configs" {
   source     = "./default_github_labels_module"
   repository = "gpo-platform-configs"
 }
+
+module "default_github_labels_for_gpo_it" {
+  source     = "./default_github_labels_module"
+  repository = "gpo-it"
+}
