@@ -15,6 +15,9 @@ locals {
   colors = {
     repo_specific_color   = "0e8a16"
     who_should_work_on_it = "fbca04"
+    type_coding           = "a2eeef"
+    type_other            = "0366d6"
+    ticket_dismissed      = "ffffff"
   }
 }
 
@@ -39,7 +42,14 @@ resource "github_issue_label" "enhancement" {
   repository  = var.repository
   name        = "enhancement"
   description = "New feature or request"
-  color       = "a2eeef"
+  color       = local.colors.type_coding
+}
+
+resource "github_issue_label" "performance" {
+  repository  = var.repository
+  name        = "performance"
+  description = "Improves performance of the site"
+  color       = local.colors.type_coding
 }
 
 resource "github_issue_label" "bug" {
@@ -53,35 +63,35 @@ resource "github_issue_label" "documentation" {
   repository  = var.repository
   name        = "documentation"
   description = "Improvements or additions to documentation"
-  color       = "0075ca"
+  color       = local.colors.type_other
 }
 
 resource "github_issue_label" "question" {
   repository  = var.repository
   name        = "question"
   description = "Further information is requested"
-  color       = "d876e3"
+  color       = local.colors.type_other
 }
 
 resource "github_issue_label" "invalid" {
   repository  = var.repository
   name        = "invalid"
   description = "This doesn't seem right"
-  color       = "e4e669"
+  color       = local.colors.ticket_dismissed
 }
 
 resource "github_issue_label" "wontfix" {
   repository  = var.repository
   name        = "wontfix"
   description = "This will not be worked on"
-  color       = "ffffff"
+  color       = local.colors.ticket_dismissed
 }
 
 resource "github_issue_label" "duplicate" {
   repository  = var.repository
   name        = "duplicate"
   description = "This issue or pull request already exists"
-  color       = "cfd3d7"
+  color       = local.colors.ticket_dismissed
 }
 
 resource "github_issue_label" "help_wanted" {
