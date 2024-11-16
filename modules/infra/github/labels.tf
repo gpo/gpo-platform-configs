@@ -7,10 +7,6 @@ terraform {
   }
 }
 
-provider "github" {
-  owner = "gpo"
-}
-
 locals {
   colors = {
     repo_specific_color   = "0e8a16"

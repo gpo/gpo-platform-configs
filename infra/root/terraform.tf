@@ -1,14 +1,5 @@
 terraform {
   required_providers {
-    digitalocean = {
-      source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
-    }
-
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.60"
-    }
 
     github = {
       source  = "integrations/github"
@@ -18,7 +9,7 @@ terraform {
 
   backend "s3" {
     bucket         = "gpo-terraform-state"
-    key            = "03-basics/import-bootstrap/terraform.tfstate"
+    key            = "root/terraform.tfstate"
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
