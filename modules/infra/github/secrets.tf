@@ -1,4 +1,4 @@
-## secure.gpo.ca
+## gpo.ca
 
 resource "github_actions_secret" "gpo_ca_SSH_USER" {
   repository      = "gpo.ca"

@@ -1,15 +1,15 @@
-# gpo.ca variables
-
 variable "prod1_ip_address" {
   description = "Prod1 server IP address"
   type        = string
   sensitive   = true
 }
+
 variable "prod2_ip_address" {
   description = "Prod2 server IP address"
   type        = string
   sensitive   = true
 }
+
 variable "staging_ip_address" {
   description = "staging server IP address"
   type        = string
@@ -32,18 +32,17 @@ variable "ssh_public_key" {
   type        = string
 }
 
-variable "do_token" {
-  description = "Digital Ocean Token"
+variable "repository" {
+  description = "The name of the repository"
   type        = string
-  sensitive   = true
 }
-variable "do_spaces_access_id" {
-  description = "Digital Ocean Spaces Access ID"
-  type        = string
-  sensitive   = true
-}
-variable "do_spaces_secret_key" {
-  description = "Digital Ocean Spaces Secret Key"
-  type        = string
-  sensitive   = true
+
+variable "labels" {
+  description = "List of labels [{name, description, color?}]"
+  type = list(object({
+    name        = string
+    description = optional(string)
+    color       = optional(string)
+  }))
+  default = []
 }
