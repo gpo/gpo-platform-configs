@@ -1,5 +1,5 @@
 module "default_github_labels_for_secure_gpo_ca" {
-  source     = "../modules/github"
+  source     = "../../modules/infra/github"
   repository = "secure.gpo.ca"
 
   labels = [
@@ -9,21 +9,21 @@ module "default_github_labels_for_secure_gpo_ca" {
 }
 
 module "default_github_labels_for_gpo_ca" {
-  source     = "../modules/github"
+  source     = "../../modules/infra/github"
   repository = "gpo.ca"
 }
 
 module "default_github_labels_for_readme" {
-  source     = "../modules/github"
+  source     = "../../modules/infra/github"
   repository = "readme"
 }
 
 module "default_github_labels_for_gpo_platform_configs" {
-  source     = "../modules/github"
+  source     = "../../modules/infra/github"
   repository = "gpo-platform-configs"
 }
 
 module "default_github_labels_for_gpo_it" {
-  source     = "../modules/github"
+  source     = "../../modules/infra/github"
   repository = "gpo-it"
 }
