@@ -8,22 +8,6 @@ module "default_github_labels_for_secure_gpo_ca" {
   ]
 }
 
-module "default_github_labels_for_gpo_ca" {
-  source     = "../../modules/infra/github"
-  repository = "gpo.ca"
-}
-
-module "default_github_labels_for_readme" {
-  source     = "../../modules/infra/github"
-  repository = "readme"
-}
-
-module "default_github_labels_for_gpo_platform_configs" {
-  source     = "../../modules/infra/github"
-  repository = "gpo-platform-configs"
-}
-
-module "default_github_labels_for_gpo_it" {
-  source     = "../../modules/infra/github"
-  repository = "gpo-it"
+module "github" {
+  source = "../../modules/infra/github"
 }
