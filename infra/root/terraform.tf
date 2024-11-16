@@ -9,7 +9,7 @@ terraform {
 
   backend "s3" {
     bucket         = "gpo-terraform-state"
-    key            = "root/terraform.tfstate"
+    key            = "infra/root/terraform.tfstate"
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
