@@ -14,7 +14,7 @@ terraform {
 
   backend "s3" {
     bucket         = "gpo-terraform-state"
-    key            = "stage/terraform.tfstate"
+    key            = "infra/stage/terraform.tfstate"
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
