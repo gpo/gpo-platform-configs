@@ -47,3 +47,15 @@ variable "do_spaces_secret_key" {
   type        = string
   sensitive   = true
 }
+
+variable "cloudflare_api_key" {
+  description = "Cloudflare API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare account ID"
+  type        = string
+  sensitive   = true
+}
