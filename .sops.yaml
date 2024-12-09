@@ -1,3 +1,4 @@
 creation_rules:
-  - kms: 'arn:aws:kms:ca-central-1:542371827759:key/c10f6d8b-37ab-4843-8c40-e4b51709b468'
+  - path_regex: secrets.env
+    kms: 'arn:aws:kms:ca-central-1:542371827759:key/c10f6d8b-37ab-4843-8c40-e4b51709b468'
     aws_profile: 'gpo'
