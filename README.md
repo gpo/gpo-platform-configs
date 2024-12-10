@@ -18,6 +18,7 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 
 - Open Tofu: https://opentofu.org/docs/intro/install/
 - pre-commit: https://pre-commit.com/#installation
+- SOPS: https://getsops.io/docs/#stable-release
 
 ## set up environment
 
