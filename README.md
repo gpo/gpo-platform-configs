@@ -10,7 +10,7 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 # Requirements
 
 * `gh` with an authenticated session
-* aws environment variables: AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+* aws profile called `gpo`
 
 # Development
 
@@ -18,12 +18,19 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 
 - Open Tofu: https://opentofu.org/docs/intro/install/
 - pre-commit: https://pre-commit.com/#installation
+- SOPS: https://getsops.io/docs/#stable-release
 
 ## set up environment
 
 1. run `tofu init`
 1. run `pre-commit install`
 1. `export PCT_TFPATH=$(which tofu)`
+
+## Adding Secrets
+
+1. ensure your favorite editor is exported: `EDITOR=emacs`
+1. run `sops edit secrets.env'
+1. commit changes
 
 # Auto Generated Docs
 <!-- BEGIN_TF_DOCS -->
