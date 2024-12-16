@@ -1,11 +1,14 @@
 terraform {
   required_providers {
-
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.60"
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
     }
 
+    sops = {
+      source  = "carlpett/sops"
+      version = "~> 0.5"
+    }
   }
 
   backend "s3" {
@@ -18,7 +21,8 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = "ca-central-1"
-  profile = "gpo-stage"
+provider "digitalocean" {
+  token             = data.sops_file.secrets.data["do_token"]
+  spaces_access_id  = data.sops_file.secrets.data["do_spaces_access_id"]
+  spaces_secret_key = data.sops_file.secrets.data["do_spaces_secret_key"]
 }
