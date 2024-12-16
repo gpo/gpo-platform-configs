@@ -4,7 +4,7 @@
 
 This composition consists *only* of calls to modules, there should be NO terraform resources here. We use the exact same modules in `stage` that we will use in `prod`, the only difference is in the variables we pass.
 
-It is expected that we will `tofo plan` and `tofo apply` iteratively on a branch in `stage` until we're happy with the results.
+It is expected that we will `tf plan` and `tf apply` iteratively on a branch in `stage` until we're happy with the results.
 
 ## WARNING
 
