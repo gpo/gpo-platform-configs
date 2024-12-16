@@ -24,7 +24,7 @@ terraform {
 
 provider "aws" {
   region  = "ca-central-1"
-  progile = "gpo"
+  profile = "gpo"
 }
 
 provider "digitalocean" {
