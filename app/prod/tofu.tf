@@ -14,11 +14,11 @@ terraform {
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
-    profile = "gpo"
+    profile        = "gpo"
   }
 }
 
 provider "aws" {
-  region = "ca-central-1"
+  region  = "ca-central-1"
   profile = "gpo"
 }

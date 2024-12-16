@@ -17,7 +17,7 @@ terraform {
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
-    profile = "gpo"
+    profile        = "gpo"
   }
 }
 
