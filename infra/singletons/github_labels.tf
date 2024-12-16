@@ -1,6 +1,6 @@
 module "default_github_labels_for_secure_gpo_ca" {
-  source     = "./default_github_labels_module"
-  repository = "secure.gpo.ca"
+  source     = "../../modules/infra/github_default_labels"
+  repository = github_repository.secure_gpo_ca.name
 
   labels = [
     { name = "CiviCRM" },
@@ -9,21 +9,21 @@ module "default_github_labels_for_secure_gpo_ca" {
 }
 
 module "default_github_labels_for_gpo_ca" {
-  source     = "./default_github_labels_module"
+  source     = "../../modules/infra/github_default_labels"
   repository = "gpo.ca"
 }
 
 module "default_github_labels_for_readme" {
-  source     = "./default_github_labels_module"
+  source     = "../../modules/infra/github_default_labels"
   repository = "readme"
 }
 
 module "default_github_labels_for_gpo_platform_configs" {
-  source     = "./default_github_labels_module"
+  source     = "../../modules/infra/github_default_labels"
   repository = "gpo-platform-configs"
 }
 
 module "default_github_labels_for_gpo_it" {
-  source     = "./default_github_labels_module"
+  source     = "../../modules/infra/github_default_labels"
   repository = "gpo-it"
 }
