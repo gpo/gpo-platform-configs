@@ -3,5 +3,5 @@
 *.tfstate
 *.tfstate.backup
 plan
-
+.zsh_config
 *.tfvars
