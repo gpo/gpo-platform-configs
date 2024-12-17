@@ -18,13 +18,13 @@ terraform {
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
-    progile        = "gpo"
+    profile        = "gpo"
   }
 }
 
 provider "aws" {
   region  = "ca-central-1"
-  progile = "gpo-stage"
+  profile = "gpo-stage"
 }
 
 provider "digitalocean" {
