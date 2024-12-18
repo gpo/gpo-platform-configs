@@ -1,10 +1,5 @@
-provider "cloudflare" {
-  email   = "ianedington@gpo.ca"
-  api_key = var.cloudflare_api_key
-}
-
 resource "cloudflare_zone" "gpo_ca" {
-  account_id = var.cloudflare_account_id
+  account_id = data.sops_file.secrets.data["cloudflare_account_id"]
   zone       = "gpo.ca"
 }
 
@@ -163,7 +158,7 @@ resource "cloudflare_record" "www_gpo_ca" {
 resource "cloudflare_record" "agmsurvey_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "agmsurvey.gpo.ca"
-  content = "www.surveymonkey.com.opts-slash.r.opts-slash.8X8J6S2.redirect.center"
+  content = "www.surveymonkey.com.opts-slash.r.opts-slash.8x8j6s2.redirect.center"
   type    = "CNAME"
   ttl     = 3600
 }
@@ -259,7 +254,7 @@ resource "cloudflare_record" "sg2__domainkey_gpo_ca" {
 resource "cloudflare_record" "mx_aspmx_gpo_ca" {
   zone_id  = cloudflare_zone.gpo_ca.id
   name     = "gpo.ca"
-  content  = "ASPMX.L.GOOGLE.COM"
+  content  = "aspmx.l.google.com"
   priority = 1
   type     = "MX"
   ttl      = 3600
@@ -268,7 +263,7 @@ resource "cloudflare_record" "mx_aspmx_gpo_ca" {
 resource "cloudflare_record" "mx_alt1_gpo_ca" {
   zone_id  = cloudflare_zone.gpo_ca.id
   name     = "gpo.ca"
-  content  = "ALT1.ASPMX.L.GOOGLE.COM"
+  content  = "alt1.aspmx.l.google.com"
   priority = 5
   type     = "MX"
   ttl      = 3600
@@ -277,7 +272,7 @@ resource "cloudflare_record" "mx_alt1_gpo_ca" {
 resource "cloudflare_record" "mx_alt2_gpo_ca" {
   zone_id  = cloudflare_zone.gpo_ca.id
   name     = "gpo.ca"
-  content  = "ALT2.ASPMX.L.GOOGLE.COM"
+  content  = "alt2.aspmx.l.google.com"
   priority = 5
   type     = "MX"
   ttl      = 3600
@@ -286,7 +281,7 @@ resource "cloudflare_record" "mx_alt2_gpo_ca" {
 resource "cloudflare_record" "mx_aspmx2_gpo_ca" {
   zone_id  = cloudflare_zone.gpo_ca.id
   name     = "gpo.ca"
-  content  = "ASPMX2.GOOGLEMAIL.COM"
+  content  = "aspmx2.googlemail.com"
   priority = 10
   type     = "MX"
   ttl      = 3600
@@ -295,7 +290,7 @@ resource "cloudflare_record" "mx_aspmx2_gpo_ca" {
 resource "cloudflare_record" "mx_aspmx3_gpo_ca" {
   zone_id  = cloudflare_zone.gpo_ca.id
   name     = "gpo.ca"
-  content  = "ASPMX3.GOOGLEMAIL.COM"
+  content  = "aspmx3.googlemail.com"
   priority = 10
   type     = "MX"
   ttl      = 3600
