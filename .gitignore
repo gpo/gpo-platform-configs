@@ -2,5 +2,6 @@
 .terraform
 *.tfstate
 *.tfstate.backup
+*.swp
 plan
 *.tfvars
