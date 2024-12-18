@@ -1,3 +1,4 @@
 module "drupal" {
-  source = "../../modules/app/drupal"
+  source      = "../../modules/app/drupal"
+  environment = local.environment
 }
