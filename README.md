@@ -54,11 +54,11 @@ Contains production infrastructure on which production apps run.
 
 ## [app/stage](./app/stage)
 
-Containers resources which staging appls consume.
+Contains resources which staging apps consume.
 
 ## [app/prod](./app/prod)
 
-Containers resources which production apps consume.
+Contains resources which production apps consume.
 
 ### Rationale
 
