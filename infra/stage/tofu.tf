@@ -6,6 +6,11 @@ terraform {
       version = "~> 2.0"
     }
 
+    sops = {
+      source  = "carlpett/sops"
+      version = "~> 0.5"
+    }
+
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.60"
@@ -28,7 +33,5 @@ provider "aws" {
 }
 
 provider "digitalocean" {
-  token             = var.do_token
-  spaces_access_id  = var.do_spaces_access_id
-  spaces_secret_key = var.do_spaces_secret_key
+  token             = data.sops_file.secrets.data["do_token"]
 }
