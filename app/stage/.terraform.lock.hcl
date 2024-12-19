@@ -5,6 +5,7 @@ provider "registry.opentofu.org/carlpett/sops" {
   version     = "0.7.2"
   constraints = "~> 0.5"
   hashes = [
+    "h1:eetjYKFBQb6nbgxjehD/gzzAmH2ru94ha2tEzXNiNy8=",
     "h1:nWrLW+9JjGLwfss4T7pTaE+JiZlBJQGoYxt4pDe5OE8=",
     "zh:43f218054ea3a72c9756bf989aeebb9d0f23b66fd08e9fb4ae75d4f921295e82",
     "zh:57fd326388042a6b7ecd60f740f81e5ef931546c4f068f054e7df34acf65d190",
@@ -20,6 +21,7 @@ provider "registry.opentofu.org/digitalocean/digitalocean" {
   version     = "2.46.1"
   constraints = "~> 2.0"
   hashes = [
+    "h1:R4hRmY/txPFZWzBhc8NRa40rymtrxhuFfb6TlGjNVPw=",
     "h1:RLRn2WL8Hwb08G1QHEkfo+6+dCZv2/LUiQblZmPy7yo=",
     "zh:3526081f8a54f40cc15deedc451e1fd6e816af1d64910e5db5c4feb344efb2aa",
     "zh:448140c8a9cbc3c0f98cafc77eeefb67216f8a508ba2d7519a95a1f35b985f14",
@@ -43,6 +45,7 @@ provider "registry.opentofu.org/digitalocean/digitalocean" {
 provider "registry.opentofu.org/hashicorp/digitalocean" {
   version = "2.46.1"
   hashes = [
+    "h1:R4hRmY/txPFZWzBhc8NRa40rymtrxhuFfb6TlGjNVPw=",
     "h1:RLRn2WL8Hwb08G1QHEkfo+6+dCZv2/LUiQblZmPy7yo=",
     "zh:3526081f8a54f40cc15deedc451e1fd6e816af1d64910e5db5c4feb344efb2aa",
     "zh:448140c8a9cbc3c0f98cafc77eeefb67216f8a508ba2d7519a95a1f35b985f14",
