@@ -16,3 +16,6 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_validate
+        args:
+        - --hook-config=--tf-path=tofu
+        - --hook-config=--retry-once-with-cleanup=true
