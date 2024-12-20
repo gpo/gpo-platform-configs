@@ -4,6 +4,8 @@
 provider "registry.opentofu.org/hashicorp/digitalocean" {
   version = "2.46.1"
   hashes = [
+    "h1:/YBD/kv3WeII/+W8hAudSuaBmwJYiWcBUBFaNJB1z7Q=",
+    "h1:0eaY0ZVyCf1BJHVES0qQz3Ctl3AM9ONm62j9hNRPsWw=",
     "h1:R4hRmY/txPFZWzBhc8NRa40rymtrxhuFfb6TlGjNVPw=",
     "h1:RLRn2WL8Hwb08G1QHEkfo+6+dCZv2/LUiQblZmPy7yo=",
     "zh:3526081f8a54f40cc15deedc451e1fd6e816af1d64910e5db5c4feb344efb2aa",
