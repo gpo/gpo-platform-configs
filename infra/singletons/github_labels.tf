@@ -11,6 +11,10 @@ module "default_github_labels_for_secure_gpo_ca" {
 module "default_github_labels_for_gpo_ca" {
   source     = "../../modules/infra/github_default_labels"
   repository = "gpo.ca"
+
+  labels = [
+    { name = "Content" },
+  ]
 }
 
 module "default_github_labels_for_readme" {
