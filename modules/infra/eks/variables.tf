@@ -3,6 +3,11 @@ variable "cluster_subnet_ids" {
   description = "List of subnet IDs for the cluster to exist within."
 }
 
+variable "admin_user_arns" {
+  type        = list(string)
+  description = "List of user ARNs who will get Admin access to the cluster."
+}
+
 variable "name" {
   type        = string
   description = "A base name for EKS resources."

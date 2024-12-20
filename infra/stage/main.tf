@@ -8,6 +8,7 @@ module "eks" {
   name               = local.project_name
   environment        = local.environment
   cluster_subnet_ids = [module.vpc.private_active_subnet_id, module.vpc.private_inactive_subnet_id, module.vpc.public_subnet_id]
+  admin_user_arns    = module.iam_users.admin_user_arns
 }
 
 module "vpc" {

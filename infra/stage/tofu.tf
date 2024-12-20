@@ -28,9 +28,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "ca-central-1"
-  #profile = "gpo-stage"
-  profile = "gpo"
+  region  = "ca-central-1"
+  profile = "gpo-stage"
 }
 
 provider "digitalocean" {
