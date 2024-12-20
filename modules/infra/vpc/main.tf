@@ -12,6 +12,8 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "public" {
 
+  availability_zone = local.subnet_active_az
+
   # carve out a chunk from the vpc which is 4 bits smaller (/20)
   cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 4, 0)
 
@@ -25,7 +27,9 @@ resource "aws_subnet" "public" {
 }
 
 
-resource "aws_subnet" "private" {
+resource "aws_subnet" "private_active" {
+
+  availability_zone = local.subnet_active_az
 
   # carve out a chunk from the vpc which is 4 bits smaller (/20)
   cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 4, 1)
@@ -33,8 +37,22 @@ resource "aws_subnet" "private" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.name}-${var.environment}-private",
+    Name = "${var.name}-${var.environment}-private-active",
     # required for EKS to provision LBs
     "kubernetes.io/role/internal-elb" = 1
+  }
+}
+
+resource "aws_subnet" "private_inactive" {
+
+  availability_zone = local.subnet_inactive_az
+
+  # carve out a chunk from the vpc which is 4 bits smaller (/20)
+  cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 4, 2)
+
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "${var.name}-${var.environment}-private-inactive",
   }
 }

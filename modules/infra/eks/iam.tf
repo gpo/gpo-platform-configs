@@ -1,5 +1,6 @@
 resource "aws_iam_role" "cluster" {
   name = "${var.name}-${var.environment}"
+  # TODO iam policy document resource
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
