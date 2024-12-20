@@ -16,15 +16,15 @@ terraform {
       version = "~> 4.0"
     }
   }
-  /*
+
   backend "s3" {
     bucket         = "gpo-terraform-state"
     key            = "infra/singletons/terraform.tfstate"
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
-    profile        = "gpo"
-  }*/
+    profile        = "gpo-stage"
+  }
 }
 
 # requires authorized gh
