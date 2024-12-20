@@ -1,7 +1,12 @@
 module "eks" {
-  source = "../../modules/infra/eks"
+  source             = "../../modules/infra/eks"
+  name               = local.project_name
+  environment        = local.environment
+  cluster_subnet_ids = [module.vpc.private_active_subnet_id, module.vpc.private_inactive_subnet_id, module.vpc.public_subnet_id]
 }
 
 module "vpc" {
-  source = "../../modules/infra/vpc"
+  source      = "../../modules/infra/vpc"
+  name        = local.project_name
+  environment = local.environment
 }

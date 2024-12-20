@@ -6,6 +6,8 @@ provider "registry.opentofu.org/hashicorp/aws" {
   constraints = "~> 5.60"
   hashes = [
     "h1:7mo2SoOo277YMcE7wFScaaI1zkzao7OWu3mfEqWjL+8=",
+    "h1:7u9iQx2dxJWCIYX/Gj4UxbsqiJht2iPFs/TZ+Qy3KXM=",
+    "h1:gffFQb3rOGnNkugQlXbhRXMKi/TtYLAzbPk1WfQlzck=",
     "h1:ird967uf44WBZ0u9rMlOdO4nCKJZMlUknLcD3lz4dWs=",
     "zh:0d0c7cc1e16b16cd00ab36de35038162e1871b51a902e9016d08c55c9fc4de35",
     "zh:0e4b8c6e46999015292ab4fb9a430ab00107a276f25243552cde66db53c58661",
