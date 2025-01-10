@@ -5,6 +5,8 @@ provider "registry.opentofu.org/integrations/github" {
   version     = "6.4.0"
   constraints = "~> 6.0"
   hashes = [
+    "h1:3JNFM7w0c/R02ZfcqCctCnCIYFz8QZpDV3ZGcI3i2u8=",
+    "h1:B1q5+Ub1G3zJa9y474Fg40eo/N04/vOSeaf3dWaCG0I=",
     "h1:YiGCvjr7R77HGTzw81legWicEHApVTli8O+ooDpLexE=",
     "h1:sJvuRMYWJ/ykZXTuoCuocHvx06hTwDVrXVVXq1814bw=",
     "zh:00f431c2a2510efcb1115442dda5e90815bcb16e1a3301679ade0139fa963d3b",
