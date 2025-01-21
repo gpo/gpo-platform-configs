@@ -2,12 +2,17 @@ terraform {
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
+      version = "2.46.1"
     }
 
     sops = {
       source  = "carlpett/sops"
       version = "~> 0.5"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.60"
     }
   }
 
@@ -19,6 +24,11 @@ terraform {
     encrypt        = true
     profile        = "gpo-stage"
   }
+}
+
+provider "aws" {
+  region  = "ca-central-1"
+  profile = "gpo-stage"
 }
 
 provider "digitalocean" {

@@ -1,4 +1,4 @@
-module "drupal" {
-  source      = "../../modules/app/drupal"
+module "quickwit" {
+  source      = "../../modules/app/quickwit"
   environment = local.environment
 }
