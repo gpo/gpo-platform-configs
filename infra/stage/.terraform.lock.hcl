@@ -3,7 +3,7 @@
 
 provider "registry.opentofu.org/carlpett/sops" {
   version     = "0.7.2"
-  constraints = "~> 0.5"
+  constraints = "0.7.2"
   hashes = [
     "h1:+A1/RJ3eNVQHDFHjol70EfC5Yh9e78WMXxh1uoxlAYQ=",
     "h1:3Bw0Dms7NNi0bgH9kdWcSapc9hBKQy9yFMwdxivR83c=",
@@ -21,7 +21,7 @@ provider "registry.opentofu.org/carlpett/sops" {
 
 provider "registry.opentofu.org/digitalocean/digitalocean" {
   version     = "2.46.1"
-  constraints = "~> 2.0"
+  constraints = "2.46.1"
   hashes = [
     "h1:/YBD/kv3WeII/+W8hAudSuaBmwJYiWcBUBFaNJB1z7Q=",
     "h1:0eaY0ZVyCf1BJHVES0qQz3Ctl3AM9ONm62j9hNRPsWw=",
@@ -48,7 +48,7 @@ provider "registry.opentofu.org/digitalocean/digitalocean" {
 
 provider "registry.opentofu.org/hashicorp/aws" {
   version     = "5.81.0"
-  constraints = "~> 5.60"
+  constraints = "5.81.0"
   hashes = [
     "h1:7mo2SoOo277YMcE7wFScaaI1zkzao7OWu3mfEqWjL+8=",
     "h1:7u9iQx2dxJWCIYX/Gj4UxbsqiJht2iPFs/TZ+Qy3KXM=",
