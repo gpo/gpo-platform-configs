@@ -6,7 +6,6 @@ This repo is WIP. It goes along with a design proposal to adopt Terraform.
 Design Doc:
 https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/edit
 
-
 # Requirements
 
 * `gh` with an authenticated session
@@ -71,6 +70,35 @@ This layout offers some desireable features:
 ### Current Limitations
 - all state is in a single s3 bucket in aws prod acct
 
+## AWS Accounts
+
+We have two primary AWS accounts for prod / stage, and we are primarily using the `ca-central-1` region.
+
+Stage account ID 542371827759, [login](http://542371827759.signin.aws.amazon.com/console/)
+
+Prod account ID <TBD>, [login](tbd)
+
+### Profiles
+
+AWS CLI access can be managed by using a ["credentials" file](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html). Our tooling and scripts assumes the following profiles are present in the credentials file.
+
+```ini
+[gpo-stage] # account id 542371827759
+aws_access_key_id = AKIA_YOUR_ACCESS_KEY_GOES_HERE
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_GOES_HERE
+
+[gpo-prod] # account id <TBD>
+aws_access_key_id = AKIA_YOUR_ACCESS_KEY_GOES_HERE
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_GOES_HERE
+```
+
+### Users
+
+User IAM accounts are managed in [bootstrap/locals.tf](bootstrap/locals.tf). Usernames added to the list of `iam_admin_users` become full AWS admins. Usernames added to the list of `iam_eks_users` become EKS admins. When adding a new user run the following to retrieve their temporary password:
+
+```console
+$ cd bootstrap && tofu output -json | jq '.user_creds.value'
+```
 
 # Auto Generated Docs
 <!-- BEGIN_TF_DOCS -->
