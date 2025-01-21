@@ -2,12 +2,12 @@ terraform {
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
+      version = "2.46.1"
     }
 
     sops = {
       source  = "carlpett/sops"
-      version = "~> 0.5"
+      version = "0.7.2"
     }
   }
 

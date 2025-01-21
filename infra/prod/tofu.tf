@@ -3,17 +3,17 @@ terraform {
 
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
+      version = "2.46.1"
     }
 
     sops = {
       source  = "carlpett/sops"
-      version = "~> 0.5"
+      version = "0.7.2"
     }
 
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.60"
+      version = "5.81"
     }
   }
 

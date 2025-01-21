@@ -3,17 +3,17 @@ terraform {
 
     sops = {
       source  = "carlpett/sops"
-      version = "~> 0.5"
+      version = "0.7.2"
     }
 
     github = {
       source  = "integrations/github"
-      version = "~> 6.0"
+      version = "6.4.0"
     }
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
+      version = "4.48.0"
     }
   }
 
