@@ -76,7 +76,7 @@ We have two primary AWS accounts for prod / stage, and we are primarily using th
 
 Stage account ID 542371827759, [login](https://542371827759.signin.aws.amazon.com/console/)
 
-Prod account ID 463470973481, [login](https://463470973481.signin.aws.amazon.com/console/)
+Prod account ID 060795914812, [login](https://060795914812.signin.aws.amazon.com/console/)
 
 ### Profiles
 
@@ -87,7 +87,7 @@ AWS CLI access can be managed by using a ["credentials" file](https://docs.aws.a
 aws_access_key_id = AKIA_YOUR_ACCESS_KEY_GOES_HERE
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_GOES_HERE
 
-[gpo-prod] # account id 463470973481
+[gpo-prod] # account id 060795914812
 aws_access_key_id = AKIA_YOUR_ACCESS_KEY_GOES_HERE
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_GOES_HERE
 ```
