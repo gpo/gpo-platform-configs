@@ -22,6 +22,9 @@ Options:
 - Create a separate repo just for Kubernetes yml
 - keep it in the repos of the services
 
+We want new people coming into this workspace to easily find what they are looking for. Multiple repos makes that more difficult.
+Keeping files in each service makes that service responsible for it's deployment. This might be something we do long term but as were starting out it's more desirable to keep all the K8s files together. This will lead to faster iteration and better learning and standardization.
+
 Decision: Move Terraform into a subdirectory of this repo and put Kubernetes yml in a separate directory.
 
 
