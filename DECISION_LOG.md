@@ -15,7 +15,7 @@ The most recent decision should be at the top.
 
 Decision: Since it's very reversible. Go with Helm for now and readjust in the future
 
-### 2025-01 Where should we keep yml for Kubernetes?
+### 2025-01 Where should we keep `yml` with resources deployment definitions for Kubernetes?
 
 Options:
 - Keep it in https://github.com/gpo/gpo-platform-configs
