@@ -18,7 +18,7 @@ Decision: Since it's very reversible. Go with Helm for now and readjust in the f
 ### 2025-01 Where should we keep yml for Kubernetes?
 
 Options:
-- Keep it in this repo
+- Keep it in https://github.com/gpo/gpo-platform-configs
 - Create a separate repo just for Kubernetes yml
 - keep it in the repos of the services
 
