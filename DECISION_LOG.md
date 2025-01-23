@@ -8,6 +8,8 @@ The most recent decision should be at the top.
 
 ### 2025-01-21 Should we use Helm Charts?
 
+Helm charts provides templating, which provides a flexible way to deploy into multiple environment based on values from that environment. This greatly reduces the spread that logic across CI/CD tools.
+
 - more complex
 - there are easier options
 - has high name recognition
