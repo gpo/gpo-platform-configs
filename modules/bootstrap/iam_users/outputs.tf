@@ -9,6 +9,7 @@ output "eks_user_arns" {
 }
 
 output "user_creds" {
-  value       = { for user in aws_iam_user_login_profile.eks : user.user => user.password }
+  value = merge({ for user in aws_iam_user_login_profile.eks : user.user => user.password },
+  { for user in aws_iam_user_login_profile.admin : user.user => user.password })
   description = "Map of usernames to temporary initial passwords (must be changed on first login)."
 }
