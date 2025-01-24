@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   project: infra
-ource:
+  source:
     repoURL: https://github.com/gpo/gpo-platform-configs.git
     targetRevision: HEAD
     path: kubernetes/common/argo-config/
