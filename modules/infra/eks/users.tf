@@ -1,5 +1,13 @@
 #########################################
+#
+# EKS access policy associations bind a canned K8s policy to a specific user and cluster.
+# These are not regular IAM policies, these are strictly about what a user can do _within_ an EKS cluster.
+#
+# See here for a list of canned K8s policies: https://docs.aws.amazon.com/eks/latest/userguide/access-policy-permissions.html
+
+#########################################
 # admin users
+
 resource "aws_eks_access_entry" "admin" {
   for_each      = toset(var.admin_user_arns)
   cluster_name  = aws_eks_cluster.main.name
