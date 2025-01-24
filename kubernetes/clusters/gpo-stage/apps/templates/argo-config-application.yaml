@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-config
+  namespace: argocd
+spec:
+  project: infra
+ource:
+    repoURL: https://github.com/gpo/gpo-platform-configs.git
+    targetRevision: HEAD
+    path: kubernetes/common/argo-config/
+    helm:
+  destination:
+    name: in-cluster
+    namespace: argocd

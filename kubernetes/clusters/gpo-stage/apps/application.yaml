@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  project: infra
+  source:
+    repoURL: https://github.com/gpo/gpo-platform-configs.git
+    targetRevision: HEAD
+    path: kubernetes/clusters/gpo-stage/apps/
+    helm:
+
+  destination:
+    name: in-cluster
+    namespace: argocd
