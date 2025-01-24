@@ -3,6 +3,13 @@ resource "aws_iam_user" "admin" {
   name     = each.value
 }
 
+# give each user a temporary password for logging into aws web console
+resource "aws_iam_user_login_profile" "admin" {
+  for_each                = toset([for user in aws_iam_user.admin : user.name])
+  user                    = each.value
+  password_reset_required = true
+}
+
 resource "aws_iam_group" "admin" {
   name = "admin"
 }
