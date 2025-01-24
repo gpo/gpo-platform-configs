@@ -42,6 +42,11 @@ variable "admin_user_arns" {
   description = "List of user ARNs who will get Admin access to the cluster."
 }
 
+variable "eks_user_arns" {
+  type        = list(string)
+  description = "List of user ARNs who will get regular user access to the cluster."
+}
+
 variable "name" {
   type        = string
   description = "A base name for EKS resources."
