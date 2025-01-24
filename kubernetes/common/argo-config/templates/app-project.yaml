@@ -7,4 +7,12 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: Apps
+  description: Application resources used for running business workloads.
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
