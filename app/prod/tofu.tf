@@ -12,12 +12,12 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "gpo-terraform-state"
+    bucket         = "gpo-terraform-state-prod"
     key            = "app/prod/terraform.tfstate"
     region         = "ca-central-1"
     dynamodb_table = "terraform-state-locks"
     encrypt        = true
-    profile        = "gpo-stage"
+    profile        = "gpo-prod"
   }
 }
 
