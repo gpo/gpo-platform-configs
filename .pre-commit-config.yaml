@@ -22,6 +22,7 @@ repos:
         - --args=-platform=darwin_arm64
         - --args=-platform=linux_amd64
         - --args=-platform=linux_arm64
+        exclude: modules/.*$
       - id: terraform_fmt
         args:
         - --hook-config=--tf-path=tofu
@@ -29,3 +30,4 @@ repos:
         args:
         - --hook-config=--tf-path=tofu
         - --hook-config=--retry-once-with-cleanup=true
+        exclude: modules/.*$
