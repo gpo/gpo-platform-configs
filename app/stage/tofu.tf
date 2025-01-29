@@ -9,6 +9,11 @@ terraform {
       source  = "carlpett/sops"
       version = "0.7.2"
     }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.81"
+    }
   }
 
   backend "s3" {
@@ -19,6 +24,11 @@ terraform {
     encrypt        = true
     profile        = "gpo-stage"
   }
+}
+
+provider "aws" {
+  region  = "ca-central-1"
+  profile = "gpo-stage"
 }
 
 provider "digitalocean" {
