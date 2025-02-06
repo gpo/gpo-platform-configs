@@ -12,12 +12,6 @@ resource "github_actions_secret" "gpo_ca_ssh_host_stage" {
   plaintext_value = data.sops_file.secrets.data["staging_ip_address"]
 }
 
-resource "github_actions_secret" "gpo_ca_ssh_host_prod2" {
-  repository      = "gpo.ca"
-  secret_name     = "SSH_HOST_PROD2"
-  plaintext_value = data.sops_file.secrets.data["prod2_ip_address"]
-}
-
 resource "github_actions_secret" "gpo_ca_ssh_host_prod1" {
   repository      = "gpo.ca"
   secret_name     = "SSH_HOST_PROD1"
