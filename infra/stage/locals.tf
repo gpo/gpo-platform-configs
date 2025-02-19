@@ -6,5 +6,5 @@ locals {
   nodegroup_max_size     = 5
   nodegroup_min_size     = 1
   /* ecr specific */
-  repositories = ["donor-history-report"]
+  repositories = ["gpo-monolith"]
 }
