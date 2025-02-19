@@ -17,3 +17,8 @@ module "eks" {
   nodegroup_min_size          = local.nodegroup_min_size
   nodegroup_max_size          = local.nodegroup_max_size
 }
+
+module "ecr" {
+  source       = "../../modules/infra/ecr"
+  repositories = local.repositories
+}
