@@ -23,31 +23,6 @@ resource "aws_iam_group_membership" "eks" {
 }
 
 ########################################
-# allow users to see everything
-
-data "aws_iam_policy" "ro" {
-  arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
-}
-
-resource "aws_iam_group_policy_attachment" "ro" {
-  group      = aws_iam_group.eks.name
-  policy_arn = data.aws_iam_policy.ro.arn
-}
-
-
-########################################
-# allow users to push to ECR repositories
-
-data "aws_iam_policy" "ecr_power_user" {
-  arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
-}
-
-resource "aws_iam_group_policy_attachment" "ecr_power_user" {
-  group      = aws_iam_group.eks.name
-  policy_arn = data.aws_iam_policy.ecr_power_user.arn
-}
-
-########################################
 # allow users to manage their own accounts
 
 data "aws_iam_policy_document" "manage_own_access" {
