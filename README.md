@@ -47,9 +47,9 @@ A helper script `tofu-all` is available at the root of this repo. It allows you 
   ```sh
   ./tofu-all init
   ```
-- Apply all states with auto-approve:
+- Plan all states:
   ```sh
-  ./tofu-all apply -auto-approve
+  ./tofu-all plan
   ```
 
 This will echo the directory and run the specified `tofu` command in each relevant directory.
