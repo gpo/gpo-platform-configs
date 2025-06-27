@@ -40,12 +40,12 @@ resource "github_branch_default" "gpo_ca" {
 #---
 
 resource "github_repository" "public" {
-  name          = "public"
-  description   = "READMEs, Roadmap, and general onboarding information"
-  visibility    = "public"
-  has_downloads = true
-  has_issues    = true
-  has_projects  = true
+  name                 = "public"
+  description          = "READMEs, Roadmap, and general onboarding information"
+  visibility           = "public"
+  has_downloads        = true
+  has_issues           = true
+  has_projects         = true
   vulnerability_alerts = true
 }
 
