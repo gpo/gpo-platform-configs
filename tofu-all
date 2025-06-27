@@ -12,4 +12,3 @@ if [ $# -lt 1 ]; then
 fi
 
 find . -name tofu.tf -execdir bash -c 'echo "Running: tofu $* in $(pwd)"; tofu "$@"' _ "$@" \;
-
