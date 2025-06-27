@@ -2,7 +2,7 @@
 
 # Usage: ./tofu-all <command> [args...]
 # Example: ./tofu-all init
-#          ./tofu-all apply -auto-approve
+#          ./tofu-all plan
 
 set -e
 
