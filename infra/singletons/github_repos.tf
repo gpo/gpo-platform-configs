@@ -4,7 +4,7 @@ resource "github_repository" "secure_gpo_ca" {
   visibility             = "private"
   allow_auto_merge       = true
   allow_merge_commit     = false
-  allow_rebase_merge     = false
+  allow_rebase_merge     = true
   delete_branch_on_merge = true
   has_downloads          = true
   has_issues             = true
@@ -39,17 +39,18 @@ resource "github_branch_default" "gpo_ca" {
 
 #---
 
-resource "github_repository" "readme" {
-  name          = "readme"
-  description   = "General information about how to access Technology at the GPO"
-  visibility    = "private"
+resource "github_repository" "public" {
+  name          = "public"
+  description   = "READMEs, Roadmap, and general onboarding information"
+  visibility    = "public"
   has_downloads = true
   has_issues    = true
   has_projects  = true
+  vulnerability_alerts = true
 }
 
-resource "github_branch_default" "readme" {
-  repository = github_repository.readme.name
+resource "github_branch_default" "public" {
+  repository = github_repository.public.name
   branch     = "main"
 }
 
