@@ -25,11 +25,44 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 1. run `pre-commit install`
 1. `export PCT_TFPATH=$(which tofu)`
 
+## Initialize all tofu.tf directories
+
+To automatically run `tofu init` in every directory that contains a `tofu.tf` file (including any new ones added in the future), you can use:
+
+```sh
+find . -name tofu.tf -execdir tofu init \;
+```
+
+This will ensure all Terraform states are initialized across the repo.
+
 ## Adding Secrets
 
 1. ensure your favorite editor is exported: `EDITOR=emacs`
 1. run `sops edit secrets.env'
 1. commit changes
+
+## Helper Script: tofu-all
+
+A helper script `tofu-all` is available at the root of this repo. It allows you to run any `tofu` command (such as `init`, `apply`, etc.) in every directory containing a `tofu.tf` file.
+
+### Usage
+
+```sh
+./tofu-all <command> [args...]
+```
+
+#### Examples
+
+- Initialize all states:
+  ```sh
+  ./tofu-all init
+  ```
+- Apply all states with auto-approve:
+  ```sh
+  ./tofu-all apply -auto-approve
+  ```
+
+This will echo the directory and run the specified `tofu` command in each relevant directory.
 
 # Organization
 

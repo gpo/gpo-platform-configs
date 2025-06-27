@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Usage: ./tofu-all <command> [args...]
+# Example: ./tofu-all init
+#          ./tofu-all apply -auto-approve
+
+set -e
+
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <command> [args...]"
+  exit 1
+fi
+
+find . -name tofu.tf -execdir bash -c 'echo "Running: tofu $* in $(pwd)"; tofu "$@"' _ "$@" \;
+
+I'm evaluating a git workflow tool called git-town. Documentation here: @https://www.git-town.com/introduction.html 
+
+Cool. Something I've grown to love about git-pile is that regardless of how many PRs I break out, I'm always working on a "future version of main". By that I mean all the changes from all my PRs are on my local main branch and thats where I develop. Is there a concept of this with git-town?
+With git-town, when you detach do you get to keep working on top of all the commits or does the part you detach get pulled into it's own branch?
