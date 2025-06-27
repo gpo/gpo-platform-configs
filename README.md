@@ -25,16 +25,6 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 1. run `pre-commit install`
 1. `export PCT_TFPATH=$(which tofu)`
 
-## Initialize all tofu.tf directories
-
-To automatically run `tofu init` in every directory that contains a `tofu.tf` file (including any new ones added in the future), you can use:
-
-```sh
-find . -name tofu.tf -execdir tofu init \;
-```
-
-This will ensure all Terraform states are initialized across the repo.
-
 ## Adding Secrets
 
 1. ensure your favorite editor is exported: `EDITOR=emacs`
