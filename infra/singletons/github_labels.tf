@@ -17,9 +17,9 @@ module "default_github_labels_for_gpo_ca" {
   ]
 }
 
-module "default_github_labels_for_readme" {
+module "default_github_labels_for_public" {
   source     = "../../modules/infra/github_default_labels"
-  repository = "readme"
+  repository = "public"
 }
 
 module "default_github_labels_for_gpo_platform_configs" {
