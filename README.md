@@ -31,6 +31,29 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 1. run `sops edit secrets.env'
 1. commit changes
 
+## Helper Script: tofu-all
+
+A helper script `tofu-all` is available at the root of this repo. It allows you to run any `tofu` command (such as `init`, `apply`, etc.) in every directory containing a `tofu.tf` file.
+
+### Usage
+
+```sh
+./tofu-all <command> [args...]
+```
+
+#### Examples
+
+- Initialize all states:
+  ```sh
+  ./tofu-all init
+  ```
+- Plan all states:
+  ```sh
+  ./tofu-all plan
+  ```
+
+This will echo the directory and run the specified `tofu` command in each relevant directory.
+
 # Organization
 
 This repo is organized into multiple TF states (AKA "stacks" AKA "compositions"), which is to say that you can run `tf apply` in each of these directories.
