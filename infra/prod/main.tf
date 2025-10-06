@@ -17,3 +17,10 @@ module "eks" {
   nodegroup_min_size          = local.nodegroup_min_size
   nodegroup_max_size          = local.nodegroup_max_size
 }
+
+module "gcp" {
+  source = "../../modules/infra/gcp"
+  # TODO: Figure out how to pass the MySQL sensitive values in as input
+  # params. Will this involve integrating with SOPS as our secrets source?
+  # (I saw `data.sops_file` elsewhere in this codebase.)
+}
