@@ -1,11 +1,9 @@
 provider "google" {
   project = var.gcp_project
-  region  = local.region
+  region  = var.gcp_region
 }
 
 locals {
-  region = "northamerica-northeast2"
-
   # These are all the tables that existed in the civicrm database in staging as
   # of Sept 29th. We will assume all of these tables exist in production too
   # and that there are no tables in production that weren't in staging too as
@@ -215,7 +213,7 @@ locals {
   ]
 
   # Limit to 5 tables per transfer config. We've had problems doing many tables at once.
-  transfer_batch_size = 5 
+  transfer_batch_size = 5
   civicrm_grouped_batches = {
     for batch_key in distinct([for idx, _ in local.civicrm_tables : format("batch_%03d", floor(idx / local.transfer_batch_size))]) :
     batch_key => [
@@ -230,7 +228,7 @@ locals {
 resource "google_bigquery_dataset" "civicrm_tables" {
   dataset_id    = "civicrm_tables"
   friendly_name = "CiviCRM Tables"
-  location      = local.region
+  location      = var.gcp_region
 }
 
 resource "google_bigquery_data_transfer_config" "civicrm_table_transfer_configs" {
@@ -238,11 +236,13 @@ resource "google_bigquery_data_transfer_config" "civicrm_table_transfer_configs"
   for_each = local.civicrm_grouped_batches
 
   lifecycle {
-    ignore_changes = [id, name] # GCP generates these after it's created
+    ignore_changes = [
+      params["connector.authentication.password"]
+    ]
   }
 
   display_name   = "MySQL civicrm ${each.key}" # e.g., "MySQL civicrm batch_000"
-  location       = local.region
+  location       = var.gcp_region
   data_source_id = "mysql"
 
   # The schedule is based on the index of the batch.
@@ -254,7 +254,7 @@ resource "google_bigquery_data_transfer_config" "civicrm_table_transfer_configs"
     floor(tonumber(trimprefix(try(regex("batch_(\\d+)", each.key)[0], "0"), "0")) / 60), # Calculate hour
     tonumber(trimprefix(try(regex("batch_(\\d+)", each.key)[0], "0"), "0")) % 60         # Calculate minute
   )
-  
+
   destination_dataset_id = google_bigquery_dataset.civicrm_tables.dataset_id
 
   params = {

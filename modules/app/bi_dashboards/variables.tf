@@ -4,6 +4,11 @@ variable "gcp_project" {
   sensitive   = true
 }
 
+variable "gcp_region" {
+  description = "GCP Region to hold resources."
+  type        = string
+}
+
 variable "mysql_host" {
   description = "Host for CiviCRM MySQL database"
   type        = string
