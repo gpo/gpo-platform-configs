@@ -22,8 +22,8 @@ locals {
   # The tables in this map were obtained by querying MySQL for a list of all CiviCRM tables
   # Sept 29th 2025. We must repeat that process and update the code here if that ever changes.
   #
-  # See `resource` below to see how this ends up being used to ultimately
-  # cause a resource to be generated for each batch.
+  # See google_bigquery_data_transfer_config `resource` below to see how we use this to create a
+  # data transfer config for each batch.
   civicrm_batches = {
     # The key is the batch number. It's used in `resource` below for the transfer config name.
     1 = {
