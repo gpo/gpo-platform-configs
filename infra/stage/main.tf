@@ -1,3 +1,4 @@
+/* decom EKS for now
 module "vpc" {
   source      = "../../modules/infra/vpc"
   name        = local.project_name
@@ -21,4 +22,4 @@ module "eks" {
 module "ecr" {
   source       = "../../modules/infra/ecr"
   repositories = local.repositories
-}
+} /decom */
