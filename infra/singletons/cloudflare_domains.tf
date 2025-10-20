@@ -15,7 +15,7 @@ resource "cloudflare_record" "gpo_ca" {
 resource "cloudflare_record" "secure_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "secure.gpo.ca"
-  content = "192.124.249.179"
+  content = "143.244.200.166"
   type    = "A"
   ttl     = 300
   proxied = true
@@ -45,7 +45,6 @@ resource "cloudflare_record" "staging_secure_gpo_ca" {
   content = "137.184.128.54"
   type    = "A"
   ttl     = 300
-  proxied = true
 }
 
 resource "cloudflare_record" "o1_list_gpo_ca" {
