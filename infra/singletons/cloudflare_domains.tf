@@ -8,7 +8,8 @@ resource "cloudflare_record" "gpo_ca" {
   name    = "gpo.ca"
   content = "143.244.200.166"
   type    = "A"
-  ttl     = 300
+  # TTL must be 1 when proxied == true
+  ttl     = 1
   proxied = true
 }
 
@@ -17,7 +18,7 @@ resource "cloudflare_record" "secure_gpo_ca" {
   name    = "secure.gpo.ca"
   content = "143.244.200.166"
   type    = "A"
-  ttl     = 300
+  ttl     = 1
   proxied = true
 }
 
@@ -26,7 +27,7 @@ resource "cloudflare_record" "staging_gpo_ca" {
   name    = "staging.gpo.ca"
   content = "137.184.128.54"
   type    = "A"
-  ttl     = 300
+  ttl     = 1
   proxied = true
 }
 
@@ -35,7 +36,7 @@ resource "cloudflare_record" "dev_gpo_ca" {
   name    = "dev.gpo.ca"
   content = "134.122.120.190"
   type    = "A"
-  ttl     = 300
+  ttl     = 1
   proxied = true
 }
 
