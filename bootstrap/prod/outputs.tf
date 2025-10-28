@@ -13,3 +13,11 @@ output "user_creds" {
   sensitive   = true
   description = "Map of usernames to temporary initial passwords (must be changed on first login)."
 }
+
+output "gcp_project_gpo_data" {
+  value = {
+    project_id = google_project.gpo_data.project_id
+    name       = google_project.gpo_data.name
+  }
+  description = "Project name and project ID for the GPO Data project"
+}
