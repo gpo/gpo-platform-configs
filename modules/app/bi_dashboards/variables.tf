@@ -26,3 +26,10 @@ variable "mysql_password" {
   type        = string
   sensitive   = true
 }
+
+variable "monitoring_data_email" {
+  description = "Email address to send data monitoring emails for alerts to."
+  type        = string
+}
+
+# ""

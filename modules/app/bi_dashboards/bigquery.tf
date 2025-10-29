@@ -1,8 +1,3 @@
-provider "google" {
-  project = var.gcp_project
-  region  = var.gcp_region
-}
-
 locals {
   # We need a transfer config to run for every table, but we've had problems in the past trying it
   # two ways:
