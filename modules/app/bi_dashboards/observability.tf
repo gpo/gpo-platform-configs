@@ -1,5 +1,5 @@
 locals {
-  run_failure_metric_name = "transfer_config_job_run_failures2"
+  run_failure_metric_name = "transfer_config_job_run_failures"
 }
 
 # Tracks transfer config run job failures by looking for the messages GCP logs
