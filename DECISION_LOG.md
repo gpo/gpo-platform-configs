@@ -37,3 +37,11 @@ One case where using TF to put stuff into K8s is useful is configuration / secre
 Terraform is good at managing static infrastructure, it's not as good at managing constantly changing infrastructure like inside Kubernetes. We'll use Kubernetes yml or similar to manage Kubernetes.
 
 Decision: Generally NO, but not a strict ban.
+
+### 2024-12 How should we share secrets?
+
+We landed on sops because it's simple and we know it:
+- https://github.com/gpo/gpo-platform-configs/issues/30
+- https://github.com/gpo/gpo-platform-configs/pull/31
+
+Should we revisit this decision?
