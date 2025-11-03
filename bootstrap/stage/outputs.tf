@@ -21,3 +21,11 @@ output "gcp_project_gpo_data" {
   }
   description = "Project name and project ID for the GPO Data project"
 }
+
+output "gcp_project_gpo_eng" {
+  value = {
+    project_id = google_project.gpo_eng.project_id
+    name       = google_project.gpo_eng.name
+  }
+  description = "Project name and project ID for the GPO Eng project"
+}

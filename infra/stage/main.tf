@@ -1,25 +1,9 @@
-/* decom EKS for now
-module "vpc" {
-  source      = "../../modules/infra/vpc"
-  name        = local.project_name
+module "gke" {
+  source      = "../../modules/infra/gcp/gke"
+  name        = local.name
   environment = local.environment
+  location    = local.zone_toronto
+  providers = {
+    google = google.gpo_eng
+  }
 }
-
-module "eks" {
-  source                      = "../../modules/infra/eks"
-  name                        = local.project_name
-  environment                 = local.environment
-  public_subnet_ids           = [module.vpc.public_subnet_id]
-  private_active_subnet_ids   = [module.vpc.private_active_subnet_id]
-  private_inactive_subnet_ids = [module.vpc.private_inactive_subnet_id]
-  admin_user_arns             = data.terraform_remote_state.bootstrap.outputs.admin_user_arns
-  eks_user_arns               = data.terraform_remote_state.bootstrap.outputs.eks_user_arns
-  nodegroup_desired_size      = local.nodegroup_desired_size
-  nodegroup_min_size          = local.nodegroup_min_size
-  nodegroup_max_size          = local.nodegroup_max_size
-}
-
-module "ecr" {
-  source       = "../../modules/infra/ecr"
-  repositories = local.repositories
-} /decom */

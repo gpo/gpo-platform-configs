@@ -15,6 +15,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.81"
     }
+
+    google = {
+      source  = "hashicorp/google"
+      version = "6.8.0"
+    }
   }
 
   backend "s3" {
@@ -34,4 +39,9 @@ provider "aws" {
 
 provider "digitalocean" {
   token = data.sops_file.secrets.data["do_token"]
+}
+
+provider "google" {
+  project = data.terraform_remote_state.bootstrap.outputs.gcp_project_gpo_eng.project_id
+  alias   = "gpo_eng"
 }
