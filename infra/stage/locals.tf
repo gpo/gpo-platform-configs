@@ -1,10 +1,7 @@
 locals {
-  project_name = "gpo"
-  environment  = "stage"
-  /* eks specific */
-  nodegroup_desired_size = 1
-  nodegroup_max_size     = 5
-  nodegroup_min_size     = 1
-  /* ecr specific */
-  repositories = ["gpo-monolith"]
+  name        = "gpo" # broadly used as a prefix for resource names
+  environment = "stage"
+  /* gcp specific */
+  region_toronto = "northamerica-northeast2"
+  zone_toronto   = "northamerica-northeast2-a"
 }
