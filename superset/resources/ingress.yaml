@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # Name I used when I was planning for a dedicated namespace for Ingress. Will
+  # change this later before we check in. Probably call it just "superset".
+  name: exposed-apps
+  namespace: superset
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gke-ingress-ip
+    networking.gke.io/managed-certificates: managed-cert
+spec:
+  defaultBackend:
+    service:
+      name: superset
+      port:
+        number: 8088
+
