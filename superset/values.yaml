@@ -1,0 +1,17 @@
+postgresql:
+  image:
+    # Use default registry and tag from PostgreSQL subchart,
+    # but set repository to legacy images repository.
+    repository: bitnamilegacy/postgresql
+redis:
+  image:
+    # Same idea for Redis.
+    repository: bitnamilegacy/redis
+# Need this to be able to use the psycopg2-binary driver for Postgres metadata database.
+# I built an image using a particular Dockerfile and tagged it this. We should use our
+# own container registry later instead of my personal one. It's worth noting there are NO
+# secrets in this image, so we can use a public repo on any free registry, like Docker Hub,
+# like I used here.
+image:
+  repository: mwelke/apache-superset-mysql-pg
+  tag: 5.0.0
