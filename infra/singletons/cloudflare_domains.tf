@@ -72,15 +72,6 @@ resource "cloudflare_record" "mail_dev_secure_gpo_ca" {
   ttl     = 300
 }
 
-resource "cloudflare_record" "staging_gke_ingress" {
-  zone_id = cloudflare_zone.gpo_ca.id
-  name    = "superset.staging.gke.gpo.ca"
-  content = "34.128.149.218"
-  type    = "A"
-  ttl     = 300
-  proxied = false
-}
-
 resource "cloudflare_record" "return_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "return.gpo.ca"
