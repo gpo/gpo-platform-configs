@@ -27,7 +27,7 @@ LONG_QUERY_COUNT=$(mysql --login-path=${MYLOGIN_PATH} --skip-column-names --sile
 if [[ "${LONG_QUERY_COUNT}" -gt 0 ]]; then
 	log "${LONG_QUERY_COUNT} long running queries by 'big_query_user' found, killing them now..."
 else
-	log "No long running queries found, exiting."
+	# No long running queries found, nothing to do.
 	exit 0
 fi
 
