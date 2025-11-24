@@ -7,3 +7,10 @@ module "gke" {
     google = google.gpo_eng
   }
 }
+
+module "gar" {
+  source = "../../modules/infra/gcp/gar"
+  providers = {
+    google = google.gpo_eng
+  }
+}
