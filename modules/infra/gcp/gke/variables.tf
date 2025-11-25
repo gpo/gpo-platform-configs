@@ -17,6 +17,6 @@ variable "location" {
 }
 
 variable "cloudflare_zone_id" {
-  type = string
+  type        = string
   description = "The ID of the Cloudflare zone used for DNS records that point to the cluster."
 }
