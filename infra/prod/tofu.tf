@@ -1,6 +1,11 @@
 terraform {
   required_providers {
 
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "4.48.0"
+    }
+
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "2.46.1"
@@ -21,10 +26,6 @@ terraform {
       version = "6.8.0"
     }
 
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "4.48.0"
-    }
   }
 
   backend "s3" {
@@ -40,6 +41,11 @@ terraform {
 provider "aws" {
   region  = "ca-central-1"
   profile = "gpo-prod"
+}
+
+provider "cloudflare" {
+  email   = "ianedington@gpo.ca"
+  api_key = data.sops_file.secrets.data["cloudflare_api_key"]
 }
 
 provider "digitalocean" {

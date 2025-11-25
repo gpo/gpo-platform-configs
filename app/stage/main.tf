@@ -17,3 +17,13 @@ module "bi_dashboards" {
   gcp_project    = data.sops_file.environment_secrets.data["gcp_bi_project_id"]
   gcp_region     = "northamerica-northeast2"
 }
+
+module "grassroots" {
+  source          = "../../modules/app/grassroots"
+  cloudflare_zone = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  environment     = local.environment
+
+  providers = {
+    google = google.gpo_eng
+  }
+}

@@ -1,5 +1,10 @@
 terraform {
   required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "4.48.0"
+    }
+
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "2.46.1"
@@ -17,7 +22,7 @@ terraform {
 
     google = {
       source  = "hashicorp/google"
-      version = "6.8.0"
+      version = "7.12.0"
     }
   }
 
@@ -38,4 +43,14 @@ provider "aws" {
 
 provider "digitalocean" {
   token = data.sops_file.secrets.data["do_token"]
+}
+
+provider "cloudflare" {
+  email   = "ianedington@gpo.ca"
+  api_key = data.sops_file.secrets.data["cloudflare_api_key"]
+}
+
+provider "google" {
+  project = data.terraform_remote_state.bootstrap.outputs.gcp_project_gpo_eng.project_id
+  alias   = "gpo_eng"
 }
