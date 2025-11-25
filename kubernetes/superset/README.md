@@ -6,17 +6,22 @@ To deploy or undeploy Superset, first set env var `KUBECONFIG` to a kubeconfig f
 
 # Deploy
 
+If needed, add the Superset helm repo.
+
+```sh
+helm repo add superset http://apache.github.io/superset/
+```
+
 To deploy Superset, from the root of the repo, run:
 
 ```sh
 sops exec-env secrets.stage.env \
   'helm upgrade -n superset --install superset \
-    superset/superset --values superset/values.yaml \
+    superset/superset --values kubernetes/superset/values.yaml \
     --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
     --set init.adminUser.password="$superset_admin_user_pass" \
     --dry-run=client' \
-  && kubectl apply -f superset/resources/ingress.yaml \
-  && kubectl apply -f superset/resources/managedcertificate.yaml
+  && kubectl apply -f kubernetes/superset/resources/
 ```
 
 This combines the values in values.yaml with the values that are secrets, by pulling the secrets from SOPS, and deploys Superset. It also deploys the `Ingress` and `ManagedCertificate`.
@@ -27,7 +32,7 @@ To undeploy Superset, run:
 
 ```sh
 helm uninstall -n superset superset
-kubectl delete ingress superset -n superset
+kubectl delete -f kubernetes/superset/resources/
 ```
 
 Note that this retains the `ManagedCertificate`. During development, we aren't deleting it each time we undeploy Superset because it takes GCP 30-60 mins to fully provision certs.
