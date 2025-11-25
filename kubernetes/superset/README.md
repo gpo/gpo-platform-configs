@@ -1,0 +1,38 @@
+# Superset
+
+This is stuff needed for Superset. It's a Helm chart and a few Kubernetes resources.
+
+To deploy or undeploy Superset, first set env var `KUBECONFIG` to a kubeconfig file for the cluster and make sure the right active context is set in that kubeconfig.
+
+# Deploy
+
+If needed, add the Superset helm repo.
+
+```sh
+helm repo add superset http://apache.github.io/superset/
+```
+
+To deploy Superset, from the root of the repo, run:
+
+```sh
+sops exec-env secrets.stage.env \
+  'helm upgrade -n superset --install superset \
+    superset/superset --values kubernetes/superset/values.yaml \
+    --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
+    --set init.adminUser.password="$superset_admin_user_pass" \
+    --dry-run=client' \
+  && kubectl apply -f kubernetes/superset/resources/
+```
+
+This combines the values in values.yaml with the values that are secrets, by pulling the secrets from SOPS, and deploys Superset. It also deploys the `Ingress` and `ManagedCertificate`.
+
+# Undeploy
+
+To undeploy Superset, run:
+
+```sh
+helm uninstall -n superset superset
+kubectl delete -f kubernetes/superset/resources/
+```
+
+Note that this retains the `ManagedCertificate`. During development, we aren't deleting it each time we undeploy Superset because it takes GCP 30-60 mins to fully provision certs.

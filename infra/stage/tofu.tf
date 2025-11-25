@@ -20,6 +20,11 @@ terraform {
       source  = "hashicorp/google"
       version = "6.8.0"
     }
+
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "4.48.0"
+    }
   }
 
   backend "s3" {
@@ -44,4 +49,9 @@ provider "digitalocean" {
 provider "google" {
   project = data.terraform_remote_state.bootstrap.outputs.gcp_project_gpo_eng.project_id
   alias   = "gpo_eng"
+}
+
+provider "cloudflare" {
+  email   = "ianedington@gpo.ca"
+  api_key = data.sops_file.secrets.data["cloudflare_api_key"]
 }

@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: superset
+  namespace: superset
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gke-ingress-ip
+    networking.gke.io/managed-certificates: managed-cert
+spec:
+  defaultBackend:
+    service:
+      name: superset
+      port:
+        number: 8088

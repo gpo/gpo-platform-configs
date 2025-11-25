@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: managed-cert
+  namespace: superset
+spec:
+  domains:
+  - superset.staging.gke.gpo.ca
