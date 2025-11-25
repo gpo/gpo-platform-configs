@@ -12,4 +12,3 @@ spec:
       name: superset
       port:
         number: 8088
-

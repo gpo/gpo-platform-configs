@@ -55,4 +55,3 @@ provider "cloudflare" {
   email   = "ianedington@gpo.ca"
   api_key = data.sops_file.secrets.data["cloudflare_api_key"]
 }
-
