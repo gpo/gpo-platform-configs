@@ -4,3 +4,7 @@ output "oauth_client" {
     secret = google_iam_oauth_client_credential.grassroots.client_secret
   }
 }
+
+output "hostname" {
+  value = cloudflare_record.grassroots.name
+}

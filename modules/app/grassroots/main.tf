@@ -1,5 +1,6 @@
 locals {
-  uri = "https://grassroots.${var.cloudflare_zone.zone}"
+  hostname = "grassroots.${var.cloudflare_zone.zone}"
+  uri      = "https://${local.hostname}"
 }
 
 resource "google_iam_oauth_client" "grassroots" {
@@ -19,4 +20,13 @@ resource "google_iam_oauth_client_credential" "grassroots" {
   location                   = google_iam_oauth_client.grassroots.location
   oauth_client_credential_id = "grassroots"
   display_name               = "Grassroots ${var.environment}"
+}
+
+resource "cloudflare_record" "grassroots" {
+  zone_id = var.cloudflare_zone.id
+  name    = local.hostname
+  content = var.ingress_ip_address
+  type    = "A"
+  ttl     = 300
+  proxied = false
 }
