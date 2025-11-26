@@ -40,7 +40,8 @@ for environ in $ENVIRONS; do
       outfile="${environ}/${output_type}.env"
       echo "Rendering ${outfile}"
       # extract all .configs or .secrets, render them as KEY=VALUE and write them to .env file
-      jq -rf <(printf '%s | to_entries[] | "\(.key)=\(.value)"' ".${output_type}") "${tf_file}" > ${outfile}
+      echo "# This file is generated dynamically by ${0}, hand edits will be overwritten!" > ${outfile}
+      jq -rf <(printf '%s | to_entries[] | "\(.key)=\(.value)"' ".${output_type}") "${tf_file}" >> ${outfile}
     else
       echo "No ${output_type} outputs found for environment ${environ}, skipping it."
     fi
