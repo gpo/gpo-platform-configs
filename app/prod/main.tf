@@ -8,3 +8,29 @@ module "drupal" {
 module "legacy_logging" {
   source = "../../modules/app/legacy_logging"
 }
+
+module "bi_dashboards" {
+  source         = "../../modules/app/bi_dashboards"
+  mysql_password = data.sops_file.environment_secrets.data["database_pass"]
+  mysql_username = data.sops_file.environment_secrets.data["database_user"]
+  mysql_host     = data.sops_file.environment_secrets.data["database_host"]
+  gcp_project    = data.sops_file.environment_secrets.data["gcp_bi_project_id"]
+  gcp_region     = "northamerica-northeast2"
+}
+
+module "grassroots" {
+  source             = "../../modules/app/grassroots"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  environment        = local.environment
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+
+  providers = {
+    google = google.gpo_eng
+  }
+}
+
+module "superset" {
+  source             = "../../modules/app/superset"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+}
