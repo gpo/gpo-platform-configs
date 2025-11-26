@@ -9,5 +9,13 @@ output "grassroots" {
   sensitive   = true
   value = {
     oauth_client = module.grassroots.oauth_client
+    hostname     = module.grassroots.hostname
+  }
+}
+
+output "superset" {
+  description = "All outputs from the superset module."
+  value = {
+    hostname = module.superset.hostname
   }
 }

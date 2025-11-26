@@ -4,3 +4,7 @@ output "cloudflare_zone_gpo_tools" {
     zone = cloudflare_zone.gpo_tools.zone
   }
 }
+
+output "gke_ingress_ip" {
+  value = module.gke.ingress_ip
+}
