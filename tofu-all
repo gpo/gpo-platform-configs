@@ -11,4 +11,4 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-find . -name tofu.tf -execdir bash -c 'echo "Running: tofu $* in $(pwd)"; tofu "$@"' _ "$@" \;
+find . -name tofu.tf -not -path "./modules/*" -execdir bash -c 'echo "Running: tofu $* in $(pwd)"; tofu "$@"' _ "$@" \;
