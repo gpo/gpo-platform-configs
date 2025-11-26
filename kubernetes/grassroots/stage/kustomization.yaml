@@ -1,0 +1,12 @@
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+- name: grassroots
+  envs:
+  - secrets.env
+
+configmapGenerator:
+- name: grassroots
+  envs:
+  - configs.env
