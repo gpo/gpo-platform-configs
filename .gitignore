@@ -5,4 +5,3 @@
 *.swp
 plan
 *.tfvars
-secret.yaml
