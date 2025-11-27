@@ -6,6 +6,14 @@ A decisions provides context on the project and the reasons behind certain choic
 ## Decisions
 The most recent decision should be at the top.
 
+### 2025-11-27 How should we get TF output into K8s?
+
+We need to funnel information about resources created by TF into K8s so our workloads can access them.
+
+See #111 for detailed discussion.
+
+Decision: we've opted for a loose coupling (unlike the suggestion noted on 2025-01 below), we will produce some lightweight tooling to fetch outputs from TF and munge them for delivery into K8s.
+
 ### 2025-01-21 Should we use Helm Charts?
 
 Helm charts provides templating, which provides a flexible way to deploy into multiple environment based on values from that environment. This greatly reduces the spread that logic across CI/CD tools.

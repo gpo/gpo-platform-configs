@@ -5,5 +5,4 @@
 *.swp
 plan
 *.tfvars
-tf_output.*.json
-secrets.env
+secret.yaml
