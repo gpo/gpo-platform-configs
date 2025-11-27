@@ -16,7 +16,7 @@ popd () {
 ENVIRONS="stage prod"
 OUTPUT_TYPES="configmap secret"
 
-# TF outputs are produced on a per-app basis (eg. all outputs for foo app are under the query `jq '.foo.values'`)
+# TF outputs are namespaced by app name (eg. all outputs for foo app are under the query `jq '.foo.values'`)
 # this base filter ensures we only process outputs for the current app
 BASE_FILTER=".${APPNAME}.value"
 
