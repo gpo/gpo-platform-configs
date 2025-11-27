@@ -46,14 +46,21 @@ for environ in $ENVIRONS; do
       eval "export $env_vars"
 
       template_file="${environ}/${output_type}.yaml.tmpl"
-      output_file="${environ}/${output_type}.yaml"
-      echo "Rendering ${template_file} into ${output_file}"
-      envsubst < "${template_file}" > "${output_file}"
 
-      # encrypt secrets
       if [[ ${output_type} == "secret" ]]; then
-        echo "Encrypting ${output_file}"
-        sops encrypt -i --encrypted-regex '^(data|stringData)$' ${output_file}
+        # encrypt secrets
+        output_file="${environ}/${output_type}.yaml.enc"
+        echo "Rendering and encrypting ${template_file} into ${output_file}"
+        envsubst < "${template_file}" | sops encrypt \
+          --encrypted-regex '^(data|stringData)$'\
+          --filename-override ${output_file} \
+          --input-type yaml \
+          --output-type yaml \
+          /dev/stdin > ${output_file}
+      else
+        output_file="${environ}/${output_type}.yaml"
+        echo "Rendering ${template_file} into ${output_file}"
+        envsubst < "${template_file}" > "${output_file}"
       fi
 
     else
