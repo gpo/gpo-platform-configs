@@ -1,0 +1,19 @@
+[tools]
+opentofu = '1.9.1'
+pre-commit = '4.5.0'
+sops = '3.11.0'
+jq = '1.8.1'
+
+[tasks.pc]
+description = "Run all git pre-commit hooks."
+run = "pre-commit run --all-files"
+
+[tasks.genk8s]
+description = "Transform TF outputs into K8s YAMLs"
+run = [{tasks = ["grassroots:genk8s"]}]
+
+[tasks."grassroots:genk8s"]
+description = "Transform TF outputs into K8s YAMLs for the grassroots app."
+env.APPNAME = "grassroots"
+dir = "kubernetes/grassroots"
+run = "../../scripts/genk8s.sh"
