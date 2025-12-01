@@ -13,6 +13,7 @@ output "grassroots" {
       GOOGLE_CLIENT_ID         = module.grassroots.oauth_client.id
       VITE_BACKEND_HOST        = "https://${module.grassroots.hostname}/api"
       VITE_FRONTEND_HOST       = "https://${module.grassroots.hostname}"
+      WEBHOOK_HOST             = "https://${module.grassroots.hostname}"
     }
     secret = {
       GOOGLE_CLIENT_SECRET = module.grassroots.oauth_client.secret

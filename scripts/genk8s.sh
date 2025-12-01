@@ -14,7 +14,6 @@ popd () {
 }
 
 ENVIRONS="stage prod"
-OUTPUT_TYPES="configmap secret"
 
 # TF outputs are namespaced by app name (eg. all outputs for foo app are under the query `jq '.foo.values'`)
 # this base filter ensures we only process outputs for the current app
@@ -28,9 +27,16 @@ for environ in $ENVIRONS; do
   tf_outputs=$(tofu output -json | jq "$BASE_FILTER")
   popd
 
-  for output_type in $OUTPUT_TYPES; do
+  env_app_length=$(echo ${tf_outputs} | jq 'length')
+
+  if [[ "${env_app_length}" -eq 0 ]]; then
+    echo "No ${environ} outputs for ${APPNAME} found."
+    continue
+  fi
+
+  for output_type in $(jq -r 'keys | join(" ")' <<< "${tf_outputs}"); do
     # count the number of outputs in this output type
-    output_length=$(echo ${tf_outputs} | jq 'length')
+    output_length=$(jq -r ".${output_type} | length" <<< "${tf_outputs}")
 
     # if there are outputs, process them
     if [[ "${output_length}" -gt 0 ]]; then
@@ -45,11 +51,11 @@ for environ in $ENVIRONS; do
       # load the env vars
       eval "export $env_vars"
 
-      template_file="${environ}/${output_type}.yaml.tmpl"
+      template_file="templates/${output_type}-dynamic.yaml.tmpl"
 
       if [[ ${output_type} == "secret" ]]; then
         # encrypt secrets
-        output_file="${environ}/${output_type}.yaml.enc"
+        output_file="${environ}/${output_type}-dynamic.yaml.enc"
         echo "Rendering and encrypting ${template_file} into ${output_file}"
         envsubst < "${template_file}" | sops encrypt \
           --encrypted-regex '^(data|stringData)$'\
@@ -58,7 +64,7 @@ for environ in $ENVIRONS; do
           --output-type yaml \
           /dev/stdin > ${output_file}
       else
-        output_file="${environ}/${output_type}.yaml"
+        output_file="${environ}/${output_type}-dynamic.yaml"
         echo "Rendering ${template_file} into ${output_file}"
         envsubst < "${template_file}" > "${output_file}"
       fi
