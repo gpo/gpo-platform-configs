@@ -67,7 +67,6 @@ for environ in $ENVIRONS; do
         output_file="${environ}/${output_type}-dynamic.yaml"
         echo "Rendering ${template_file} into ${output_file}"
         envsubst < "${template_file}" > "${output_file}"
-        #cat "${template_file}"
       fi
 
     else
