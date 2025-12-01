@@ -17,3 +17,7 @@ description = "Transform TF outputs into K8s YAMLs for the grassroots app."
 env.APPNAME = "grassroots"
 dir = "kubernetes/grassroots"
 run = "../../scripts/genk8s.sh"
+
+[tasks.tffmt]
+description = "Run 'tofu fmt' on everything."
+run = "tofu fmt -recursive"
