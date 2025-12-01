@@ -4,10 +4,6 @@
 
 set -euo pipefail
 
-# figure out the full path the repo has been checked out to
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/.."
-
 # pushd/popd are convenience functions to reduce verbosity on stdout
 pushd () {
   command pushd "$@" > /dev/null
