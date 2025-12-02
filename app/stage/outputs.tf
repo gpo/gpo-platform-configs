@@ -27,3 +27,12 @@ output "superset" {
     hostname = module.superset.hostname
   }
 }
+
+output "argocd" {
+  description = "All outputs from the superset module."
+  value = {
+    helm-values = {
+      hostname = module.argocd.hostname
+    }
+  }
+}
