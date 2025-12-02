@@ -25,3 +25,9 @@ module "superset" {
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
   ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
 }
+
+module "argocd" {
+  source             = "../../modules/app/argocd"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+}
