@@ -36,16 +36,16 @@ for environ in $ENVIRONS; do
 
   for output_type in $(jq -r 'keys | join(" ")' <<< "${tf_outputs}"); do
     # count the number of outputs in this output type
-    output_length=$(jq -r ".${output_type} | length" <<< "${tf_outputs}")
+    output_length=$(jq -r ".\"${output_type}\" | length" <<< "${tf_outputs}")
 
     # if there are outputs, process them
     if [[ "${output_length}" -gt 0 ]]; then
       # this dirty one liner takes all the TF outputs and makes a string like "KEY1=val1 KEY2=val2..."
       # note: for secrets we need to base64 encode the values
       if [[ ${output_type} == "secret" ]]; then
-        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".${output_type} | to_entries | map(\"\(.key)=\(.value | @base64)\") | join(\" \")")
+        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".\"${output_type}\" | to_entries | map(\"\(.key)=\(.value | @base64)\") | join(\" \")")
       else
-        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".${output_type} | to_entries | map(\"\(.key)=\(.value)\") | join(\" \")")
+        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".\"${output_type}\" | to_entries | map(\"\(.key)=\(.value)\") | join(\" \")")
       fi
 
       # load the env vars
