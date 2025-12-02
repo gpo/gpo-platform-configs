@@ -21,7 +21,14 @@ resource "google_container_cluster" "main" {
 
   network = google_compute_network.main.name
 
+  gateway_api_config {
+    channel = "CHANNEL_STANDARD"
+  }
+
   node_config {
+    resource_labels = {
+      "goog-gke-node-pool-provisioning-model" = "on-demand"
+    }
     service_account = google_service_account.main.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
