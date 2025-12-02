@@ -6,6 +6,12 @@ A decisions provides context on the project and the reasons behind certain choic
 ## Decisions
 The most recent decision should be at the top.
 
+### 2025-12-02 Deployment Configuration Storage (central location vs close to app source)
+
+We've decided to consolidate deployment configurations in gpo-platform-configs for now. This is a very reversible decision and keeping them together is the path of least resistance.
+
+See https://github.com/gpo/gpo-platform-configs/issues/114 for discussion.
+
 ### 2025-11-27 How should we get TF output into K8s?
 
 We need to funnel information about resources created by TF into K8s so our workloads can access them.
