@@ -24,6 +24,8 @@ output "grassroots" {
 output "superset" {
   description = "All outputs from the superset module."
   value = {
-    hostname = module.superset.hostname
+    httproute = {
+      hostname = module.superset.hostname
+    }
   }
 }
