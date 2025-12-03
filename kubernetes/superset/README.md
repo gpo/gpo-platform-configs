@@ -12,6 +12,12 @@ If needed, add the Superset helm repo.
 helm repo add superset http://apache.github.io/superset/
 ```
 
+To generate dynamic YAMLs for superset run:
+
+```sh
+mise superset:genk8s
+```
+
 To deploy Superset, from the root of the repo, run:
 
 ```sh
@@ -21,10 +27,10 @@ sops exec-env secrets.stage.env \
     --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
     --set init.adminUser.password="$superset_admin_user_pass" \
     --dry-run=client' \
-  && kubectl apply -f kubernetes/superset/resources/
+  && kubectl apply -f kubernetes/superset/<stage|prod>/
 ```
 
-This combines the values in values.yaml with the values that are secrets, by pulling the secrets from SOPS, and deploys Superset. It also deploys the `Ingress` and `ManagedCertificate`.
+This combines the values in values.yaml with the values that are secrets, by pulling the secrets from SOPS, and deploys Superset. It also deploys the `HTTPRoute` to route traffic through our gateway into superset.
 
 # Undeploy
 
@@ -32,7 +38,5 @@ To undeploy Superset, run:
 
 ```sh
 helm uninstall -n superset superset
-kubectl delete -f kubernetes/superset/resources/
+kubectl delete -f kubernetes/superset/<stage|prod>/
 ```
-
-Note that this retains the `ManagedCertificate`. During development, we aren't deleting it each time we undeploy Superset because it takes GCP 30-60 mins to fully provision certs.
