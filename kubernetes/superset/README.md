@@ -27,7 +27,7 @@ sops exec-env secrets.stage.env \
     --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
     --set init.adminUser.password="$superset_admin_user_pass" \
     --dry-run=client' \
-  && kubectl apply -f kubernetes/superset/<stage|prod>/
+  && kubectl apply -f kubernetes/superset/<stage|prod>/ -f kubernetes/superset/resources/
 ```
 
 This combines the values in values.yaml with the values that are secrets, by pulling the secrets from SOPS, and deploys Superset. It also deploys the `HTTPRoute` to route traffic through our gateway into superset.
@@ -38,5 +38,5 @@ To undeploy Superset, run:
 
 ```sh
 helm uninstall -n superset superset
-kubectl delete -f kubernetes/superset/<stage|prod>/
+kubectl delete -f kubernetes/superset/<stage|prod>/ -f kubernetes/superset/resources/
 ```
