@@ -28,13 +28,9 @@ terraform {
 
   }
 
-  backend "s3" {
-    bucket         = "gpo-terraform-state"
-    key            = "infra/prod/terraform.tfstate"
-    region         = "ca-central-1"
-    dynamodb_table = "terraform-state-locks"
-    encrypt        = true
-    profile        = "gpo-stage"
+  backend "gcs" {
+    bucket = "gpo-tf-state-data"
+    prefix = "prod/infra"
   }
 }
 
