@@ -1,0 +1,26 @@
+# NOTE: prod here means LetsEncrypt's prod service, nothing
+# to do with OUR environment.
+
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: gateway
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ianedington@gpo.ca
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider using Gateway API
+    solvers:
+    - http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - name: gpotools
+            namespace: gateway
+            kind: Gateway
+            sectionName: http

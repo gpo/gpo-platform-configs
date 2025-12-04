@@ -6,6 +6,12 @@ A decisions provides context on the project and the reasons behind certain choic
 ## Decisions
 The most recent decision should be at the top.
 
+### 2025-12-03 Leveraging Gateway API
+
+We've decided NOT to deploy our own Gateway API implementation, opting instead to just use the one provided by GKE. This allows us to save money over Ingress (because we don't need a separate ALB per app exposed to the net) without requiring us to maintain another piece of software.
+
+See https://github.com/gpo/gpo-platform-configs/issues/119 for further discussion.
+
 ### 2025-12-02 Deployment Configuration Storage (central location vs close to app source)
 
 We've decided to consolidate deployment configurations in gpo-platform-configs for now. This is a very reversible decision and keeping them together is the path of least resistance.
@@ -16,7 +22,7 @@ See https://github.com/gpo/gpo-platform-configs/issues/114 for discussion.
 
 We need to funnel information about resources created by TF into K8s so our workloads can access them.
 
-See #111 for detailed discussion.
+See https://github.com/gpo/gpo-platform-configs/issues/111 for detailed discussion.
 
 Decision: we've opted for a loose coupling (unlike the suggestion noted on 2025-01 below), we will produce some lightweight tooling to fetch outputs from TF and munge them for delivery into K8s.
 
