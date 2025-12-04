@@ -1,23 +1,17 @@
-# bootstrap
+# bootstrapping a new GCP account
 
-## apply once at the beginning of terraform adoption, then ignore.
+In the event we need to spin up infra in a brand new GCP account, we need to
+do some manual stuff before we can run our TF.
 
-Sets up the bucket and DDB table for the rest of the TF state to exist in.
+```sh
+PROJECT=gpo-tf-state-lives-here
 
-## disaster recovery
+BUCKET=a-unique-name-for-a-bucket-that-holds-tf-state-files
 
-If we need to create a net new environment:
+$ gcloud projects create ${PROJECT} --billing-account=BILLING_ACCOUNT_ID_GOES_HERE
 
-1. create new AWS account - update aws profile `gpo` with new creds
-1. comment out the `backend` section in `tofu.tf`
-1. update `main.tf` with a new bucket name (bucket names must be unique across ALL AWS accounts)
-1. `tf apply`
-1. `aws --profile gpo s3 cp terraform.tfstate s3://<new-bucket-name>/bootstrap/terraform.tfstate`
-1. uncomment the `backend` section in tofu.tf and update it to reflect the new bucket name
-1. move your local tfstate file out of the way for a moment: `mv terraform.tfstate /tmp`
-1. ensure `tf plan` both:
-  * fetches remote state from the new bucket successfully
-  * doesn't want to change anything
-1. remove your local copy of the state file `rm /tmp/terraform.tfstate`
+$ gcloud storage buckets create gs://${BUCKET} --project ${PROJECT}
+```
 
-You are now bootstrapped. Every other composition in this repo now needs the bucket name it its `backend` section of `tofu.tf` updated to reflect the new bucket name before we can run `tf apply`.
+Then recursively update every `tofu.tf` and `remote_state.tf` file to reference the new bucket.
+Once this is complete, TF can be applied.
