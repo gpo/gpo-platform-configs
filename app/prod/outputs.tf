@@ -27,5 +27,8 @@ output "superset" {
     httproute = {
       hostname = module.superset.hostname
     }
+    values = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
   }
 }

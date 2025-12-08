@@ -8,3 +8,7 @@ output "cloudflare_zone_gpo_tools" {
 output "gke_ingress_ip" {
   value = module.gke.ingress_ip
 }
+
+output "image_repository_uri" {
+  value = module.gar.repository_uri
+}
