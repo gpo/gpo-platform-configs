@@ -54,19 +54,31 @@ for environ in $ENVIRONS; do
       template_file="templates/${output_type}-dynamic.yaml.tmpl"
 
       if [[ ${output_type} == "secret" ]]; then
-        # encrypt secrets
         output_file="${environ}/${output_type}-dynamic.yaml.enc"
-        echo "Rendering and encrypting ${template_file} into ${output_file}"
-        envsubst < "${template_file}" | sops encrypt \
-          --encrypted-regex '^(data|stringData)$'\
-          --filename-override ${output_file} \
-          --input-type yaml \
-          --output-type yaml \
-          /dev/stdin > ${output_file}
+
+        # if the encrypted output file has already been created at some point
+        if [[ -f "${output_file}" ]]; then
+          # decrypt the old file
+          decrypted=$(sops decrypt --input-type yaml --output-type yaml "${output_file}")
+          rendered=$(envsubst < "${template_file}")
+          old=$(printf "%s" ${decrypted} | md5sum)
+          new=$(printf "%s" ${rendered} | md5sum)
+
+          # if the new rendered file matches the old decrypted file, don't recreate it
+          if [[ $old = $new ]]; then
+            echo "${output_file} has not changed, skipping."
+          else
+            echo "Rendering and encrypting ${template_file} into ${output_file}"
+            printf "%s" "${rendered}" | sops encrypt \
+              --encrypted-regex '^(data|stringData)$'\
+              --filename-override ${output_file} \
+              --input-type yaml \
+              --output-type yaml \
+              /dev/stdin > ${output_file}
+          fi
+        fi
       else
         output_file="${environ}/${output_type}-dynamic.yaml"
-        echo "Rendering ${template_file} into ${output_file}"
-        envsubst < "${template_file}" > "${output_file}"
       fi
 
     else
