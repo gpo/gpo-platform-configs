@@ -23,22 +23,21 @@ provider "registry.opentofu.org/hashicorp/aws" {
 }
 
 provider "registry.opentofu.org/hashicorp/google" {
-  version     = "6.8.0"
-  constraints = "6.8.0"
+  version     = "7.12.0"
+  constraints = "7.12.0"
   hashes = [
-    "h1:7kVqtv9WITz2SMZKk+6nFjFEUvur/DTR3u29D8y6IWc=",
-    "h1:ZAZmM/vklsAEjpXZkR4sPzSCSiGkAPVXrxZ/aXYwXVM=",
-    "h1:iNrCvileo2XwA4RJoIFbXCCwLt4BPefbwATjQkINMvw=",
-    "h1:lGhTjjKozpr3ZX3zipw3DJOAhNw7mAGQyWrmJJKkMFg=",
-    "zh:06a80f46f4f49d30c7cdb07f5d0715b8398497f1d86acda43b32817cb99c0cfd",
-    "zh:073b406305aa675e8b367224485270ed1f18de86cc7afdaa202bbd8562dc32a7",
-    "zh:11c2e9f0de6eda72a4ba646a25cceeb489cfe7a39c26f48ff20421b3289b8fa7",
-    "zh:39d0db53e543d50eb267c56a6461039db4b08d0c99fbe5cd5b9beb3d0efe296e",
-    "zh:4bbbbaf241eb91fc7ba575c6b85706299c7a42b700dc74fd12dfa9f93d3c0102",
-    "zh:582332cf741c265f5e72cb35984598b7130aaf5580b243b5529fda30bdf12129",
-    "zh:881dc8c132273991941b018f8012a977b4a7ebb32f0fb99c7b5f5757dfb96b06",
-    "zh:96d2258f074b237ef735023be038f818f3ea975f4175e7598ac2b477d12df8f8",
-    "zh:b3cc4e99128a97ad640c12e7dc39299b52c4205f0201e53f9a674c0dfb623d49",
-    "zh:eaf2fc5acc3cba9c756da51295ad0e45d1f024f84490b920d989357c52c98562",
+    "h1:8br/8+JhidWbxcnUduAXOqF3qnsK8PDw37TRbsN2dhk=",
+    "h1:I0sCJv/ExYw/uHpZHSmReS8YLz+ODrOV8GP/81cWgYU=",
+    "h1:dspjOpls4IEjlLVqQ946xazMbhysJ84qCpB0fV2GhVw=",
+    "h1:fFqHYRgUGl3DQEm1RpaX9srO7ev1sbpVQ4lfmk3pIzQ=",
+    "zh:0d4074221600d978a0fdad1444c334a838ffa2fd5cd286e16a6016182f546236",
+    "zh:1453846745b3b05ade0414cb5118477d83b81b4509db0eda712079ddaa39d8df",
+    "zh:1ec56b20dd24c647aa51154875ef204e98b9a9d9e9bd161ef5df8ff9cc4cf9fe",
+    "zh:3115ceac6d520b4406ab9ab9fc8de4fd1065be525e3a9faea65fa8c030e0b4b1",
+    "zh:428957506ddbe2caf54a21834715ce1b447774a2c5a7a4f1973877b578cc3260",
+    "zh:466234bd320b737eddf629b5b51deef2af73baea3ccf2ec63afa16970003df1d",
+    "zh:99c8f325ed4989f2e802eaf27b50f8604b26adc22fe863bc0787ad49c618d661",
+    "zh:af99baef19efb88f6bc521c2d82e674af2358070f61b4b2db1291b84d0b16761",
+    "zh:cdc335d3acc9a75a696dafe6291f65119d696ea555d5d0941dab05720b5c8a27",
   ]
 }
