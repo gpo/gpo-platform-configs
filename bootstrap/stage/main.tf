@@ -13,4 +13,7 @@ module "state_bucket" {
 module "sops" {
   source      = "../../modules/bootstrap/sops"
   environment = local.environment
+  providers = {
+    google = google.bootstrap
+  }
 }
