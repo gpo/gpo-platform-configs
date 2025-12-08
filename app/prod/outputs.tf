@@ -8,14 +8,24 @@ output "grassroots" {
   description = "All outputs from the grassroots module."
   sensitive   = true
   value = {
-    oauth_client = module.grassroots.oauth_client
-    hostname     = module.grassroots.hostname
+    configmap = {
+      GOOGLE_AUTH_CALLBACK_URL = "https://${module.grassroots.hostname}/api/auth/google/callback"
+      GOOGLE_CLIENT_ID         = module.grassroots.oauth_client.id
+      VITE_BACKEND_HOST        = "https://${module.grassroots.hostname}/api"
+      VITE_FRONTEND_HOST       = "https://${module.grassroots.hostname}"
+      WEBHOOK_HOST             = "https://${module.grassroots.hostname}"
+    }
+    secret = {
+      GOOGLE_CLIENT_SECRET = module.grassroots.oauth_client.secret
+    }
   }
 }
 
 output "superset" {
   description = "All outputs from the superset module."
   value = {
-    hostname = module.superset.hostname
+    httproute = {
+      hostname = module.superset.hostname
+    }
   }
 }

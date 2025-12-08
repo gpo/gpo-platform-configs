@@ -14,6 +14,7 @@ resource "google_container_cluster" "main" {
     google_project_service.compute,
     google_project_service.container,
   ]
+
   deletion_protection = false
   name                = "${var.name}-${var.environment}"
   location            = var.location

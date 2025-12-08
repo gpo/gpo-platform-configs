@@ -21,3 +21,8 @@ provider "aws" {
   region  = "ca-central-1"
   profile = "gpo-stage"
 }
+
+provider "google" {
+  project = "gpo-bootstrap-2"
+  alias   = "bootstrap"
+}
