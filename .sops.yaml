@@ -1,16 +1,11 @@
 creation_rules:
   - path_regex: secrets.env
-    kms: 'arn:aws:kms:ca-central-1:542371827759:key/c10f6d8b-37ab-4843-8c40-e4b51709b468'
-    aws_profile: 'gpo-stage'
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-prod/cryptoKeys/sops-prod'
   - path_regex: secrets.prod.env
-    kms: 'arn:aws:kms:ca-central-1:060795914812:key/c7ecdd9a-8269-422e-98a2-efa86f09483a'
-    aws_profile: 'gpo-prod'
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-prod/cryptoKeys/sops-prod'
   - path_regex: secrets.stage.env
-    kms: 'arn:aws:kms:ca-central-1:542371827759:key/bb9f8f84-d188-42d8-8634-f2b0b2941228'
-    awis_profile: 'gpo-stage'
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-stage/cryptoKeys/sops-stage'
   - path_regex: .*/stage/secret.*\.yaml.enc
-    kms: 'arn:aws:kms:ca-central-1:542371827759:key/bb9f8f84-d188-42d8-8634-f2b0b2941228'
-    aws_profile: 'gpo-stage'
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-stage/cryptoKeys/sops-stage'
   - path_regex: .*/prod/secret.*\.yaml.enc
-    kms: 'arn:aws:kms:ca-central-1:060795914812:key/c7ecdd9a-8269-422e-98a2-efa86f09483a'
-    aws_profile: 'gpo-prod'
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-prod/cryptoKeys/sops-prod'
