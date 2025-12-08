@@ -16,16 +16,16 @@ output "user_creds" {
 
 output "gcp_project_gpo_data" {
   value = {
-    project_id = google_project.gpo_data.project_id
-    name       = google_project.gpo_data.name
+    id   = google_project.gpo_data.project_id
+    name = google_project.gpo_data.name
   }
   description = "Project name and project ID for the GPO Data project"
 }
 
 output "gcp_project_gpo_eng" {
   value = {
-    project_id = google_project.gpo_eng.project_id
-    name       = google_project.gpo_eng.name
+    id   = google_project.gpo_eng.project_id
+    name = google_project.gpo_eng.name
   }
   description = "Project name and project ID for the GPO Eng project"
 }

@@ -47,6 +47,6 @@ provider "cloudflare" {
 }
 
 provider "google" {
-  project = data.terraform_remote_state.bootstrap.outputs.gcp_project_gpo_eng.project_id
+  project = data.terraform_remote_state.bootstrap.outputs.gcp_project_gpo_eng.id
   alias   = "gpo_eng"
 }
