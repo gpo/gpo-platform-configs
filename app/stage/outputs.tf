@@ -5,7 +5,7 @@ output "legacy_logging" {
 }
 
 output "grassroots" {
-  description = "All outputs from the grassroots module."
+  description = "All outputs required for kubernetes/grassroots."
   sensitive   = true
   value = {
     configmap = {
@@ -22,13 +22,24 @@ output "grassroots" {
 }
 
 output "superset" {
-  description = "All outputs from the superset module."
+  description = "All outputs required for kubernetes/superset."
   value = {
     httproute = {
       hostname = module.superset.hostname
     }
     values = {
       image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+  }
+}
+
+output "gateway" {
+  description = "All outputs required for kubernetes/gateway."
+  value = {
+    gateway = {
+      hostnames = [
+        { "name" = "grassroots", "hostname" = module.grassroots.hostname }
+      ]
     }
   }
 }
