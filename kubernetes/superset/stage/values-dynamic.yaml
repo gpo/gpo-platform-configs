@@ -11,4 +11,4 @@ redis:
 # for MySQL and PostgreSQL drivers.
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
-  tag: 5.0.0
+  tag: v0.0.1
