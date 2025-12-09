@@ -1,4 +1,4 @@
-name: CI Generic Checks
+name: CI Format and Validate
 
 on:
   pull_request:
@@ -7,14 +7,18 @@ on:
       - synchronize
 
 jobs:
-  generic-checks:
+  format-and-validate:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
+
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Use OpenTofu for Terraform
+        run: echo "PCT_TFPATH=$(which tofu)" >> $GITHUB_ENV
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
-        env:
-          SKIP: terraform-docs-go terraform_validate terraform_providers_lock terraform_fmt

@@ -11,6 +11,7 @@ repos:
     hooks:
       - id: terraform-docs-go
         args: ["markdown", "table", "--output-file", "README.md", "./"]
+        files: ^(\.github\/workflows\/.*|.*\.hcl|.*\.env|.*\.tf)$
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.92.1"
     hooks:
@@ -20,6 +21,7 @@ repos:
         - --hook-config=--retry-once-with-cleanup=true
         - --tf-init-args=-upgrade
         exclude: modules/.*$
+        files: ^(\.github\/workflows\/.*|.*\.hcl|.*\.env|.*\.tf)$
       - id: terraform_providers_lock
         args:
         - --hook-config=--tf-path=tofu
@@ -29,6 +31,8 @@ repos:
         - --args=-platform=linux_amd64
         - --args=-platform=linux_arm64
         exclude: modules/.*$
+        files: ^(\.github\/workflows\/.*|.*\.hcl|.*\.env|.*\.tf)$
       - id: terraform_fmt
         args:
         - --hook-config=--tf-path=tofu
+        files: ^(\.github\/workflows\/.*|.*\.hcl|.*\.env|.*\.tf)$
