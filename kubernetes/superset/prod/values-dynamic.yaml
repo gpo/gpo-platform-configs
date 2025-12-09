@@ -10,5 +10,5 @@ redis:
 # Custom Superset image which contains their upstream release plus pip packages
 # for MySQL and PostgreSQL drivers.
 image:
-  repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
-  tag: 5.0.0
+  repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset
+  tag: v0.0.1

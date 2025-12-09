@@ -27,6 +27,11 @@ env.APPNAME = "grassroots"
 dir = "kubernetes/grassroots"
 run = "../../scripts/genk8s.sh"
 
+[tasks."superset:build"]
+description = "Build docker images for Apache superset."
+dir = "kubernetes/superset/docker"
+run = "docker build . --platform=linux/amd64"
+
 [tasks.tffmt]
 description = "Run 'tofu fmt' on everything."
 run = "tofu fmt -recursive"
