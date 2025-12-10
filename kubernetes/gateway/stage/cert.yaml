@@ -1,11 +1,25 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: gpotools
+  name: superset
   namespace: gateway
 spec:
   issuerRef:
     name: letsencrypt-prod
-  secretName: gpotools
+  secretName: superset
   dnsNames:
   - superset.gpotoolsstage.ca
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grassroots
+  namespace: gateway
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+  secretName: grassroots
+  dnsNames:
+  - grassroots.gpotoolsstage.ca

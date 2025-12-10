@@ -10,7 +10,7 @@ spec:
   - kind: Gateway
     name: gpotools
     namespace: gateway
-    sectionName: https
+    sectionName: superset
   hostnames:
   - "superset.gpotools.ca"
   rules:

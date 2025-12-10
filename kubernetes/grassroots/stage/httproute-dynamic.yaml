@@ -1,7 +1,7 @@
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
-  name: superset
+  name: grassroots
   labels:
     gateway: gpotools
 spec:
@@ -10,10 +10,10 @@ spec:
   - kind: Gateway
     name: gpotools
     namespace: gateway
-    sectionName: superset
+    sectionName: grassroots
   hostnames:
-  - "${hostname}"
+  - "grassroots.gpotoolsstage.ca"
   rules:
   - backendRefs:
-    - name: superset
-      port: 8088
+    - name: frontend
+      port: 5173

@@ -18,6 +18,12 @@ output "grassroots" {
     secret = {
       GOOGLE_CLIENT_SECRET = module.grassroots.oauth_client.secret
     }
+    deployment = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+    httproute = {
+      hostname = module.grassroots.hostname
+    }
   }
 }
 
