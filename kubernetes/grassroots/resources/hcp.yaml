@@ -1,0 +1,16 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: grassroots
+  namespace: grassroots
+spec:
+  default:
+    config:
+      httpHealthCheck:
+        port: 5173
+        requestPath: /
+      type: HTTP
+  targetRef:
+    group: ""
+    kind: Service
+    name: grassroots

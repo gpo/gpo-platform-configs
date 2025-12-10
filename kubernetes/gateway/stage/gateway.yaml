@@ -15,14 +15,31 @@ spec:
         from: All
       kinds:
       - kind: HTTPRoute
-  - name: https
+  - name: grassroots
+    hostname: grassroots.gpotoolsstage.ca
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: grassroots
+    # only allow httproutes in the grassroots namespace to use this listener
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            kubernetes.io/metadata.name: grassroots
+      kinds:
+      - kind: HTTPRoute
+  - name: superset
     hostname: superset.gpotoolsstage.ca
     protocol: HTTPS
     port: 443
     tls:
       mode: Terminate
       certificateRefs:
-      - name: gpotools
+      - name: superset
     # only allow httproutes in the superset namespace to use this listener
     allowedRoutes:
       namespaces:

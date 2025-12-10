@@ -6,6 +6,8 @@ repos:
     - id: trailing-whitespace
     - id: check-merge-conflict
     - id: check-yaml
+      args:
+      - --allow-multiple-documents
   - repo: https://github.com/terraform-docs/terraform-docs
     rev: "v0.18.0"
     hooks:
