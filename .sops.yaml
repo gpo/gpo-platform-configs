@@ -5,6 +5,8 @@ creation_rules:
     gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-prod/cryptoKeys/sops-prod'
   - path_regex: secrets.stage.env
     gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-stage/cryptoKeys/sops-stage'
+  - path_regex: secrets.stage.json
+    gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-stage/cryptoKeys/sops-stage'
   - path_regex: .*/stage/secret.*\.yaml.enc
     gcp_kms: 'projects/gpo-bootstrap-2/locations/global/keyRings/sops-stage/cryptoKeys/sops-stage'
   - path_regex: .*/prod/secret.*\.yaml.enc

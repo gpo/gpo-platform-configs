@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# this script will fetch TF outputs for the app defined by $APPNAME and produce a K8s Configmap & Secret YAML populated with those outputs.
-
 set -euo pipefail
 
 # pushd/popd are convenience functions to reduce verbosity on stdout
@@ -13,81 +11,124 @@ popd () {
   command popd "$@" > /dev/null
 }
 
+# renders the template and injects a hash of all the inputs at the top of the file
+render() {
+  local env_vars template input_hash
+  env_vars=$1;shift
+  template=$1;shift
+  input_hash=$1;shift
+  printf '# genk8s:hash=%s\n' "${input_hash}"
+
+  # run envsubst in a fresh shell with no env vars (env -i)
+  env -i PATH="$PATH" bash -c '
+    set -a              # enable allexport (accept all KEY=val pairs as env vars)
+    source /dev/stdin   # read our list of KEY=val off stdin
+    set +a              # turn it back off
+    envsubst < "$1"     # $1 is ${template}
+  ' dummyarg0 "${template}" <<<"${env_vars}"
+}
+
 ENVIRONS="stage prod"
 
-# TF outputs are namespaced by app name (eg. all outputs for foo app are under the query `jq '.foo.values'`)
-# this base filter ensures we only process outputs for the current app
-BASE_FILTER=".${APPNAME}.value"
-
-echo "Transforming TF outputs into K8s YAMLs for ${APPNAME}"
-
 for environ in $ENVIRONS; do
-  # go get TF output for each environment
+  # get TF output for this environment
   pushd ../../app/${environ}
-  tf_outputs=$(tofu output -json | jq "$BASE_FILTER")
+  tf_output_json=$(tofu output -json | jq ".${APPNAME}.value")
   popd
 
-  env_app_length=$(echo ${tf_outputs} | jq 'length')
-
-  if [[ "${env_app_length}" -eq 0 ]]; then
-    echo "No ${environ} outputs for ${APPNAME} found."
-    continue
+  # get secrets for this environment
+  secrets_file=secrets.${environ}.json
+  if [[ -f "${secrets_file}" ]]; then
+    secrets_json=$(sops decrypt "${secrets_file}")
+  else
+    secrets_json="{}"
   fi
 
-  for output_type in $(jq -r 'keys | join(" ")' <<< "${tf_outputs}"); do
-    # count the number of outputs in this output type
-    output_length=$(jq -r ".\"${output_type}\" | length" <<< "${tf_outputs}")
+  for template_path in templates/*.tmpl; do
+                                          # template_path => templates/foo.yaml.tmpl
+    template_file="${template_path##*/}"  # template_file => foo.yaml.tmpl
+    template_type="${template_file%%.*}"  # template_type => foo
 
-    # if there are outputs, process them
-    if [[ "${output_length}" -gt 0 ]]; then
-      # this dirty one liner takes all the TF outputs and makes a string like "KEY1=val1 KEY2=val2..."
-      # note: for secrets we need to base64 encode the values
-      if [[ ${output_type} == "secret" ]]; then
-        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".\"${output_type}\" | to_entries | map(\"\(.key)=\(.value | @base64)\") | join(\" \")")
-      else
-        env_vars=$(printf '%s' "$tf_outputs" | jq -r ".\"${output_type}\" | to_entries | map(\"\(.key)=\(.value)\") | join(\" \")")
-      fi
+    # extract any TF outputs for this template
+    tf_outputs_for_template=$(jq -r ".\"${template_type}\"" <<<"${tf_output_json}")
 
-      # load the env vars
-      eval "export $env_vars"
+    # extract any secrets for this template
+    secrets_for_template=$(jq -r ".\"${template_type}\"" <<<"${secrets_json}")
 
-      template_file="templates/${output_type}-dynamic.yaml.tmpl"
-      rendered=$(envsubst < "${template_file}")
+    # count up our goodies
+    tf_output_count=$(jq 'length' <<<"${tf_outputs_for_template}")
+    secret_count=$(jq 'length' <<<"${secrets_for_template}")
 
-      # ensure destination directory exists
-      mkdir -p "${environ}"
-
-      if [[ ${output_type} == "secret" ]]; then
-        output_file="${environ}/${output_type}-dynamic.yaml.enc"
-
-        # if the encrypted output file has already been created at some point
-        if [[ -f "${output_file}" ]]; then
-          # decrypt the old file
-          decrypted=$(sops decrypt --input-type yaml --output-type yaml "${output_file}")
-          old=$(echo ${decrypted} | md5sum)
-          new=$(echo ${rendered} | md5sum)
-
-          # if the new rendered file matches the old decrypted file, don't recreate it
-          if [[ $old = $new ]]; then
-            echo "${output_file} has not changed, skipping."
-          else
-            echo "Rendering and encrypting ${template_file} into ${output_file}"
-            echo "${rendered}" | sops encrypt \
-              --encrypted-regex '^(data|stringData)$'\
-              --filename-override ${output_file} \
-              --input-type yaml \
-              --output-type yaml \
-              /dev/stdin > ${output_file}
-          fi
-        fi
-      else
-        output_file="${environ}/${output_type}-dynamic.yaml"
-        echo "Rendering ${template_file} into ${output_file}"
-        echo "${rendered}" > $output_file
-      fi
-
-    else
-      echo "No TF ${output_type} outputs found for environment ${environ}"
+    if [[ $tf_output_count -eq 0 && $secret_count -eq 0 ]]; then
+      echo "No TF outputs or Sops secrets found in ${environ} for ${template_path}, skipping."
+      continue
     fi
+
+    tf_env_vars=""
+
+    if [[ $tf_output_count -gt 0 ]]; then
+      # turn outputs into strings like KEY1=val1 KEY2=val2 for easy exporting
+      tf_env_vars=$(printf '%s' "${tf_outputs_for_template}" | jq -r "to_entries | map(\"\(.key)=\(.value)\") | join(\"\n\")")
+    fi
+
+    secret_env_vars=""
+
+    if [[ $secret_count -gt 0 ]]; then
+      secret_env_vars=$(printf '%s' "${secrets_for_template}" | jq -r "to_entries | map(\"\(.key)=\(.value)\") | join(\"\n\")")
+    fi
+
+    all_env_vars=$(printf '%s\n%s\n' "${tf_env_vars}" "${secret_env_vars}")
+
+    # compute a hash of all inputs as well as the template body - if none of these things change, we don't need to re-render
+    env_hash=$(md5sum <<<"${all_env_vars}" | awk '{print $1}')
+    template_hash=$(md5sum "${template_path}" | awk '{print $1}')
+    output_hash=$(printf '%s%s' "${env_hash}" "${template_hash}" | md5sum | awk '{print $1}')
+
+    # if this string is in the template we will encrypt the output
+    if grep -q 'genk8s:encrypted=true' "${template_path}"; then
+      encrypted_output=true
+    else
+      encrypted_output=false
+    fi
+
+    # foo.yaml.tmpl => foo.yaml
+    output_file=${template_file%.*}
+
+    # add the .enc suffix to make it EXTRA obvious that you need to decrypt before using it
+    if [[ $encrypted_output = true ]]; then
+      output_path="${environ}/${output_file}.enc"
+    else
+      output_path="${environ}/${output_file}"
+    fi
+
+    # if we have rendered this file before, check to see if it needs to change
+    if [[ -f "${output_path}" ]]; then
+      old_hash=$(grep "genk8s:hash" "${output_path}" | cut -d'=' -f2)
+      if [[ "${old_hash}" == "${output_hash}" ]]; then
+        echo "${output_path} has not changed, skipping."
+        continue
+      fi
+    fi
+
+    # ensure destination directory exists
+    mkdir -p "${environ}"
+
+    if [[ $encrypted_output = true ]]; then
+
+      echo "Rendering and encrypting ${template_file} into ${output_path}"
+
+      # we only want to encrypt the `data` and `stringData` YAML keys
+      render "${all_env_vars}" "${template_path}" "${output_hash}" | sops encrypt \
+        --filename-override "${output_path}" \
+        --encrypted-regex '^(data|stringData)$'\
+        --input-type yaml \
+        --output-type yaml \
+        /dev/stdin > "${output_path}"
+    else
+      echo "Rendering ${template_path} into ${output_path}"
+      render "${all_env_vars}" "${template_path}" "${output_hash}" > "${output_path}"
+    fi
+
   done
+
 done

@@ -8,15 +8,16 @@ output "grassroots" {
   description = "All outputs required for kubernetes/grassroots."
   sensitive   = true
   value = {
-    configmap = {
-      GOOGLE_AUTH_CALLBACK_URL = "https://${module.grassroots.hostname}/api/auth/google/callback"
-      GOOGLE_CLIENT_ID         = module.grassroots.oauth_client.id
-      VITE_BACKEND_HOST        = "https://${module.grassroots.hostname}/api"
-      VITE_FRONTEND_HOST       = "https://${module.grassroots.hostname}"
-      WEBHOOK_HOST             = "https://${module.grassroots.hostname}"
-    }
     secret = {
-      GOOGLE_CLIENT_SECRET = module.grassroots.oauth_client.secret
+      vite_backend_host  = "https://${module.grassroots.hostname}/api"
+      vite_frontend_host = "https://${module.grassroots.hostname}"
+      webhook_host       = "https://${module.grassroots.hostname}"
+    }
+    deployment = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+    httproute = {
+      hostname = module.grassroots.hostname
     }
   }
 }

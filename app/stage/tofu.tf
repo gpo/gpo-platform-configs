@@ -24,6 +24,7 @@ terraform {
       source  = "hashicorp/google"
       version = "7.12.0"
     }
+
   }
 
   backend "gcs" {
