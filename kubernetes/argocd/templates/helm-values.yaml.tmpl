@@ -1,0 +1,21 @@
+global:
+  domain: ${hostname}
+
+configs:
+  params:
+    server.insecure: true
+  cm:
+    accounts.rsalmond: "apiKey, login"
+
+server:
+  httproute:
+    enabled: true
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gpotools
+      namespace: gateway
+      sectionName: argocd
+
+dex:
+  enabled: false

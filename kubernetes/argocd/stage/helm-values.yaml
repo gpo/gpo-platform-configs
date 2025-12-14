@@ -1,0 +1,22 @@
+# genk8s:hash=414c5518b3b5d6ffc5881cc03c2cfb47
+global:
+  domain: argocd.gpotoolsstage.ca
+
+configs:
+  params:
+    server.insecure: true
+  cm:
+    accounts.rsalmond: "apiKey, login"
+
+server:
+  httproute:
+    enabled: true
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gpotools
+      namespace: gateway
+      sectionName: argocd
+
+dex:
+  enabled: false
