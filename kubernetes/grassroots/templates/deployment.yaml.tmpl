@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/grassroots:0.0.1-alpha2
+        workingDir: "/app/grassroots-frontend"
+        command: ["pnpm", "run", "preview-local"]
+        ports:
+        - containerPort: 5173
+          name: http
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      volumes:
+      - name: grassroots-config-files
+        secret:
+          secretName: grassroots
+      containers:
+      - name: backend
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/grassroots:0.0.1-alpha2
+        workingDir: "/app/grassroots-backend"
+        command: ["node", "dist/Main.js"]
+        ports:
+        - containerPort: 3000
+          name: http
+        volumeMounts:
+        - name: grassroots-config-files
+          mountPath: /config

@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: grassroots
+spec:
+  instances: 1
+  storage:
+    size: 8Gi
+
+  bootstrap:
+    initdb:
+      database: grassroots
+      owner: grassroots
+
+  managed:
+    roles:
+      - name: grassroots
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        inherit: true
+        replication: false
+        passwordSecret:
+          name: grassroots-postgres-db
