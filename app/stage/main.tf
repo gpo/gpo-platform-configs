@@ -30,4 +30,8 @@ module "argocd" {
   source             = "../../modules/app/argocd"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
   ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+  kms_key_id         = data.terraform_remote_state.bootstrap.outputs.sops.kms_key_id
+  providers = {
+    google = google.gpo_eng
+  }
 }

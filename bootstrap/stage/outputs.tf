@@ -14,6 +14,12 @@ output "user_creds" {
   description = "Map of usernames to temporary initial passwords (must be changed on first login)."
 }
 
+output "sops" {
+  value = {
+    kms_key_id = module.sops.kms_key_id
+  }
+}
+
 output "gcp_project_gpo_data" {
   value = {
     id   = google_project.gpo_data.project_id

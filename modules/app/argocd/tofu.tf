@@ -3,5 +3,8 @@ terraform {
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
+    google = {
+      source = "hashicorp/google"
+    }
   }
 }
