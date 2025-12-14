@@ -1,0 +1,34 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: grassroots
+  labels:
+    gateway: gpotools
+spec:
+  # this connects us to the gateway
+  parentRefs:
+  - kind: Gateway
+    name: gpotools
+    namespace: gateway
+    sectionName: grassroots
+  hostnames:
+  - "${hostname}"
+  rules:
+  - matches:
+    # /api goes to the backend
+    - path:
+        type: PathPrefix
+        value: /api
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
+    backendRefs:
+    - name: backend
+      port: 3000
+    # everything else to the frontend
+  - backendRefs:
+    - name: frontend
+      port: 5173
