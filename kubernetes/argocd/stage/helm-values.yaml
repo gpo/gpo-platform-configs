@@ -1,4 +1,4 @@
-# genk8s:hash=414c5518b3b5d6ffc5881cc03c2cfb47
+# genk8s:hash=28b7857f3d8bbf10c9a6d5af2225e606
 global:
   domain: argocd.gpotoolsstage.ca
 
@@ -9,6 +9,9 @@ configs:
     accounts.rsalmond: "apiKey, login"
 
 server:
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: argocd@gpo-eng-stage.iam.gserviceaccount.com
   httproute:
     enabled: true
     parentRefs:
