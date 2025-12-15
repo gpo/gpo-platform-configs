@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch all history for diff comparison
-        run: git fetch --no-tags origin ${{ github.event.pull_request.base.sha }} --depth=1
+        run: git fetch --shallow-exclude=${{ github.event.pull_request.base.sha }} --depth=1
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
