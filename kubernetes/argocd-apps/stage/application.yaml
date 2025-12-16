@@ -1,0 +1,17 @@
+# genk8s:hash=eac0698c37d3a86fedf9ac6c76acb256
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: kubernetes/cert-manager/stage/rendered/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD

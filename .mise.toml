@@ -4,6 +4,7 @@ pre-commit = '4.5.0'
 sops = '3.11.0'
 jq = '1.8.1'
 argocd = '3.2.1'
+helmfile = "latest"
 
 [tasks.pc]
 description = "Run all git pre-commit hooks."
@@ -18,9 +19,26 @@ run = [{tasks = [
 ]}]
 
 [tasks."argocd:genk8s"]
-description = "Transform TF outputs into K8s YAMLs for argocd."
-env.APPNAME = "argocd"
+description = "Transform TF outputs into helm values for argocd."
 dir = "kubernetes/argocd"
+run = "../../scripts/genk8s.sh"
+
+[tasks."argocd:render"]
+description = "Render all K8s YAMLs for argocd."
+run = [{tasks = [
+  "argocd:stage:render",
+]}]
+
+[tasks."argocd:stage:render"]
+description = "Render stage K8s YAMLs for argocd."
+dir = "kubernetes/argocd/stage"
+run = "helmfile --log-level warn template > rendered/argocd.yaml"
+outputs = ["kubernetes/argocd/stage/rendered/argocd.yaml"]
+sources = ["kubernetes/argocd/stage/*.yaml"]
+
+[tasks."argocd-apps:genk8s"]
+description = "Transform TF ouptuts into K8s YAMLs for argocd-apps."
+dir = "kubernetes/argocd-apps"
 run = "../../scripts/genk8s.sh"
 
 [tasks."superset:genk8s"]
@@ -29,16 +47,37 @@ env.APPNAME = "superset"
 dir = "kubernetes/superset"
 run = "../../scripts/genk8s.sh"
 
+[tasks."superset:build"]
+description = "Build docker images for Apache superset."
+dir = "kubernetes/superset/docker"
+run = "docker build . --platform=linux/amd64"
+
 [tasks."grassroots:genk8s"]
 description = "Transform TF outputs into K8s YAMLs for the grassroots app."
 env.APPNAME = "grassroots"
 dir = "kubernetes/grassroots"
 run = "../../scripts/genk8s.sh"
 
-[tasks."superset:build"]
-description = "Build docker images for Apache superset."
-dir = "kubernetes/superset/docker"
-run = "docker build . --platform=linux/amd64"
+[tasks."certmgr:render"]
+description = "Render all cert manager K8s manifests."
+run = [{tasks = [
+  "certmgr:stage:render",
+  "certmgr:prod:render",
+]}]
+
+[tasks."certmgr:prod:render"]
+description = "Render prod cert manager K8s manifests."
+dir = "kubernetes/cert-manager/prod"
+run = "helmfile --log-level warn template > rendered/cert-manager.yaml"
+outputs = ["kubernetes/cert-manager/prod/rendered/cert-manager.yaml"]
+sources = ["kubernetes/cert-manager/prod/*.yaml"]
+
+[tasks."certmgr:stage:render"]
+description = "Render stage cert manager K8s manifests."
+dir = "kubernetes/cert-manager/stage"
+run = "helmfile --log-level warn template > rendered/cert-manager.yaml"
+outputs = ["kubernetes/cert-manager/stage/rendered/cert-manager.yaml"]
+sources = ["kubernetes/cert-manager/stage/*.yaml"]
 
 [tasks.tffmt]
 description = "Run 'tofu fmt' on everything."

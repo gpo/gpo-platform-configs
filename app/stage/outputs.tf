@@ -54,3 +54,12 @@ output "argocd" {
     }
   }
 }
+
+output "argocd-apps" {
+  description = "All outputs for argocd-apps."
+  value = {
+    application = {
+      environment = local.environment
+    }
+  }
+}
