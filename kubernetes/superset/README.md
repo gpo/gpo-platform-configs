@@ -15,7 +15,7 @@ helm repo add superset http://apache.github.io/superset/
 If needed, initialize all OpenTofu states in the project (check `app`, `bootstrap`, and `infra`).
 
 ```sh
-opentofu init
+tofu init
 ```
 
 To generate dynamic YAMLs for superset run:
