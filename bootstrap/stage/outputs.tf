@@ -35,3 +35,10 @@ output "gcp_project_gpo_eng" {
   }
   description = "Project name and project ID for the GPO Eng project"
 }
+
+output "gcp_project_bootstrap" {
+  value = {
+    id = "gpo-bootstrap-2"
+  }
+  description = "Project ID for the bootstrap project."
+}

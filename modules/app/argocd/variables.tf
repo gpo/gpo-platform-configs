@@ -12,3 +12,8 @@ variable "kms_key_id" {
   type        = string
   description = "The ID of the KMS key ArgoCD will use to decrypte YAMLs before applying them."
 }
+
+variable "bootstrap_project" {
+  type        = string
+  description = "The project ID of the bootstrap project."
+}
