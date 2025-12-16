@@ -3,6 +3,7 @@ opentofu = '1.9.1'
 pre-commit = '4.5.0'
 sops = '3.11.0'
 jq = '1.8.1'
+argocd = '3.2.1'
 
 [tasks.pc]
 description = "Run all git pre-commit hooks."
@@ -13,7 +14,14 @@ description = "Transform TF outputs into K8s YAMLs"
 run = [{tasks = [
  "grassroots:genk8s",
  "superset:genk8s",
+ "argocd:genk8s",
 ]}]
+
+[tasks."argocd:genk8s"]
+description = "Transform TF outputs into K8s YAMLs for argocd."
+env.APPNAME = "argocd"
+dir = "kubernetes/argocd"
+run = "../../scripts/genk8s.sh"
 
 [tasks."superset:genk8s"]
 description = "Transform TF outputs into K8s YAMLs for superset."

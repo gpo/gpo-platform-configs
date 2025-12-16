@@ -23,3 +23,17 @@ spec:
   secretName: grassroots
   dnsNames:
   - grassroots.gpotoolsstage.ca
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd
+  namespace: gateway
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+  secretName: argocd
+  dnsNames:
+  - argocd.gpotoolsstage.ca

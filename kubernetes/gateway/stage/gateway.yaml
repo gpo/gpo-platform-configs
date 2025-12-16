@@ -49,6 +49,23 @@ spec:
             kubernetes.io/metadata.name: superset
       kinds:
       - kind: HTTPRoute
+  - name: argocd
+    hostname: argocd.gpotoolsstage.ca
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: argocd
+    # only allow httproutes in the argocd namespace to use this listener
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            kubernetes.io/metadata.name: argocd
+      kinds:
+      - kind: HTTPRoute
   addresses:
   - type: NamedAddress
     value: gke-ingress-ip
