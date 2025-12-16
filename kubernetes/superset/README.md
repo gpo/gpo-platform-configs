@@ -12,6 +12,12 @@ If needed, add the Superset helm repo.
 helm repo add superset http://apache.github.io/superset/
 ```
 
+If needed, initialize all OpenTofu states in the project (check `app`, `bootstrap`, and `infra`).
+
+```sh
+opentofu init
+```
+
 To generate dynamic YAMLs for superset run:
 
 ```sh
@@ -25,10 +31,10 @@ STAGING
 ```sh
 sops exec-env secrets.stage.env \
   'helm upgrade -n superset --install superset \
-    superset/superset --values kubernetes/superset/stage/values-dynamic.yaml \
+    superset/superset --values kubernetes/superset/stage/values.yaml \
     --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
     --set init.adminUser.password="$superset_admin_user_pass"' \
-  && kubectl apply -n superset -f kubernetes/superset/stage/httproute-dynamic.yaml \
+  && kubectl apply -n superset -f kubernetes/superset/stage/httproute.yaml \
      -f kubernetes/superset/resources/
 ```
 
@@ -37,10 +43,10 @@ PROD
 ```sh
 sops exec-env secrets.prod.env \
   'helm upgrade -n superset --install superset \
-    superset/superset --values kubernetes/superset/prod/values-dynamic.yaml \
+    superset/superset --values kubernetes/superset/prod/values.yaml \
     --set extraSecretEnv.SUPERSET_SECRET_KEY="$superset_secret_key" \
     --set init.adminUser.password="$superset_admin_user_pass"' \
-  && kubectl apply -n superset -f kubernetes/superset/prod/httproute-dynamic.yaml \
+  && kubectl apply -n superset -f kubernetes/superset/prod/httproute.yaml \
      -f kubernetes/superset/resources/
 ```
 
