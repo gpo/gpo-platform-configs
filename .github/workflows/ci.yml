@@ -12,7 +12,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Fetch all history for diff comparison
+        run: git fetch origin ${{ github.event.pull_request.base.sha }} --depth=1
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
@@ -22,3 +27,6 @@ jobs:
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: >
+            --files $(git diff --name-only --diff-filter=ACMRTUXB ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
