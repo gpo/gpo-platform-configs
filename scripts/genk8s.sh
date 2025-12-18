@@ -30,10 +30,12 @@ render() {
 
 ENVIRONS="stage prod"
 
+APPNAME=$(basename $PWD)
+
 for environ in $ENVIRONS; do
   # get TF output for this environment
   pushd ../../app/${environ}
-  tf_output_json=$(tofu output -json | jq ".${APPNAME}.value")
+  tf_output_json=$(tofu output -json | jq ".\"${APPNAME}\".value")
   popd
 
   # get secrets for this environment
