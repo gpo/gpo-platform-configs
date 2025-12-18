@@ -1,4 +1,4 @@
-# genk8s:hash=eac0698c37d3a86fedf9ac6c76acb256
+# genk8s:hash=a6d57d210ff033607de604902891a916
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -15,3 +15,7 @@ spec:
     path: kubernetes/cert-manager/stage/rendered/
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
