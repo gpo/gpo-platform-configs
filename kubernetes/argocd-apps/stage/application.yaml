@@ -1,4 +1,4 @@
-# genk8s:hash=a6d57d210ff033607de604902891a916
+# genk8s:hash=9f18f9f94ff12e390eafe540a42f0866
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,6 +13,29 @@ spec:
   project: default
   source:
     path: kubernetes/cert-manager/stage/rendered/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: kubernetes/argocd/stage/rendered/
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   syncPolicy:
