@@ -4,7 +4,7 @@ pre-commit = '4.5.0'
 sops = '3.11.0'
 jq = '1.8.1'
 argocd = '3.2.1'
-helmfile = "latest"
+helmfile = '1.2.2'
 
 [tasks.pc]
 description = "Run all git pre-commit hooks."
@@ -16,6 +16,14 @@ run = [{tasks = [
  "grassroots:genk8s",
  "superset:genk8s",
  "argocd:genk8s",
+ "argocd-apps:genk8s",
+]}]
+
+[tasks.render]
+description = "Render all manifests."
+run = [{tasks = [
+  "argocd:render",
+  "cert-manager:render",
 ]}]
 
 [tasks."argocd:genk8s"]
