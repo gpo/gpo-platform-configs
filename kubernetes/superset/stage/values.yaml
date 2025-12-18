@@ -1,4 +1,4 @@
-# genk8s:hash=6ea78fed560c6b3f4bb05651a3798850
+# genk8s:hash=deaa91da75a68daa5d658f7302f0ec47
 postgresql:
   image:
     # Use default registry and tag from PostgreSQL subchart,
@@ -13,3 +13,12 @@ redis:
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
   tag: v0.0.1
+# Enabling feature flags. Note this is Python code injected into config.py.
+# See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
+# and https://github.com/apache/superset/tree/master/helm/superset#values for
+# details.
+configOverrides:
+  superset_config.py: |
+    FEATURE_FLAGS = {
+      'DASHBOARD_RBAC': True,
+    }

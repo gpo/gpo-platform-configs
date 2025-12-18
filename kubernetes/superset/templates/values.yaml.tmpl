@@ -12,3 +12,12 @@ redis:
 image:
   repository: ${image_repository_uri}/apache-superset
   tag: v0.0.1
+# Enabling feature flags. Note this is Python code injected into config.py.
+# See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
+# and https://github.com/apache/superset/tree/master/helm/superset#values for
+# details.
+configOverrides:
+  superset_config.py: |
+    FEATURE_FLAGS = {
+      DASHBOARD_RBAC: True,
+    }
