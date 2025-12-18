@@ -1,4 +1,4 @@
-# genk8s:hash=9f18f9f94ff12e390eafe540a42f0866
+# genk8s:hash=30efc9776e450ad454451edd8057fc5a
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -36,6 +36,59 @@ spec:
   project: default
   source:
     path: kubernetes/argocd/stage/rendered/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: kubernetes/cnpg/resources/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    # CNPG requires this
+    # https://github.com/cloudnative-pg/charts/issues/325
+    syncOptions:
+    - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: gateway
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - path: kubernetes/gateway/resources/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  - path: kubernetes/gateway/stage/
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   syncPolicy:
