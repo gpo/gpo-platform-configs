@@ -5,6 +5,7 @@ sops = '3.11.0'
 jq = '1.8.1'
 argocd = '3.2.1'
 helmfile = '1.2.2'
+yq = 'v4.50.1'
 
 [tasks.pc]
 description = "Run all git pre-commit hooks."
@@ -40,7 +41,7 @@ run = [{tasks = [
 [tasks."argocd:stage:render"]
 description = "Render stage K8s YAMLs for argocd."
 dir = "kubernetes/argocd/stage"
-run = "helmfile --log-level warn template > rendered/argocd.yaml"
+run = "helmfile --log-level warn template | yq -P > rendered/argocd.yaml"
 outputs = ["kubernetes/argocd/stage/rendered/argocd.yaml"]
 sources = ["kubernetes/argocd/stage/*.yaml"]
 
@@ -66,7 +67,7 @@ env.APPNAME = "grassroots"
 dir = "kubernetes/grassroots"
 run = "../../scripts/genk8s.sh"
 
-[tasks."certmgr:render"]
+[tasks."cert-manager:render"]
 description = "Render all cert manager K8s manifests."
 run = [{tasks = [
   "certmgr:stage:render",
@@ -76,14 +77,14 @@ run = [{tasks = [
 [tasks."certmgr:prod:render"]
 description = "Render prod cert manager K8s manifests."
 dir = "kubernetes/cert-manager/prod"
-run = "helmfile --log-level warn template > rendered/cert-manager.yaml"
+run = "helmfile --log-level warn template | yq -P > rendered/cert-manager.yaml"
 outputs = ["kubernetes/cert-manager/prod/rendered/cert-manager.yaml"]
 sources = ["kubernetes/cert-manager/prod/*.yaml"]
 
 [tasks."certmgr:stage:render"]
 description = "Render stage cert manager K8s manifests."
 dir = "kubernetes/cert-manager/stage"
-run = "helmfile --log-level warn template > rendered/cert-manager.yaml"
+run = "helmfile --log-level warn template | yq -P > rendered/cert-manager.yaml"
 outputs = ["kubernetes/cert-manager/stage/rendered/cert-manager.yaml"]
 sources = ["kubernetes/cert-manager/stage/*.yaml"]
 
