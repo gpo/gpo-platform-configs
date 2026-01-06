@@ -1,4 +1,4 @@
-# genk8s:hash=ee7cc7112b8b67bcd2de21bb77c7f6f5
+# genk8s:hash=3c8548459c3a06d7a1d1d9059d9304ce
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -107,7 +107,7 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: gateway
+    namespace: external-secrets
     server: https://kubernetes.default.svc
   project: default
   sources:
