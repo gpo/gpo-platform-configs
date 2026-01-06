@@ -1,4 +1,4 @@
-# genk8s:hash=3c8548459c3a06d7a1d1d9059d9304ce
+# genk8s:hash=685bdd96c99e5e01434f1545bc4ee2e8
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -111,10 +111,12 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   sources:
-  - path: kubernetes/external-secrets/stage/
+  - path: kubernetes/external-secrets/stage/rendered
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
     automated:
       enabled: true
       prune: true

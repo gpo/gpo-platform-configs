@@ -110,10 +110,12 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   sources:
-  - path: kubernetes/external-secrets/${environment}/
+  - path: kubernetes/external-secrets/${environment}/rendered
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
     automated:
       enabled: true
       prune: true
