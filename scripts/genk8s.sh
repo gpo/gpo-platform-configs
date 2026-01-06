@@ -34,7 +34,7 @@ APPNAME=$(basename $PWD)
 
 for environ in $ENVIRONS; do
   # get TF output for this environment
-  pushd ../../app/${environ}
+  pushd ../../tf/app/${environ}
   tf_output_json=$(tofu output -json | jq ".\"${APPNAME}\".value")
   popd
 
