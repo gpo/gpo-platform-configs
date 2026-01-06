@@ -1,4 +1,4 @@
-# genk8s:hash=30efc9776e450ad454451edd8057fc5a
+# genk8s:hash=ee7cc7112b8b67bcd2de21bb77c7f6f5
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -89,6 +89,29 @@ spec:
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   - path: kubernetes/gateway/stage/
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: gateway
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - path: kubernetes/external-secrets/stage/
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
   syncPolicy:

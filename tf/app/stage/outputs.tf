@@ -63,3 +63,12 @@ output "argocd-apps" {
     }
   }
 }
+
+output "external-secrets" {
+  description = "All outputs for external-secrets."
+  value = {
+    values = {
+      service_account_email = module.external_secrets.service_account.email
+    }
+  }
+}

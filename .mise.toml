@@ -18,6 +18,7 @@ run = [{tasks = [
  "superset:genk8s",
  "argocd:genk8s",
  "argocd-apps:genk8s",
+ "external-secrets:genk8s"
 ]}]
 
 [tasks.render]
@@ -25,6 +26,7 @@ description = "Render all manifests."
 run = [{tasks = [
   "argocd:render",
   "cert-manager:render",
+  "external-secrets:render",
 ]}]
 
 [tasks."argocd:genk8s"]
@@ -87,6 +89,33 @@ dir = "kubernetes/cert-manager/stage"
 run = "helmfile --log-level warn template | yq -P > rendered/cert-manager.yaml"
 outputs = ["kubernetes/cert-manager/stage/rendered/cert-manager.yaml"]
 sources = ["kubernetes/cert-manager/stage/*.yaml"]
+
+[tasks."external-secrets:genk8s"]
+description = "Transform TF outputs into YAMLs for the external-secrets app."
+env.APPNAME = "external-secrets"
+dir = "kubernetes/external-secrets"
+run = "../../scripts/genk8s.sh"
+
+[tasks."external-secrets:render"]
+description = "Render all external secrets K8s manifests."
+run = [{tasks = [
+  "external-secrets:stage:render",
+  "external-secrets:prod:render",
+]}]
+
+[tasks."external-secrets:stage:render"]
+description = "Render stage external-secrets K8s manifests."
+dir = "kubernetes/external-secrets/stage"
+run = "helmfile --log-level warn template | yq -P > rendered/external-secrets.yaml"
+outputs = ["kubernetes/external-secrets/stage/rendered/external-secrets.yaml"]
+sources = ["kubernetes/external-secrets/stage/*.yaml"]
+
+[tasks."external-secrets:prod:render"]
+description = "Render prod external-secrets K8s manifests."
+dir = "kubernetes/external-secrets/prod"
+run = "helmfile --log-level warn template | yq -P > rendered/external-secrets.yaml"
+outputs = ["kubernetes/external-secrets/prod/rendered/external-secrets.yaml"]
+sources = ["kubernetes/external-secrets/prod/*.yaml"]
 
 [tasks.tffmt]
 description = "Run 'tofu fmt' on everything."
