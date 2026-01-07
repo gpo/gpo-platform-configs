@@ -70,5 +70,8 @@ output "external-secrets" {
     values = {
       service_account_email = module.external_secrets.service_account.email
     }
+    secret-store = {
+      environment = local.environment
+    }
   }
 }

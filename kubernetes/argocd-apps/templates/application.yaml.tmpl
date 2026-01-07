@@ -113,6 +113,9 @@ spec:
   - path: kubernetes/external-secrets/${environment}/rendered
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: HEAD
+  - path: kubernetes/external-secrets/${environment}
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
   syncPolicy:
     syncOptions:
     - ServerSideApply=true

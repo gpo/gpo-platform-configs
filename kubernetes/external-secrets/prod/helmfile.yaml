@@ -1,3 +1,4 @@
+# +argocd:skip-file-rendering
 repositories:
 - name: external-secrets
   url: https://charts.external-secrets.io
