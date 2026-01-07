@@ -1,4 +1,5 @@
-# genk8s:hash=deaa91da75a68daa5d658f7302f0ec47
+# genk8s:hash=837d98298c53d1c3a1098f58e1d7e287
+# +argocd:skip-file-rendering
 postgresql:
   image:
     # Use default registry and tag from PostgreSQL subchart,
@@ -20,5 +21,5 @@ image:
 configOverrides:
   superset_config.py: |
     FEATURE_FLAGS = {
-      'DASHBOARD_RBAC': True,
+      DASHBOARD_RBAC: True,
     }

@@ -1,4 +1,5 @@
-# genk8s:hash=7fbc7a3e0dbe1cd42a966c14ba032bab
+# genk8s:hash=421084eee3fad16bd18a43c81bc12c4f
+# +argocd:skip-file-rendering
 postgresql:
   image:
     # Use default registry and tag from PostgreSQL subchart,
