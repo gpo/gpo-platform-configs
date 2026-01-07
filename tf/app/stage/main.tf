@@ -36,3 +36,10 @@ module "argocd" {
     google = google.gpo_eng
   }
 }
+
+module "external_secrets" {
+  source = "../../modules/app/external_secrets"
+  providers = {
+    google = google.gpo_eng
+  }
+}
