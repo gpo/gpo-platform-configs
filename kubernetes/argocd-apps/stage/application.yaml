@@ -1,4 +1,4 @@
-# genk8s:hash=4f3b9499ab7ab5041a53fca7bb27ab82
+# genk8s:hash=5d7cf93a42498dbb7daa46e3176057fe
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -120,6 +120,60 @@ spec:
   syncPolicy:
     syncOptions:
     - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: external-secrets
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - path: kubernetes/external-secrets/stage/rendered
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  - path: kubernetes/external-secrets/stage
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: superset
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: superset
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - path: kubernetes/superset/stage/rendered
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  - path: kubernetes/superset/stage
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
     automated:
       enabled: true
       prune: true
