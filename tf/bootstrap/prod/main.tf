@@ -17,3 +17,10 @@ module "sops" {
     google = google.bootstrap
   }
 }
+
+module "apis" {
+  source = "../../modules/bootstrap/apis"
+  providers = {
+    google = google.bootstrap
+  }
+}
