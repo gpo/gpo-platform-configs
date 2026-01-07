@@ -22,11 +22,12 @@ run = [{tasks = [
 ]}]
 
 [tasks.render]
-description = "Render all manifests."
+description = "Render all helm charts."
 run = [{tasks = [
   "argocd:render",
   "cert-manager:render",
   "external-secrets:render",
+  "superset:render",
 ]}]
 
 [tasks."argocd:genk8s"]
@@ -58,6 +59,27 @@ env.APPNAME = "superset"
 dir = "kubernetes/superset"
 run = "../../scripts/genk8s.sh"
 
+[tasks."superset:render"]
+description = "Render all superset helm charts."
+run = [{tasks = [
+  "superset:stage:render",
+  "superset:prod:render",
+]}]
+
+[tasks."superset:stage:render"]
+description = "Render the stage Superset helm chart."
+dir = "kubernetes/superset/stage"
+run = "helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
+outputs = ["kubernetes/superset/stage/rendered/superset.yaml"]
+sources = ["kubernetes/superset/stage/values.yaml"]
+
+[tasks."superset:prod:render"]
+description = "Render the prod Superset helm chart."
+dir = "kubernetes/superset/prod"
+run = "helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
+outputs = ["kubernetes/superset/prod/rendered/superset.yaml"]
+sources = ["kubernetes/superset/prod/values.yaml"]
+
 [tasks."superset:build"]
 description = "Build docker images for Apache superset."
 dir = "kubernetes/superset/docker"
@@ -69,22 +91,22 @@ env.APPNAME = "grassroots"
 dir = "kubernetes/grassroots"
 run = "../../scripts/genk8s.sh"
 
-[tasks."cert-manager:render"]
-description = "Render all cert manager K8s manifests."
+[tasks."certmgr:render"]
+description = "Render all cert manager helm charts."
 run = [{tasks = [
   "certmgr:stage:render",
   "certmgr:prod:render",
 ]}]
 
 [tasks."certmgr:prod:render"]
-description = "Render prod cert manager K8s manifests."
+description = "Render prod cert manager helm chart."
 dir = "kubernetes/cert-manager/prod"
 run = "helmfile --log-level warn template | yq -P > rendered/cert-manager.yaml"
 outputs = ["kubernetes/cert-manager/prod/rendered/cert-manager.yaml"]
 sources = ["kubernetes/cert-manager/prod/*.yaml"]
 
 [tasks."certmgr:stage:render"]
-description = "Render stage cert manager K8s manifests."
+description = "Render stage cert manager helm chart."
 dir = "kubernetes/cert-manager/stage"
 run = "helmfile --log-level warn template | yq -P > rendered/cert-manager.yaml"
 outputs = ["kubernetes/cert-manager/stage/rendered/cert-manager.yaml"]
@@ -97,21 +119,21 @@ dir = "kubernetes/external-secrets"
 run = "../../scripts/genk8s.sh"
 
 [tasks."external-secrets:render"]
-description = "Render all external secrets K8s manifests."
+description = "Render all external secrets helm charts."
 run = [{tasks = [
   "external-secrets:stage:render",
   "external-secrets:prod:render",
 ]}]
 
 [tasks."external-secrets:stage:render"]
-description = "Render stage external-secrets K8s manifests."
+description = "Render stage external-secrets helm chart."
 dir = "kubernetes/external-secrets/stage"
 run = "helmfile --log-level warn template | yq -P > rendered/external-secrets.yaml"
 outputs = ["kubernetes/external-secrets/stage/rendered/external-secrets.yaml"]
 sources = ["kubernetes/external-secrets/stage/*.yaml"]
 
 [tasks."external-secrets:prod:render"]
-description = "Render prod external-secrets K8s manifests."
+description = "Render prod external-secrets helm chart."
 dir = "kubernetes/external-secrets/prod"
 run = "helmfile --log-level warn template | yq -P > rendered/external-secrets.yaml"
 outputs = ["kubernetes/external-secrets/prod/rendered/external-secrets.yaml"]

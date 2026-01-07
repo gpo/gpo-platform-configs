@@ -1,4 +1,4 @@
-# +argocd:skip-file-rendering
+# genk8s:hash=7fbc7a3e0dbe1cd42a966c14ba032bab
 postgresql:
   image:
     # Use default registry and tag from PostgreSQL subchart,
@@ -11,7 +11,7 @@ redis:
 # Custom Superset image which contains their upstream release plus pip packages
 # for MySQL and PostgreSQL drivers.
 image:
-  repository: ${image_repository_uri}/apache-superset
+  repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset
   tag: v0.0.1
 # Enabling feature flags. Note this is Python code injected into config.py.
 # See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
