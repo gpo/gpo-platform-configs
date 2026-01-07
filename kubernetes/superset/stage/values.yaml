@@ -1,4 +1,4 @@
-# genk8s:hash=837d98298c53d1c3a1098f58e1d7e287
+# genk8s:hash=2212d72b02dd8b34770a9cf97d98111c
 # +argocd:skip-file-rendering
 postgresql:
   image:
@@ -21,5 +21,5 @@ image:
 configOverrides:
   superset_config.py: |
     FEATURE_FLAGS = {
-      DASHBOARD_RBAC: True,
+      'DASHBOARD_RBAC': True,
     }

@@ -70,6 +70,10 @@ superset_config_json=$(sops exec-env "secrets.${environment}.env" '
       --set init.adminUser.password="${superset_admin_user_pass}"' | yq -ojson | jq '.stringData'
 )
 
+echo $superset_config_json
+
+exit
+
 upsert_secret superset-config "${superset_config_json}"
 
 ######## name: superset-env
