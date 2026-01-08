@@ -1,0 +1,40 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: superset
+spec:
+  instances: 1
+  storage:
+    size: 8Gi
+
+  bootstrap:
+    initdb:
+      import:
+        type: microservice
+        databases: ["superset"]
+        source:
+          externalCluster: bitnami
+      database: superset
+      owner: superset
+
+  externalClusters:
+  - name: bitnami
+    connectionParameters:
+      host: superset-postgresql
+      user: postgres
+      dbname: postgres
+    password:
+      name: superset-postgresql
+      key: postgres-password
+
+  managed:
+    roles:
+      - name: superset
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        inherit: true
+        replication: false
+        passwordSecret:
+          name: superset-postgres-db
