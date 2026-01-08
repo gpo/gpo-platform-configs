@@ -13,16 +13,14 @@ set -euo pipefail
 
 # this script will
 # - decrypt the sops encrypted local secrets
-# - use them to render JUST the "superset secret config" K8s secret YAML
-#   note you MUST add the superset helm repo locally for this to work
-#   https://superset.apache.org/docs/installation/kubernetes/#running
+# - use them to render JUST the K8s secret YAMLs (no other resources)
 # - convert it to JSON
 # - store it in Google Secret Manager
 
 # This is because the External Secrets operator wants JSON, not YAML for structured data
 
 # to see the current secret in Secret Manager run:
-# gcloud secrets versions access latest --secret=superset
+# gcloud secrets versions access latest --secret SecretNameGoesHere
 
 secret_exists() {
   # evaluates true if secret exists, false otherwise
@@ -59,10 +57,6 @@ upsert_secret() {
   fi
 }
 
-# Superset uses three K8s secrets
-
-######## name: superset-config
-
 _sops_exec() {
   # workaround for sops subshell shenanigans
   # https://github.com/getsops/sops/issues/1469#issuecomment-2265652712
@@ -72,6 +66,10 @@ _sops_exec() {
   ARGS=$(printf " %q" "$@")  # %q quotes the arguments properly
   sops exec-env "${FILE}" "${COMMAND}${ARGS}"
 }
+
+# Superset uses three K8s secrets
+
+######## name: superset-config
 
 # I couldn't find a way to do this without a subshell :(
 superset_config_json=$(_sops_exec "secrets.${environment}.env" bash -ceu \
