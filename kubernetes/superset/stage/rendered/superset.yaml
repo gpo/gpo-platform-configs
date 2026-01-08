@@ -1,18 +1,4 @@
 ---
-# Source: superset/charts/postgresql/templates/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: superset-postgresql
-  namespace: superset
-  labels:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-13.4.4
-automountServiceAccountToken: false
----
 # Source: superset/charts/redis/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -25,25 +11,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
----
-# Source: superset/charts/postgresql/templates/secrets.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: superset-postgresql
-  namespace: superset
-  labels:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-13.4.4
-type: Opaque
-data:
-  postgres-password: dTNDcExSZEZtMA==
-  password: c3VwZXJzZXQ=
-  # We don't auto-generate LDAP password when it's not provided as we do for other passwords
 ---
 # Source: superset/charts/redis/templates/configmap.yaml
 apiVersion: v1
@@ -56,7 +23,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
 data:
   redis.conf: |-
     # User-supplied common configuration:
@@ -89,7 +55,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
 data:
   ping_readiness_local.sh: |-
     #!/bin/bash
@@ -197,7 +162,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
 data:
   start-master.sh: |
     #!/bin/bash
@@ -215,67 +179,6 @@ data:
     ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
     exec redis-server "${ARGS[@]}"
 ---
-# Source: superset/charts/postgresql/templates/primary/svc-headless.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: superset-postgresql-hl
-  namespace: superset
-  labels:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-13.4.4
-    app.kubernetes.io/component: primary
-  annotations:
-    # Use this annotation in addition to the actual publishNotReadyAddresses
-    # field below because the annotation will stop being respected soon but the
-    # field is broken in some versions of Kubernetes:
-    # https://github.com/kubernetes/kubernetes/issues/58662
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-spec:
-  type: ClusterIP
-  clusterIP: None
-  # We want all pods in the StatefulSet to have their addresses published for
-  # the sake of the other Postgresql pods even before they're ready, since they
-  # have to be able to talk to each other in order to become ready.
-  publishNotReadyAddresses: true
-  ports:
-    - name: tcp-postgresql
-      port: 5432
-      targetPort: tcp-postgresql
-  selector:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/component: primary
----
-# Source: superset/charts/postgresql/templates/primary/svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: superset-postgresql
-  namespace: superset
-  labels:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-13.4.4
-    app.kubernetes.io/component: primary
-spec:
-  type: ClusterIP
-  sessionAffinity: None
-  ports:
-    - name: tcp-postgresql
-      port: 5432
-      targetPort: tcp-postgresql
-      nodePort: null
-  selector:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/component: primary
----
 # Source: superset/charts/redis/templates/headless-svc.yaml
 apiVersion: v1
 kind: Service
@@ -287,7 +190,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
   annotations:
 spec:
   type: ClusterIP
@@ -311,7 +213,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
     app.kubernetes.io/component: master
 spec:
   type: ClusterIP
@@ -371,7 +272,7 @@ spec:
       annotations:
         checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: 2d41a2c51ec2fc809be84fc0ea0e603c946d529b4a0e43f7257e617909561a75
+        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
@@ -453,7 +354,7 @@ spec:
         checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
         checksum/superset_init.sh: e6b1e8eac1f7a79a07a6c72a0e2ee6e09654eeb439c6bbe61bfd676917c41e02
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: 2d41a2c51ec2fc809be84fc0ea0e603c946d529b4a0e43f7257e617909561a75
+        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
@@ -531,178 +432,6 @@ spec:
           secret:
             secretName: superset-config
 ---
-# Source: superset/charts/postgresql/templates/primary/statefulset.yaml
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: superset-postgresql
-  namespace: superset
-  labels:
-    app.kubernetes.io/instance: superset
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-13.4.4
-    app.kubernetes.io/component: primary
-spec:
-  replicas: 1
-  serviceName: superset-postgresql-hl
-  updateStrategy:
-    rollingUpdate: {}
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: superset
-      app.kubernetes.io/name: postgresql
-      app.kubernetes.io/component: primary
-  template:
-    metadata:
-      name: superset-postgresql
-      labels:
-        app.kubernetes.io/instance: superset
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: postgresql
-        app.kubernetes.io/version: 16.1.0
-        helm.sh/chart: postgresql-13.4.4
-        app.kubernetes.io/component: primary
-    spec:
-      serviceAccountName: superset-postgresql
-      automountServiceAccountToken: false
-      affinity:
-        podAffinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/instance: superset
-                    app.kubernetes.io/name: postgresql
-                    app.kubernetes.io/component: primary
-                topologyKey: kubernetes.io/hostname
-              weight: 1
-        nodeAffinity:
-      securityContext:
-        fsGroup: 1001
-        fsGroupChangePolicy: Always
-        supplementalGroups: []
-        sysctls: []
-      hostNetwork: false
-      hostIPC: false
-      containers:
-        - name: postgresql
-          image: docker.io/bitnamilegacy/postgresql:14.17.0-debian-12-r3
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: false
-            runAsNonRoot: true
-            runAsUser: 1001
-            seccompProfile:
-              type: RuntimeDefault
-          env:
-            - name: BITNAMI_DEBUG
-              value: "false"
-            - name: POSTGRESQL_PORT_NUMBER
-              value: "5432"
-            - name: POSTGRESQL_VOLUME_DIR
-              value: /bitnami/postgresql
-            - name: PGDATA
-              value: /bitnami/postgresql/data
-            # Authentication
-            - name: POSTGRES_USER
-              value: superset
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: superset-postgresql
-                  key: password
-            - name: POSTGRES_POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: superset-postgresql
-                  key: postgres-password
-            - name: POSTGRES_DATABASE
-              value: superset
-            # Replication
-            # Initdb
-            # Standby
-            # LDAP
-            - name: POSTGRESQL_ENABLE_LDAP
-              value: "no"
-            # TLS
-            - name: POSTGRESQL_ENABLE_TLS
-              value: "no"
-            # Audit
-            - name: POSTGRESQL_LOG_HOSTNAME
-              value: "false"
-            - name: POSTGRESQL_LOG_CONNECTIONS
-              value: "false"
-            - name: POSTGRESQL_LOG_DISCONNECTIONS
-              value: "false"
-            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
-              value: "off"
-            # Others
-            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
-              value: error
-            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
-              value: pgaudit
-          ports:
-            - name: tcp-postgresql
-              containerPort: 5432
-          livenessProbe:
-            failureThreshold: 6
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - exec pg_isready -U "superset" -d "dbname=superset" -h 127.0.0.1 -p 5432
-          readinessProbe:
-            failureThreshold: 6
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - -e
-                - |
-                  exec pg_isready -U "superset" -d "dbname=superset" -h 127.0.0.1 -p 5432
-          resources:
-            limits: {}
-            requests:
-              cpu: 250m
-              memory: 256Mi
-          volumeMounts:
-            - name: dshm
-              mountPath: /dev/shm
-            - name: data
-              mountPath: /bitnami/postgresql
-      volumes:
-        - name: dshm
-          emptyDir:
-            medium: Memory
-  volumeClaimTemplates:
-    - apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-        name: data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 8Gi
----
 # Source: superset/charts/redis/templates/master/application.yaml
 apiVersion: apps/v1
 kind: StatefulSet
@@ -714,7 +443,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/version: 7.0.10
     app.kubernetes.io/component: master
 spec:
   replicas: 1
@@ -733,12 +461,11 @@ spec:
         helm.sh/chart: redis-17.9.4
         app.kubernetes.io/instance: superset
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/version: 7.0.10
         app.kubernetes.io/component: master
       annotations:
-        checksum/configmap: 59c28d38f36befe3cfa913f82bf59a32850194abd313cdbd306a2d87b902ff77
-        checksum/health: 8086d02fdbfd889016035efdaaacc65eaa66352622954f7471b3cf6e55d9d01c
-        checksum/scripts: 53128249c9f61cba1a8a1d82b7b95445aa7433946352bf5e9a7c3b9f9aae2e01
+        checksum/configmap: fe1cca2dea4020cb4b1623fc950515f7338ac9fd6e0328821274263d9e0e4d64
+        checksum/health: 73f335f1a98f6f244d0ef2e3f93af8046efda1328e0421e6099d13241de96558
+        checksum/scripts: 9790c77d02ac85c0f4b6067139404f8bc34ddcdf1da13c05021f0904c0451a8d
         checksum/secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
     spec:
       securityContext:
@@ -751,8 +478,8 @@ spec:
             - podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/instance: superset
                     app.kubernetes.io/name: redis
+                    app.kubernetes.io/instance: superset
                     app.kubernetes.io/component: master
                 topologyKey: kubernetes.io/hostname
               weight: 1
