@@ -1,3 +1,3 @@
 output "hostname" {
-  value = cloudflare_record.grassroots.name
+  value = cloudflare_dns_record.grassroots.name
 }
