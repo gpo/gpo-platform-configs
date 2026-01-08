@@ -1,5 +1,5 @@
 [tools]
-opentofu = '1.9.1'
+opentofu = '1.11.2'
 pre-commit = '4.5.0'
 sops = '3.11.0'
 jq = '1.8.1'
