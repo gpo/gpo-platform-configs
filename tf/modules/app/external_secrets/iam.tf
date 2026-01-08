@@ -2,7 +2,11 @@ locals {
   /* A list of all the secrets in google secret manager which the external secrets operator will be granted access to.
      Must be present in the output of: `gcloud secrets list`
   */
-  secrets = ["superset-config", "superset-env"]
+  secrets = [
+    "superset-config",
+    "superset-env",
+    "superset-postgres-db"
+  ]
 }
 
 resource "google_service_account" "main" {
