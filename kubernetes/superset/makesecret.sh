@@ -63,30 +63,46 @@ upsert_secret() {
 
 ######## name: superset-config
 
-superset_config_json=$(sops exec-env "secrets.${environment}.env" '
-    helmfile --log-level warn template \
-      --file "${environment}/helmfile.yaml" \
-      --show-only templates/secret-superset-config.yaml \
-      --set init.adminUser.password="${superset_admin_user_pass}"' | yq -ojson | jq '.stringData'
+_sops_exec() {
+  # workaround for sops subshell shenanigans
+  # https://github.com/getsops/sops/issues/1469#issuecomment-2265652712
+  local FILE=$1 COMMAND=$2 ARGS
+  shift 2
+
+  ARGS=$(printf " %q" "$@")  # %q quotes the arguments properly
+  sops exec-env "${FILE}" "${COMMAND}${ARGS}"
+}
+
+# I couldn't find a way to do this without a subshell :(
+superset_config_json=$(_sops_exec "secrets.${environment}.env" bash -ceu \
+  'helmfile --log-level warn template \
+  --file "'"${environment}"'/helmfile.yaml" \
+  --show-only templates/secret-superset-config.yaml \
+  --set init.adminUser.password="${superset_admin_user_pass}"' | yq -ojson | jq '.stringData'
 )
-
-echo $superset_config_json
-
-exit
 
 upsert_secret superset-config "${superset_config_json}"
 
 ######## name: superset-env
 
-superset_env_json=$(sops exec-env "secrets.${environment}.env" '
-    helmfile --log-level warn template \
-      --file "${environment}/helmfile.yaml" \
-      --show-only templates/secret-env.yaml \
-      --set extraSecretEnv.SUPERSET_SECRET_KEY="${superset_secret_key}"' | yq -ojson | jq '.stringData'
+superset_env_json=$(_sops_exec "secrets.${environment}.env" bash -ceu \
+  'helmfile --log-level warn template \
+  --file "'"${environment}"'/helmfile.yaml" \
+  --show-only templates/secret-env.yaml \
+  --set supersetNode.connections.db_pass="${superset_postgres_pw}" \
+  --set extraSecretEnv.SUPERSET_SECRET_KEY="${superset_secret_key}"' | yq -ojson | jq '.stringData'
 )
 
 upsert_secret superset-env "${superset_env_json}"
 
-######## name: superset-postegresql
+######## name: superset-postegres-db
 
-# TODO: https://github.com/gpo/gpo-platform-configs/issues/146
+# we dont need helm shenanigans here because we're using CNGP postgres
+# and it just accepts a vanilla "username: foo, password: bar" template
+postgres_secret_json=$(
+  _sops_exec "secrets.${environment}.env" sh -c \
+    'printf "%s" "$superset_postgres_pw" \
+      | jq -Rs "{\"username\":\"superset\",\"password\":.}"'
+)
+
+upsert_secret superset-postgres-db "${postgres_secret_json}"
