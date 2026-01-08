@@ -57,3 +57,7 @@ One case where using TF to put stuff into K8s is useful is configuration / secre
 Terraform is good at managing static infrastructure, it's not as good at managing constantly changing infrastructure like inside Kubernetes. We'll use Kubernetes yml or similar to manage Kubernetes.
 
 Decision: Generally NO, but not a strict ban.
+
+### 2024-12-11 How should we store credentials for accessing aws?
+
+from @rsalmond: I strongly recommend we all create an aws profile called gpo instead of exporting env vars so we can reference them in tooling (see line 4 of sops.yaml. Later when we have stage / prod isolation, our tooling cannot accidentally talk to the wrong environment by someone exporting the wrong env vars.
