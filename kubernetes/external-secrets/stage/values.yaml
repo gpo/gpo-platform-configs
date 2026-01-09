@@ -1,4 +1,5 @@
-# genk8s:hash=7fbbc94d696dfd21810e66a52fc3c594
+# genk8s:hash=1daef10b06fe75d1cb620c5cfbead798
+# +argocd:skip-file-rendering
 serviceAccount:
   annotations:
     iam.gke.io/gcp-service-account: external-secrets@gpo-eng-stage.iam.gserviceaccount.com
