@@ -1,4 +1,4 @@
-resource "cloudflare_record" "argocd" {
+resource "cloudflare_dns_record" "argocd" {
   zone_id = var.cloudflare_zone.id
   name    = "argocd.${var.cloudflare_zone.zone}"
   content = var.ingress_ip_address
