@@ -48,4 +48,7 @@ module "cert_manager" {
   environment           = local.environment
   cloudflare_zone       = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
   cloudflare_account_id = data.sops_file.secrets.data["cloudflare_account_id"]
+  providers = {
+    google = google.gpo_eng
+  }
 }
