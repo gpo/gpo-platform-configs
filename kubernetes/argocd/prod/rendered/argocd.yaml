@@ -228,7 +228,7 @@ data:
   statusbadge.enabled: "false"
   timeout.hard.reconciliation: 0s
   timeout.reconciliation: 180s
-  url: https://argocd.gpotoolsstage.ca
+  url: https://argocd.gpotools.ca
 ---
 # Source: argo-cd/templates/argocd-configs/argocd-cmd-params-cm.yaml
 apiVersion: v1
@@ -295,7 +295,7 @@ metadata:
     app.kubernetes.io/version: v3.2.1
 data:
   context: |
-    argocdUrl: https://argocd.gpotoolsstage.ca
+    argocdUrl: https://argocd.gpotools.ca
 ---
 # Source: argo-cd/templates/argocd-configs/argocd-rbac-cm.yaml
 apiVersion: v1
@@ -24617,7 +24617,7 @@ spec:
     metadata:
       annotations:
         checksum/cmd-params: b9d3b7016a8b69b81e72e3b70ce602516097b306d4c9ebf5e4ebaaf6d6df4220
-        checksum/cm: 5ebfe57cfdd4e22e90fee2e29b3ce2da0eaed820561a79452c5aba50aac6d2e6
+        checksum/cm: 682ddd7540c549664b6e19de029ab79ef09d5f9e0ac558aaa1ac743f00b6a128
       labels:
         helm.sh/chart: argo-cd-9.1.5
         app.kubernetes.io/name: argocd-repo-server
@@ -25042,7 +25042,7 @@ spec:
     metadata:
       annotations:
         checksum/cmd-params: b9d3b7016a8b69b81e72e3b70ce602516097b306d4c9ebf5e4ebaaf6d6df4220
-        checksum/cm: 5ebfe57cfdd4e22e90fee2e29b3ce2da0eaed820561a79452c5aba50aac6d2e6
+        checksum/cm: 682ddd7540c549664b6e19de029ab79ef09d5f9e0ac558aaa1ac743f00b6a128
       labels:
         helm.sh/chart: argo-cd-9.1.5
         app.kubernetes.io/name: argocd-server
@@ -25592,7 +25592,7 @@ spec:
     metadata:
       annotations:
         checksum/cmd-params: b9d3b7016a8b69b81e72e3b70ce602516097b306d4c9ebf5e4ebaaf6d6df4220
-        checksum/cm: 5ebfe57cfdd4e22e90fee2e29b3ce2da0eaed820561a79452c5aba50aac6d2e6
+        checksum/cm: 682ddd7540c549664b6e19de029ab79ef09d5f9e0ac558aaa1ac743f00b6a128
       labels:
         helm.sh/chart: argo-cd-9.1.5
         app.kubernetes.io/name: argocd-application-controller
