@@ -48,9 +48,8 @@ output "gateway" {
 output "argocd" {
   description = "All outputs from the superset module."
   value = {
-    helm-values = {
-      hostname              = module.argocd.hostname
-      service_account_email = module.argocd.service_account.email
+    values = {
+      hostname = module.argocd.hostname
     }
   }
 }

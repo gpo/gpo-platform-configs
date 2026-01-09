@@ -8,9 +8,6 @@ configs:
     accounts.rsalmond: "apiKey, login"
 
 server:
-  serviceAccount:
-    annotations:
-      iam.gke.io/gcp-service-account: ${service_account_email}
   httproute:
     enabled: true
     parentRefs:
