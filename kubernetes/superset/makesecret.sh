@@ -25,7 +25,7 @@ set -euo pipefail
 secret_exists() {
   # evaluates true if secret exists, false otherwise
   secret_name=$1;shift
-  gcloud secrets list --format=json \
+  gcloud --project gpo-eng-${environment} secrets list --format=json \
   | jq -e --arg name "${secret_name}" '
       any(.[]; (.name | split("/") | last) == $name)
     ' >/dev/null
@@ -41,7 +41,7 @@ upsert_secret() {
   new_secret_data=$1;shift
 
   if secret_exists ${secret_name}; then
-    old_secret_data=$(gcloud secrets versions access latest --secret=${secret_name})
+    old_secret_data=$(gcloud --project gpo-eng-${environment} secrets versions access latest --secret=${secret_name})
 
     # if the secret in Secret Manager doesn't match what we just rendered, update SM
     if [[ $(md5sum <<< ${old_secret_data}) != $(md5sum <<< ${new_secret_data}) ]]; then
