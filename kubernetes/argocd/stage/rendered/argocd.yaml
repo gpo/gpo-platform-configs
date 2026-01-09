@@ -70,8 +70,6 @@ automountServiceAccountToken: true
 metadata:
   name: argocd-server
   namespace: argocd
-  annotations:
-    iam.gke.io/gcp-service-account: argocd@gpo-eng-stage.iam.gserviceaccount.com
   labels:
     helm.sh/chart: argo-cd-9.1.5
     app.kubernetes.io/name: argocd-server
