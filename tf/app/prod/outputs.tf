@@ -44,3 +44,33 @@ output "gateway" {
     }
   }
 }
+
+output "argocd" {
+  description = "All outputs from the superset module."
+  value = {
+    values = {
+      hostname = module.argocd.hostname
+    }
+  }
+}
+
+output "argocd-apps" {
+  description = "All outputs for argocd-apps."
+  value = {
+    application = {
+      environment = local.environment
+    }
+  }
+}
+
+output "external-secrets" {
+  description = "All outputs for external-secrets."
+  value = {
+    values = {
+      service_account_email = module.external_secrets.service_account.email
+    }
+    secret-store = {
+      environment = local.environment
+    }
+  }
+}
