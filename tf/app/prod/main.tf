@@ -25,3 +25,30 @@ module "superset" {
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
   ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
 }
+
+module "argocd" {
+  source             = "../../modules/app/argocd"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+  bootstrap_project  = data.terraform_remote_state.bootstrap.outputs.gcp_project_bootstrap.id
+  providers = {
+    google = google.gpo_eng
+  }
+}
+
+module "external_secrets" {
+  source = "../../modules/app/external_secrets"
+  providers = {
+    google = google.gpo_eng
+  }
+}
+
+module "cert_manager" {
+  source                = "../../modules/app/cert_manager"
+  environment           = local.environment
+  cloudflare_zone       = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  cloudflare_account_id = data.sops_file.secrets.data["cloudflare_account_id"]
+  providers = {
+    google = google.gpo_eng
+  }
+}
