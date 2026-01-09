@@ -1,13 +1,19 @@
-# genk8s:hash=deaa91da75a68daa5d658f7302f0ec47
+# genk8s:hash=aa3beb921157cff0b63f14d00ebc09ab
+# +argocd:skip-file-rendering
 postgresql:
-  image:
-    # Use default registry and tag from PostgreSQL subchart,
-    # but set repository to legacy images repository.
-    repository: bitnamilegacy/postgresql
+  enabled: false
+
+supersetNode:
+  connections:
+    # default hostname provided by cnpg
+    db_host: superset-rw
+
 redis:
   image:
-    # Same idea for Redis.
+    # Use default registry and tag from Redis subchart,
+    # but set repository to legacy images repository.
     repository: bitnamilegacy/redis
+
 # Custom Superset image which contains their upstream release plus pip packages
 # for MySQL and PostgreSQL drivers.
 image:
