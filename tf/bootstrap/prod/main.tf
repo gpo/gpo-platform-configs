@@ -17,3 +17,8 @@ module "sops" {
     google = google.bootstrap
   }
 }
+
+module "apis" {
+  source  = "../../modules/bootstrap/apis"
+  project = google_project.gpo_eng.project_id
+}

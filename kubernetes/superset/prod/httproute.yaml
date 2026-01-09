@@ -1,0 +1,20 @@
+# genk8s:hash=0b0db345a7b2e674cd98762e0e07c750
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: superset
+  labels:
+    gateway: gpotools
+spec:
+  # this connects us to the gateway
+  parentRefs:
+  - kind: Gateway
+    name: gpotools
+    namespace: gateway
+    sectionName: superset
+  hostnames:
+  - "superset.gpotools.ca"
+  rules:
+  - backendRefs:
+    - name: superset
+      port: 8088

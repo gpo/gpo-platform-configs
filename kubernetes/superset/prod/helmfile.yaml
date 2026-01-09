@@ -1,0 +1,12 @@
+# +argocd:skip-file-rendering
+repositories:
+- name: superset
+  url: https://apache.github.io/superset/
+
+releases:
+- name: superset
+  namespace: superset
+  chart: superset/superset
+  version: 0.15.0
+  values:
+  - values.yaml

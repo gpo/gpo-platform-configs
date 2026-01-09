@@ -24,3 +24,8 @@ module "gcp_iam_devs" {
   project  = google_project.gpo_eng.project_id
   user     = each.value
 }
+
+module "apis" {
+  source  = "../../modules/bootstrap/apis"
+  project = google_project.gpo_eng.project_id
+}
