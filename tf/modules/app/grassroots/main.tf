@@ -2,7 +2,7 @@ locals {
   hostname = "grassroots.${var.cloudflare_zone.zone}"
 }
 
-resource "cloudflare_record" "grassroots" {
+resource "cloudflare_dns_record" "grassroots" {
   zone_id = var.cloudflare_zone.id
   name    = local.hostname
   content = var.ingress_ip_address
