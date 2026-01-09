@@ -25,7 +25,7 @@ run = [{tasks = [
 description = "Render all helm charts."
 run = [{tasks = [
   "argocd:render",
-  "cert-manager:render",
+  "certmgr:render",
   "external-secrets:render",
   "superset:render",
 ]}]
@@ -39,14 +39,22 @@ run = "../../scripts/genk8s.sh"
 description = "Render all K8s YAMLs for argocd."
 run = [{tasks = [
   "argocd:stage:render",
+  "argocd:prod:render",
 ]}]
 
 [tasks."argocd:stage:render"]
-description = "Render stage K8s YAMLs for argocd."
+description = "Render stage helm charts for argocd."
 dir = "kubernetes/argocd/stage"
 run = "helmfile --log-level warn template | yq -P > rendered/argocd.yaml"
 outputs = ["kubernetes/argocd/stage/rendered/argocd.yaml"]
 sources = ["kubernetes/argocd/stage/*.yaml"]
+
+[tasks."argocd:prod:render"]
+description = "Render prod helm charts for argocd."
+dir = "kubernetes/argocd/prod"
+run = "helmfile --log-level warn template | yq -P > rendered/argocd.yaml"
+outputs = ["kubernetes/argocd/prod/rendered/argocd.yaml"]
+sources = ["kubernetes/argocd/prod/*.yaml"]
 
 [tasks."argocd-apps:genk8s"]
 description = "Transform TF ouptuts into K8s YAMLs for argocd-apps."
