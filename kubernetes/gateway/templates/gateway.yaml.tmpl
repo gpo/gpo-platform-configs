@@ -1,4 +1,3 @@
-# genk8s:hash=0231ce43b6d29be2a10c2a2a78cc3905
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -12,14 +11,14 @@ spec:
   - name: http
     protocol: HTTP
     port: 80
-    hostname: "*.gpotoolsstage.ca"
+    hostname: "*.${hostname}"
     allowedRoutes:
       namespaces:
         from: All
       kinds:
       - kind: HTTPRoute
   - name: tls
-    hostname: "*.gpotoolsstage.ca"
+    hostname: "*.${hostname}"
     protocol: HTTPS
     port: 443
     tls:

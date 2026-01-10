@@ -1,12 +1,15 @@
 locals {
   /* A list of all the secrets in google secret manager which the external secrets operator will be granted access to.
+     These hard coded secrets are all managed OUTSIDE of TF.
      Must be present in the output of: `gcloud secrets list`
   */
   secrets = [
-    "superset-config",
-    "superset-env",
-    "superset-postgres-db"
+    "projects/${data.google_client_config.current.project}/secrets/superset-config",
+    "projects/${data.google_client_config.current.project}/secrets/superset-env",
+    "projects/${data.google_client_config.current.project}/secrets/superset-postgres-db",
   ]
+
+  all_secrets = concat(local.secrets, var.secrets)
 }
 
 resource "google_service_account" "main" {
@@ -16,8 +19,8 @@ resource "google_service_account" "main" {
 
 # grant our GCP service account the ability to access secrets
 resource "google_secret_manager_secret_iam_member" "main" {
-  for_each  = toset(local.secrets)
-  secret_id = "projects/${data.google_client_config.current.project}/secrets/${each.value}"
+  for_each  = toset(local.all_secrets)
+  secret_id = each.value
   role      = "roles/secretmanager.secretAccessor"
   member    = google_service_account.main.member
 }

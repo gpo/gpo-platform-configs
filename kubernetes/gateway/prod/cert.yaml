@@ -9,3 +9,45 @@ spec:
   secretName: gpotools
   dnsNames:
   - superset.gpotools.ca
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: superset
+  namespace: gateway
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+  secretName: superset
+  dnsNames:
+  - superset.gpotools.ca
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grassroots
+  namespace: gateway
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+  secretName: grassroots
+  dnsNames:
+  - grassroots.gpotools.ca
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd
+  namespace: gateway
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+  secretName: argocd
+  dnsNames:
+  - argocd.gpotools.ca
