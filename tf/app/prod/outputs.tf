@@ -40,6 +40,9 @@ output "gateway" {
     wildcard-cert = {
       hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
     }
+    gateway = {
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+    }
   }
 }
 
