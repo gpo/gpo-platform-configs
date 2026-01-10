@@ -41,6 +41,9 @@ module "external_secrets" {
   providers = {
     google = google.gpo_eng
   }
+  secrets = [
+    module.cert_manager.gsm_secret_name
+  ]
 }
 
 module "cert_manager" {
