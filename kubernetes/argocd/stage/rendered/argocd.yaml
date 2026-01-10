@@ -25984,7 +25984,7 @@ spec:
       kind: Gateway
       name: gpotools
       namespace: gateway
-      sectionName: argocd
+      sectionName: tls
   rules:
     - matches:
         - path:

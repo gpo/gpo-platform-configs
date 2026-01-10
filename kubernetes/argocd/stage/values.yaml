@@ -1,4 +1,4 @@
-# genk8s:hash=414c5518b3b5d6ffc5881cc03c2cfb47
+# genk8s:hash=57fa903f3cd6ebd92fcc49da6728152c
 global:
   domain: argocd.gpotoolsstage.ca
 
@@ -16,7 +16,7 @@ server:
       kind: Gateway
       name: gpotools
       namespace: gateway
-      sectionName: argocd
+      sectionName: tls
 
 dex:
   enabled: false
