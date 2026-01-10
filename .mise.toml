@@ -18,7 +18,8 @@ run = [{tasks = [
  "superset:genk8s",
  "argocd:genk8s",
  "argocd-apps:genk8s",
- "external-secrets:genk8s"
+ "external-secrets:genk8s",
+ "gateway:genk8s"
 ]}]
 
 [tasks.render]
@@ -92,6 +93,12 @@ sources = ["kubernetes/superset/prod/values.yaml"]
 description = "Build docker images for Apache superset."
 dir = "kubernetes/superset/docker"
 run = "docker build . --platform=linux/amd64"
+
+[tasks."gateway:genk8s"]
+description = "Transform TF outputs into K8s YAMLs for gateway."
+env.APPNAME = "gateway"
+dir = "kubernetes/gateway"
+run = "../../scripts/genk8s.sh"
 
 [tasks."grassroots:genk8s"]
 description = "Transform TF outputs into K8s YAMLs for the grassroots app."
