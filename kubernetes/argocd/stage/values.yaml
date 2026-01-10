@@ -1,4 +1,4 @@
-# genk8s:hash=57fa903f3cd6ebd92fcc49da6728152c
+# genk8s:hash=6e15ed7e553c14aa56e16ae8b3d49896
 global:
   domain: argocd.gpotoolsstage.ca
 
@@ -11,6 +11,7 @@ configs:
 server:
   httproute:
     enabled: true
+    hostnames: ["argocd.gpotoolsstage.ca"]
     parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
