@@ -37,10 +37,14 @@ output "superset" {
 output "gateway" {
   description = "All outputs required for kubernetes/gateway."
   value = {
+    wildcard-cert = {
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+    }
     gateway = {
-      hostnames = [
-        { "name" = "grassroots", "hostname" = module.grassroots.hostname }
-      ]
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+    }
+    redirect = {
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
     }
   }
 }

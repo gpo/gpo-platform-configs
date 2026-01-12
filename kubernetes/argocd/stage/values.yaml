@@ -1,4 +1,4 @@
-# genk8s:hash=414c5518b3b5d6ffc5881cc03c2cfb47
+# genk8s:hash=6e15ed7e553c14aa56e16ae8b3d49896
 global:
   domain: argocd.gpotoolsstage.ca
 
@@ -11,12 +11,13 @@ configs:
 server:
   httproute:
     enabled: true
+    hostnames: ["argocd.gpotoolsstage.ca"]
     parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
       name: gpotools
       namespace: gateway
-      sectionName: argocd
+      sectionName: tls
 
 dex:
   enabled: false

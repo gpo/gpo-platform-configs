@@ -10,12 +10,13 @@ configs:
 server:
   httproute:
     enabled: true
+    hostnames: ["${hostname}"]
     parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
       name: gpotools
       namespace: gateway
-      sectionName: argocd
+      sectionName: tls
 
 dex:
   enabled: false

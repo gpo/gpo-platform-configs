@@ -1,0 +1,23 @@
+# NOTE: stage here means LetsEncrypt's stage service, nothing
+# to do with OUR environment.
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns-stage
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ianedington@gpo.ca
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-dns-stage
+    # Enable the HTTP-01 challenge provider using Gateway API
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cert-manager-cf-api-token
+            key: api-token

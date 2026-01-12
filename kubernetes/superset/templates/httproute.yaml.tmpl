@@ -2,6 +2,7 @@ kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
   name: superset
+  namespace: superset
   labels:
     gateway: gpotools
 spec:
@@ -10,7 +11,7 @@ spec:
   - kind: Gateway
     name: gpotools
     namespace: gateway
-    sectionName: superset
+    sectionName: tls
   hostnames:
   - "${hostname}"
   rules:
