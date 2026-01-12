@@ -6,6 +6,12 @@ A decisions provides context on the project and the reasons behind certain choic
 ## Decisions
 The most recent decision should be at the top.
 
+### 2026-01-12 Rendered Manifests Pattern
+
+We've decided to adopt the [rendered manifests pattern](https://akuity.io/blog/the-rendered-manifests-pattern) which basically means that our CD tooling doesn't render templates, or helm charts, or do anything dynamic at all. It just applies the static manifests which we have pre-rendered into our repo.
+
+The primary motivation here is increased confidence in what will change. By reviewing the rendered manifest diffs in PRs between releases, we can reduce the number of surprise changes going out to our clusters.
+
 ### 2025-12-03 Leveraging Gateway API
 
 We've decided NOT to deploy our own Gateway API implementation, opting instead to just use the one provided by GKE. This allows us to save money over Ingress (because we don't need a separate ALB per app exposed to the net) without requiring us to maintain another piece of software.
