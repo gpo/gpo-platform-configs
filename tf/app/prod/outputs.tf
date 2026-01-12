@@ -1,9 +1,3 @@
-output "legacy_logging" {
-  description = "access key id and secret access key for the legacy logging IAM user"
-  sensitive   = true
-  value       = module.legacy_logging.access_key
-}
-
 output "grassroots" {
   description = "All outputs required for kubernetes/grassroots."
   sensitive   = true
