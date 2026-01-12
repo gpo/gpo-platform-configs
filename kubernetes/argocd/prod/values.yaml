@@ -1,4 +1,5 @@
-# genk8s:hash=989270315a607e3ad7929c4885b7bb27
+# genk8s:hash=81b2796d295b5fb031b233aa1a635cdc
+# +argocd:skip-file-rendering
 global:
   domain: argocd.gpotools.ca
 

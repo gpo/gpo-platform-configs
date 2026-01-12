@@ -1,3 +1,4 @@
+# +argocd:skip-file-rendering
 repositories:
 - name: argo
   url: https://argoproj.github.io/argo-helm

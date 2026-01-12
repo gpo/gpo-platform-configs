@@ -1,4 +1,5 @@
-# genk8s:hash=6e15ed7e553c14aa56e16ae8b3d49896
+# genk8s:hash=7fc2b2c86613cfc089505443786c18fc
+# +argocd:skip-file-rendering
 global:
   domain: argocd.gpotoolsstage.ca
 
