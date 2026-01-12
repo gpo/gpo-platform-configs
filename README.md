@@ -6,7 +6,6 @@ https://docs.google.com/document/d/1-2-MSpd-g_i5UjxHVkZW8wpKUZORjLrzd8A-UhW2XAY/
 
 # Requirements
 
-* `gh` with an authenticated session
 * [mise en place](https://mise.jdx.dev/)
   * Make sure you configure your shell to [activate mise](https://mise.jdx.dev/cli/activate.html)
 
