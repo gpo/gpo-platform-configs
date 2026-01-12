@@ -11,6 +11,15 @@ yq = 'v4.50.1'
 description = "Run all git pre-commit hooks."
 run = "pre-commit run --all-files"
 
+[tasks.tfall]
+description = "Run a TF commant (init, plan, apply) across ALL tf states."
+usage = '''
+  arg "<args>" var=#true help="Any valid tf arguments (eg. init, apply, plan -out=plan.tfplan, etc.)"
+'''
+run = '''
+  ./scripts/tfall.sh ${usage_args}
+'''
+
 [tasks.genk8s]
 description = "Transform TF outputs into K8s YAMLs"
 run = [{tasks = [
