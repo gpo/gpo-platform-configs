@@ -28,19 +28,19 @@ Below is a list of our states in order from "lowest" to "highest". Or put anothe
 
 Each one of these states has a `./prod/` and a `./stage/` subdir, with hardcoded GCP projects, state buckets, and local parameters which are suitable for either prod or stage, and nearly everything else is just calling the exact same tf modules.
 
-## [bootstrap](./tf/bootstrap)
+## [bootstrap](./bootstrap)
 
 Contains resources for bootstrapping TF. That is, this helps get a brand new GCP account from zero to one, ready to start deploying the higher level infrastructure.
 
 Eg. User accounts, KMS keys, GCP projects, TF state buckets.
 
-## [infra](./tf/infra)
+## [infra](./infra)
 
 Contains resources which exist **in** the GCP projects provided by bootstrap and which support app level resources.
 
 Eg. VPC's, GKE clusters, container registries.
 
-## [app](./tf/app)
+## [app](./app)
 
 Contains resources which directly support our workloads which run **in** the GKE clusters provided by the infra layer.
 
@@ -48,7 +48,7 @@ Eg. DNS records (fooapp.gpotools.ca), service accounts, IAM policies.
 
 ---
 
-## [infra/singletons](./tf/infra/singletons)
+## [infra/singletons](./infra/singletons)
 
 This is a one off, unrelated to the hierarchy above. Has no prod/stage isolation. Contains resources we only have one of. This is mostly legacy stuff, unrelated to GCP and Kuberentes.
 
