@@ -1,4 +1,4 @@
-# genk8s:hash=b27876f46b7d16bfd6ccee434a1688c4
+# genk8s:hash=c8496cea18005a49d2517c6b22867f4f
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -54,7 +54,7 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: cnpg
+    namespace: cnpg-system
     server: https://kubernetes.default.svc
   project: default
   source:
