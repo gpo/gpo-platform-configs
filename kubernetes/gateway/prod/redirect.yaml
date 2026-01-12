@@ -1,0 +1,18 @@
+# genk8s:hash=c271b157eed42496b14a3c8a2bbe54b9
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-to-https-redirect
+  namespace: gateway
+spec:
+  parentRefs:
+  - name: gpotools
+    sectionName: http
+  hostnames:
+  - "*.gpotools.ca"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
