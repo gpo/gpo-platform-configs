@@ -1,7 +1,9 @@
+# genk8s:hash=2c22eb14883d9a3e067a085831e9de43
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: gpotools
+  namespace: gateway
 spec:
   # this gatewayClass is the incantation for the current gen ALB (not classic)
   # https://docs.cloud.google.com/load-balancing/docs/https#load-balancer-mode
@@ -10,26 +12,23 @@ spec:
   - name: http
     protocol: HTTP
     port: 80
+    hostname: "*.gpotools.ca"
     allowedRoutes:
       namespaces:
         from: All
       kinds:
       - kind: HTTPRoute
-  - name: https
-    hostname: superset.gpotools.ca
+  - name: tls
+    hostname: "*.gpotools.ca"
     protocol: HTTPS
     port: 443
     tls:
       mode: Terminate
       certificateRefs:
-      - name: gpotools
-    # only allow httproutes in the superset namespace to use this listener
+      - name: wildcard-gpotools
     allowedRoutes:
       namespaces:
-        from: Selector
-        selector:
-          matchLabels:
-            kubernetes.io/metadata.name: superset
+        from: All
       kinds:
       - kind: HTTPRoute
   addresses:
