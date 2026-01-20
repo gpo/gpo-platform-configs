@@ -21,6 +21,14 @@ run = '''
   ./scripts/tfall.sh ${usage_args}
 '''
 
+[tasks.vals]
+dir = "./kubernetes/argocd-apps"
+description = "Test task for vals rendering."
+sources = ["./templates/*.yaml.vals"]
+outputs = ["./stage/*.yaml"]
+run = "vals eval -f ./templates/application.yaml.vals > ./stage/application.yaml"
+
+
 [tasks.genk8s]
 description = "Transform TF outputs into K8s YAMLs"
 run = [{tasks = [
