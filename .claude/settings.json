@@ -1,0 +1,8 @@
+{
+  "rules": [
+    "Always use -parallelism=1 when running tofu apply in any tf/app/ stack. GCP rate-limits concurrent API calls and applies will fail without it.",
+    "Never write plaintext secrets to any file. All secrets are SOPS-encrypted. Source files are secrets.env, secrets.prod.env, and secrets.stage.env at the repo root.",
+    "tf/infra/singletons/ is global and has no staging equivalent. Changes apply to live production immediately — always plan carefully before applying.",
+    "Do not manage Kubernetes resources in Terraform. K8s manifests live in a separate repo. Terraform only manages cloud-provider resources."
+  ]
+}
