@@ -1,122 +1,23 @@
 # Stacks and State
 
----
+GCS bucket: `gpo-tf-state-data`
 
-## What is a stack?
-
-A "stack" is an independently deployable Terraform root module with its own state file. Changes to one stack do not affect other stacks until they are explicitly applied. This repo has seven stacks:
-
-| Stack directory | GCS state prefix | Deployed how often |
-|---|---|---|
-| `tf/bootstrap/prod` | `prod/bootstrap` | Rarely (new accounts, new users) |
-| `tf/bootstrap/stage` | `stage/bootstrap` | Rarely |
-| `tf/infra/singletons` | `infra/singletons` | Occasionally (DNS, GitHub repos) |
-| `tf/infra/prod` | `prod/infra` | Occasionally (cluster changes) |
-| `tf/infra/stage` | `stage/infra` | Occasionally |
-| `tf/app/prod` | `prod/app` | Regularly (new apps, config changes) |
-| `tf/app/stage` | `stage/app` | Regularly |
-
-All state is stored in GCS bucket **`gpo-tf-state-data`**.
-
----
-
-## Dependency chain
-
-Stacks depend on each other in one direction only:
-
-```
-bootstrap → infra → app
-```
-
-- `infra` reads outputs from `bootstrap` via remote state
-- `app` reads outputs from `infra` via remote state
-- `singletons` is independent (no remote state dependencies)
-
-**You must apply lower layers before higher layers** when setting up from scratch. For day-to-day changes this is rarely relevant — most changes are isolated within one stack.
-
----
-
-## How remote state references work
-
-Outputs from one stack are consumed by another using `terraform_remote_state`:
-
-```hcl
-# In tf/app/prod/remote_state.tf
-data "terraform_remote_state" "infra" {
-  backend = "gcs"
-  config = {
-    bucket = "gpo-tf-state-data"
-    prefix = "prod/infra"
-  }
-}
-```
-
-Then used as:
-```hcl
-cloudflare_zone = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
-ingress_ip      = data.terraform_remote_state.infra.outputs.gke_ingress_ip
-```
-
-### What infra/prod exports
-
-| Output | Type | Used by |
-|---|---|---|
-| `cloudflare_zone_gpo_tools` | `{ id, zone }` | App modules for DNS records |
-| `gke_ingress_ip` | string | App modules for DNS A records |
-| `image_repository_uri` | string | App layer for container image paths |
-
-### What bootstrap/prod exports
-
-| Output | Used by |
+| Stack | GCS prefix |
 |---|---|
-| `admin_user_arns` | infra (EKS access entries) |
-| `eks_user_arns` | infra (EKS access entries) |
-| `gcp_project_gpo_eng` | infra (GKE provider project) |
-| `gcp_project_gpo_data` | infra (BigQuery, etc.) |
-| `gcp_project_bootstrap` | infra (bootstrap project ID) |
+| `tf/bootstrap/prod` | `prod/bootstrap` |
+| `tf/bootstrap/stage` | `stage/bootstrap` |
+| `tf/infra/singletons` | `infra/singletons` |
+| `tf/infra/prod` | `prod/infra` |
+| `tf/infra/stage` | `stage/infra` |
+| `tf/app/prod` | `prod/app` |
+| `tf/app/stage` | `stage/app` |
 
----
+Dependency order: `bootstrap` → `infra` → `app`. Singletons have no dependencies.
 
-## GCS backend configuration
+## Remote state pattern
 
-Every stack declares a backend in its `tofu.tf`:
+`app` reads from `infra`, `infra` reads from `bootstrap` — both via `data.terraform_remote_state`. See `tf/app/prod/remote_state.tf` and `tf/infra/prod/remote_state.tf` for the exact config.
 
-```hcl
-terraform {
-  backend "gcs" {
-    bucket = "gpo-tf-state-data"
-    prefix = "prod/infra"   # unique per stack
-  }
-}
-```
+## tofu-all
 
-The GCS bucket was created by the `state_bucket` bootstrap module. There is no DynamoDB-style locking for GCS — GCS uses native object locking.
-
-> **Note:** A DynamoDB table `terraform-state-locks` also exists (created by `state_bucket`) but is used only for the AWS backend, not GCS.
-
----
-
-## Running a stack
-
-```bash
-cd tf/<layer>/<environment>
-tofu init     # needed after provider changes or first checkout
-tofu plan
-tofu apply
-```
-
----
-
-## Running all stacks
-
-Use the `tofu-all` helper at the repo root to run a command across every stack:
-```bash
-./tofu-all plan
-./tofu-all apply
-```
-
----
-
-## Singletons vs per-environment stacks
-
-`tf/infra/singletons/` is intentionally not split into prod/stage. Resources here (gpo.ca DNS, GitHub repos) exist once globally. There is no staging equivalent — be careful, changes apply immediately to production systems.
+Repo root has a `tofu-all` helper script to run a command across all stacks at once.
