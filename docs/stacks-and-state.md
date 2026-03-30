@@ -105,11 +105,6 @@ tofu plan
 tofu apply
 ```
 
-**Critical:** The `app/` stacks must be run with reduced parallelism to avoid GCP API rate limits:
-```bash
-tofu apply -parallelism=1
-```
-
 ---
 
 ## Running all stacks
@@ -117,7 +112,7 @@ tofu apply -parallelism=1
 Use the `tofu-all` helper at the repo root to run a command across every stack:
 ```bash
 ./tofu-all plan
-./tofu-all apply -parallelism=1
+./tofu-all apply
 ```
 
 ---

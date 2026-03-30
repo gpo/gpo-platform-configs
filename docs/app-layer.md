@@ -11,8 +11,6 @@ The app layer manages per-application cloud resources: DNS records, GCP service 
 
 The app layer reads zone IDs and the GKE ingress IP from the infra stack via remote state, then passes them into app modules.
 
-**Always apply with `-parallelism=1`** to avoid GCP API rate limits.
-
 ---
 
 ## Modules in use

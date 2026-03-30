@@ -92,7 +92,7 @@ If bootstrapping a brand new environment:
 2. Run `tofu apply` in `tf/bootstrap/{prod,stage}/`
 3. Retrieve initial user passwords: `tofu output -json | jq '.user_creds.value'`
 4. Run `tofu apply` in `tf/infra/{prod,stage}/`
-5. Run `tofu apply -parallelism=1` in `tf/app/{prod,stage}/`
+5. Run `tofu apply` in `tf/app/{prod,stage}/`
 
 `tf/infra/singletons/` can be applied at any point — it has no dependencies on other stacks.
 
