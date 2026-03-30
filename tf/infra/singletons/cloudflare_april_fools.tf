@@ -3,10 +3,6 @@
 # Deployment checklist:
 #   1. Ensure the Cloudflare Pages GitHub connection is authorised in the
 #      Cloudflare dashboard (Settings → Integrations → GitHub) before first apply.
-#   2. To activate the apex redirect on April 1:
-#        Edit locals.tf → set april_fools_redirect_enabled = true, then tofu apply
-#   3. To deactivate after the campaign:
-#        Edit locals.tf → set april_fools_redirect_enabled = false, then tofu apply
 
 # ---------------------------------------------------------------------------
 # Cloudflare Pages project — deploys github.com/gpo/1997 (branch: main)
@@ -57,34 +53,4 @@ resource "cloudflare_pages_domain" "april_fools_1997_gpo_ca" {
   account_id   = data.sops_file.secrets.data["cloudflare_account_id"]
   project_name = cloudflare_pages_project.april_fools.name
   domain       = "1997.gpo.ca"
-}
-
-# ---------------------------------------------------------------------------
-# Redirect rule — gpo.ca/* → https://1997.gpo.ca (302, April 1 only)
-#
-# Toggle by editing locals.tf → april_fools_redirect_enabled, then tofu apply.
-# ---------------------------------------------------------------------------
-resource "cloudflare_ruleset" "april_fools_redirect" {
-  count       = local.april_fools_redirect_enabled ? 1 : 0
-  zone_id     = cloudflare_zone.gpo_ca.id
-  name        = "April Fools Redirect"
-  description = "Redirects gpo.ca home page to https://1997.gpo.ca (302). Managed by local.april_fools_redirect_enabled in locals.tf."
-  kind        = "zone"
-  phase       = "http_request_dynamic_redirect"
-
-  rules {
-    action = "redirect"
-    action_parameters {
-      from_value {
-        status_code = 302
-        target_url {
-          value = "https://1997.gpo.ca"
-        }
-        preserve_query_string = true
-      }
-    }
-    expression  = "(http.host eq \"gpo.ca\" and http.request.uri.path eq \"/\")"
-    description = "Redirect gpo.ca home page to 1997.gpo.ca for April Fools"
-    enabled     = true
-  }
 }
