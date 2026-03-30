@@ -4,15 +4,22 @@ Infrastructure as Code for GPO, managed with OpenTofu. Covers Cloudflare (DNS, P
 
 ## Stack layout
 
-```
-tf/
-├── bootstrap/{prod,stage}/        # One-time account setup
-├── infra/{singletons,prod,stage}/ # Clusters, zones, networks
-├── app/{prod,stage}/              # Per-app DNS, secrets, IAM
-└── modules/{app,infra,bootstrap}/ # Reusable modules — never deployed directly
+```mermaid
+graph LR
+    B[bootstrap\nprod · stage]
+    I[infra\nprod · stage]
+    S[infra/singletons\ngpo.ca · GitHub]
+    A[app\nprod · stage]
+    M[modules\napp · infra · bootstrap]
+
+    B -->|remote state| I
+    I -->|remote state| A
+    M -.->|used by| B & I & A
+
+    style S fill:#f5a623,color:#000
 ```
 
-`app` reads remote state from `infra`, which reads remote state from `bootstrap`. Singletons are independent and **global** — changes affect live production immediately.
+`singletons` is **global/production only** — no staging equivalent, changes are live immediately.
 
 ## Naming conventions
 
