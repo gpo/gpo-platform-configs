@@ -2,6 +2,6 @@
   "rules": [
     "Never write plaintext secrets to any file. All secrets are SOPS-encrypted. Source files are secrets.env, secrets.prod.env, and secrets.stage.env at the repo root.",
     "tf/infra/singletons/ is global and has no staging equivalent. Changes apply to live production immediately — always plan carefully before applying.",
-    "Do not manage Kubernetes resources in Terraform. K8s manifests live in a separate repo. Terraform only manages cloud-provider resources."
+    "Kubernetes manifests live in /kubernetes. Terraform lives in /tf. Keep them separate — do not add K8s resources to /tf or Terraform resources to /kubernetes."
   ]
 }
