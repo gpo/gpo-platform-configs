@@ -68,7 +68,7 @@ resource "cloudflare_ruleset" "april_fools_redirect" {
   count       = local.april_fools_redirect_enabled ? 1 : 0
   zone_id     = cloudflare_zone.gpo_ca.id
   name        = "April Fools Redirect"
-  description = "Redirects gpo.ca/* to https://1997.gpo.ca (302). Managed by local.april_fools_redirect_enabled in locals.tf."
+  description = "Redirects gpo.ca home page to https://1997.gpo.ca (302). Managed by local.april_fools_redirect_enabled in locals.tf."
   kind        = "zone"
   phase       = "http_request_dynamic_redirect"
 
@@ -80,11 +80,11 @@ resource "cloudflare_ruleset" "april_fools_redirect" {
         target_url {
           value = "https://1997.gpo.ca"
         }
-        preserve_query_string = false
+        preserve_query_string = true
       }
     }
-    expression  = "(http.host eq \"gpo.ca\")"
-    description = "Redirect gpo.ca to 1997.gpo.ca for April Fools"
+    expression  = "(http.host eq \"gpo.ca\" and http.request.uri.path eq \"/\")"
+    description = "Redirect gpo.ca home page to 1997.gpo.ca for April Fools"
     enabled     = true
   }
 }
