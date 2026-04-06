@@ -6,6 +6,7 @@ jq = '1.8.1'
 argocd = '3.2.1'
 helmfile = '1.2.2'
 yq = 'v4.50.1'
+vals = '0.43.0'
 
 [tasks.pc]
 description = "Run all git pre-commit hooks."
@@ -19,6 +20,14 @@ usage = '''
 run = '''
   ./scripts/tfall.sh ${usage_args}
 '''
+
+[tasks.vals]
+dir = "./kubernetes/argocd-apps"
+description = "Test task for vals rendering."
+sources = ["./templates/*.yaml.vals"]
+outputs = ["./stage/*.yaml"]
+run = "vals eval -f ./templates/application.yaml.vals > ./stage/application.yaml"
+
 
 [tasks.genk8s]
 description = "Transform TF outputs into K8s YAMLs"
