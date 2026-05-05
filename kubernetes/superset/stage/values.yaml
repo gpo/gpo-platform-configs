@@ -18,7 +18,7 @@ redis:
 # for MySQL and PostgreSQL drivers.
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
-  tag: v6.0.0
+  tag: v0.0.2
 # Enabling feature flags. Note this is Python code injected into config.py.
 # See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
 # and https://github.com/apache/superset/tree/master/helm/superset#values for
