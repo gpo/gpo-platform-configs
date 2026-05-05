@@ -87,14 +87,14 @@ run = [{tasks = [
 [tasks."superset:stage:render"]
 description = "Render the stage Superset helm chart."
 dir = "kubernetes/superset/stage"
-run = "helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
+run = "helm repo update superset && helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
 outputs = ["kubernetes/superset/stage/rendered/superset.yaml"]
 sources = ["kubernetes/superset/stage/values.yaml"]
 
 [tasks."superset:prod:render"]
 description = "Render the prod Superset helm chart."
 dir = "kubernetes/superset/prod"
-run = "helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
+run = "helm repo update superset && helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
 outputs = ["kubernetes/superset/prod/rendered/superset.yaml"]
 sources = ["kubernetes/superset/prod/values.yaml"]
 
