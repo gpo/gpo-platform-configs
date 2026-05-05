@@ -236,7 +236,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.15.5
     release: superset
     heritage: Helm
 spec:
@@ -258,7 +258,7 @@ metadata:
   namespace: superset
   labels:
     app: superset-worker
-    chart: superset-0.15.0
+    chart: superset-0.15.5
     release: superset
     heritage: Helm
 spec:
@@ -270,9 +270,9 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
+        checksum/superset_config.py: 9cc3f4cbdf7110d2962b2101311d78ddaf502d6b4f4fcc8ef4b216567722799d
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
+        checksum/connections: 9d7f9aa15a1c2500ba4c5049cb934e8f5860d207d2dd5764b3282a326bc46067
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
@@ -295,9 +295,15 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres-redis
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v6.0.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -338,7 +344,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.15.5
     release: superset
     heritage: Helm
 spec:
@@ -351,10 +357,10 @@ spec:
     metadata:
       annotations:
         # Force reload on config changes
-        checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
+        checksum/superset_config.py: 9cc3f4cbdf7110d2962b2101311d78ddaf502d6b4f4fcc8ef4b216567722799d
         checksum/superset_init.sh: e6b1e8eac1f7a79a07a6c72a0e2ee6e09654eeb439c6bbe61bfd676917c41e02
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
+        checksum/connections: 9d7f9aa15a1c2500ba4c5049cb934e8f5860d207d2dd5764b3282a326bc46067
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
@@ -377,9 +383,15 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v6.0.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -576,7 +588,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.15.5
     release: superset
     heritage: Helm
   annotations:
@@ -600,9 +612,15 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi
       containers:
         - name: superset-init-db
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v6.0.0
           envFrom:
             - secretRef:
                 name: superset-env
