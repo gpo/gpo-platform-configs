@@ -89,14 +89,14 @@ description = "Render the stage Superset helm chart."
 dir = "kubernetes/superset/stage"
 run = "helm repo update superset && helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
 outputs = ["kubernetes/superset/stage/rendered/superset.yaml"]
-sources = ["kubernetes/superset/stage/values.yaml"]
+sources = ["kubernetes/superset/stage/values.yaml", "kubernetes/superset/stage/helmfile.yaml"]
 
 [tasks."superset:prod:render"]
 description = "Render the prod Superset helm chart."
 dir = "kubernetes/superset/prod"
 run = "helm repo update superset && helmfile --log-level warn template | yq -P | ../filter-helm-templates.sh > rendered/superset.yaml"
 outputs = ["kubernetes/superset/prod/rendered/superset.yaml"]
-sources = ["kubernetes/superset/prod/values.yaml"]
+sources = ["kubernetes/superset/prod/values.yaml", "kubernetes/superset/prod/helmfile.yaml"]
 
 [tasks."superset:build"]
 description = "Build docker images for Apache superset."
