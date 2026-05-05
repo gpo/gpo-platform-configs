@@ -2,6 +2,7 @@
 repositories:
 - name: superset
   url: https://apache.github.io/superset/
+  forceUpdate: true
 
 releases:
 - name: superset
