@@ -10,5 +10,4 @@ yq ea '
       and .metadata.name != "superset-env"
     )
   )
-' - | \
-yq ea '(.spec.template.spec.initContainers[]?.resources) |= del(.requests)' -
+' -
