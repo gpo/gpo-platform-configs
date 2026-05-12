@@ -7,52 +7,6 @@ supersetNode:
   connections:
     # default hostname provided by cnpg
     db_host: superset-rw
-  initContainers:
-    - name: wait-for-postgres
-      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
-      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
-      envFrom:
-        - secretRef:
-            name: "{{ tpl .Values.envFromSecret . }}"
-      command:
-        - /bin/sh
-        - -c
-        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-      resources:
-        limits:
-          memory: "256Mi"
-
-supersetWorker:
-  initContainers:
-    - name: wait-for-postgres-redis
-      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
-      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
-      envFrom:
-        - secretRef:
-            name: "{{ tpl .Values.envFromSecret . }}"
-      command:
-        - /bin/sh
-        - -c
-        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
-      resources:
-        limits:
-          memory: "256Mi"
-
-init:
-  initContainers:
-    - name: wait-for-postgres
-      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
-      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
-      envFrom:
-        - secretRef:
-            name: "{{ tpl .Values.envFromSecret . }}"
-      command:
-        - /bin/sh
-        - -c
-        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-      resources:
-        limits:
-          memory: "256Mi"
 
 redis:
   image:
