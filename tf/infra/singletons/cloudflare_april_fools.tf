@@ -27,8 +27,10 @@ resource "cloudflare_pages_project" "april_fools" {
 
   build_config {
     # No build step — static files served directly from the repo root
-    build_command   = ""
-    destination_dir = "/"
+    build_command       = ""
+    destination_dir     = "/"
+    web_analytics_tag   = "5d4dec04f6a4464cbeb744eb6a90335b"
+    web_analytics_token = "fe93aa1a26c74c06ac9ca6a07b52effc"
   }
 }
 
