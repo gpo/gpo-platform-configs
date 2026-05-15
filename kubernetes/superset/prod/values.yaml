@@ -7,6 +7,52 @@ supersetNode:
   connections:
     # default hostname provided by cnpg
     db_host: superset-rw
+  initContainers:
+    - name: wait-for-postgres
+      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
+      envFrom:
+        - secretRef:
+            name: "{{ tpl .Values.envFromSecret . }}"
+      command:
+        - /bin/sh
+        - -c
+        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+      resources:
+        limits:
+          memory: "256Mi"
+
+supersetWorker:
+  initContainers:
+    - name: wait-for-postgres-redis
+      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
+      envFrom:
+        - secretRef:
+            name: "{{ tpl .Values.envFromSecret . }}"
+      command:
+        - /bin/sh
+        - -c
+        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+      resources:
+        limits:
+          memory: "256Mi"
+
+init:
+  initContainers:
+    - name: wait-for-postgres
+      image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+      imagePullPolicy: "{{ .Values.initImage.pullPolicy }}"
+      envFrom:
+        - secretRef:
+            name: "{{ tpl .Values.envFromSecret . }}"
+      command:
+        - /bin/sh
+        - -c
+        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+      resources:
+        limits:
+          memory: "256Mi"
 
 redis:
   image:
@@ -18,7 +64,7 @@ redis:
 # for MySQL and PostgreSQL drivers.
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset
-  tag: v0.0.1
+  tag: v0.0.2
 # Enabling feature flags. Note this is Python code injected into config.py.
 # See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
 # and https://github.com/apache/superset/tree/master/helm/superset#values for
