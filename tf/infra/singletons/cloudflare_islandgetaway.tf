@@ -1,11 +1,17 @@
 # islandgetaway.ca — static site deployed via Cloudflare Pages
 # GitHub repo: gpo/islandgetaway (branch: main)
 
+# ---------------------------------------------------------------------------
+# Zone
+# ---------------------------------------------------------------------------
 resource "cloudflare_zone" "islandgetaway_ca" {
   account_id = data.sops_file.secrets.data["cloudflare_account_id"]
   zone       = "islandgetaway.ca"
 }
 
+# ---------------------------------------------------------------------------
+# Pages project + custom domain
+# ---------------------------------------------------------------------------
 resource "cloudflare_pages_project" "islandgetaway" {
   account_id        = data.sops_file.secrets.data["cloudflare_account_id"]
   name              = "islandgetaway-ca"
@@ -20,7 +26,7 @@ resource "cloudflare_pages_project" "islandgetaway" {
       pr_comments_enabled           = true
       deployments_enabled           = true
       production_deployment_enabled = true
-      preview_deployment_setting    = "all"
+      preview_deployment_setting    = "none"
     }
   }
 
@@ -30,6 +36,15 @@ resource "cloudflare_pages_project" "islandgetaway" {
   }
 }
 
+resource "cloudflare_pages_domain" "islandgetaway_ca" {
+  account_id   = data.sops_file.secrets.data["cloudflare_account_id"]
+  project_name = cloudflare_pages_project.islandgetaway.name
+  domain       = "islandgetaway.ca"
+}
+
+# ---------------------------------------------------------------------------
+# DNS
+# ---------------------------------------------------------------------------
 resource "cloudflare_record" "islandgetaway_ca" {
   zone_id = cloudflare_zone.islandgetaway_ca.id
   name    = "islandgetaway.ca"
@@ -47,12 +62,6 @@ resource "cloudflare_record" "www_islandgetaway_ca" {
   type    = "CNAME"
   ttl     = 1
   proxied = true
-}
-
-resource "cloudflare_pages_domain" "islandgetaway_ca" {
-  account_id   = data.sops_file.secrets.data["cloudflare_account_id"]
-  project_name = cloudflare_pages_project.islandgetaway.name
-  domain       = "islandgetaway.ca"
 }
 
 # 301 www → apex, preserving path and query string
