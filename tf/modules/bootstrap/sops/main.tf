@@ -1,8 +1,21 @@
-resource "aws_kms_key" "sops" {
-  description = "This key is used in the https://github.com/gpo/gpo-platform-configs repo to manage secrets using https://github.com/getsops/sops"
+resource "google_kms_key_ring" "sops" {
+  name     = "sops-${var.environment}"
+  location = "global"
+
+  depends_on = [
+    google_project_service.kms
+  ]
 }
 
-resource "aws_kms_alias" "sops" {
-  name          = "alias/sops-${var.environment}"
-  target_key_id = aws_kms_key.sops.key_id
+resource "google_kms_crypto_key" "sops" {
+  name     = "sops-${var.environment}"
+  key_ring = google_kms_key_ring.sops.id
+
+  depends_on = [
+    google_project_service.kms
+  ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
