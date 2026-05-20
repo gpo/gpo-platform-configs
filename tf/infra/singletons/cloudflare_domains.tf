@@ -381,3 +381,11 @@ resource "cloudflare_record" "facebook_secure_gpo_ca" {
   type    = "TXT"
   ttl     = 300
 }
+
+resource "cloudflare_record" "twilio_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "twilio.gpo.ca"
+  content = "twilio-domain-verification=763a62b4f7a33c3eac32039208738615"
+  type    = "TXT"
+  ttl     = 300
+}
