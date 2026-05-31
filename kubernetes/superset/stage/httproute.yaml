@@ -1,4 +1,4 @@
-# genk8s:hash=b932248126fac530ece6ced5a3b76037
+# genk8s:hash=stale-rerun-mise-superset-genk8s
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
@@ -16,6 +16,15 @@ spec:
   hostnames:
   - "superset.gpotoolsstage.ca"
   rules:
+  # Route the MCP endpoint to the sidecar (port 5008). A longer path prefix
+  # takes precedence over the catch-all rule below, so /mcp* lands here.
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /mcp
+    backendRefs:
+    - name: superset-mcp
+      port: 5008
   - backendRefs:
     - name: superset
       port: 8088

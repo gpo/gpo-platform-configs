@@ -10,10 +10,14 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     pkg-config
 
+# fastmcp powers the built-in MCP server (`superset mcp run`). It ships with
+# newer Superset images, but we pin it here so the MCP sidecar is guaranteed to
+# have it on the 6.0.0 base image.
 RUN . /app/.venv/bin/activate && \
     uv pip install \
     mysqlclient \
-    psycopg2-binary
+    psycopg2-binary \
+    fastmcp
 
 USER superset
 
