@@ -381,3 +381,27 @@ resource "cloudflare_record" "facebook_secure_gpo_ca" {
   type    = "TXT"
   ttl     = 300
 }
+
+resource "cloudflare_record" "brevo1__domainkey_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "brevo1._domainkey.gpo.ca"
+  content = "b1.gpo-ca.dkim.brevo.com"
+  type    = "CNAME"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "brevo2__domainkey_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "brevo2._domainkey.gpo.ca"
+  content = "b2.gpo-ca.dkim.brevo.com"
+  type    = "CNAME"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "brevo_code_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "gpo.ca"
+  content = "brevo-code:fd451e5873e98d8026c77d5adab32379"
+  type    = "TXT"
+  ttl     = 300
+}
