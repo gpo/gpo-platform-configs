@@ -1,14 +1,3 @@
-# Cloudflare Zero Trust organisation — account-level singleton.
-# Must exist before any Access applications can be created.
-# The auth_domain becomes <team>.cloudflareaccess.com.
-resource "cloudflare_zero_trust_organization" "gpo" {
-  account_id                         = data.sops_file.secrets.data["cloudflare_account_id"]
-  name                               = "GPO"
-  auth_domain                        = "gpo"
-  is_ui_read_only                    = false
-  user_seat_expiration_inactive_time = "1460h" # 60 days
-}
-
 # ---------------------------------------------------------------------------
 # islandgetaway — gate preview deployments (*.pages.dev) behind Access
 # ---------------------------------------------------------------------------
