@@ -26,7 +26,7 @@ resource "cloudflare_pages_project" "islandgetaway" {
       pr_comments_enabled           = true
       deployments_enabled           = true
       production_deployment_enabled = true
-      preview_deployment_setting    = "none"
+      preview_deployment_setting    = "all"
     }
   }
 
