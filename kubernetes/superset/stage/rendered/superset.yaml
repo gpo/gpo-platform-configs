@@ -236,7 +236,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -258,7 +258,7 @@ metadata:
   namespace: superset
   labels:
     app: superset-worker
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -298,12 +298,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -344,7 +341,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -386,12 +383,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -588,7 +582,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
   annotations:
@@ -615,12 +609,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset-init-db
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           envFrom:
             - secretRef:
                 name: superset-env
