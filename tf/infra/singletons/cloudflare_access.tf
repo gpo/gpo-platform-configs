@@ -6,7 +6,7 @@ resource "cloudflare_zero_trust_access_application" "islandgetaway_previews" {
   name             = "islandgetaway previews"
   domain           = "*.islandgetaway-ca.pages.dev"
   type             = "self_hosted"
-  session_duration = "24h"
+  session_duration = "168h"
 
   # One-time PIN is enabled by default on all Cloudflare accounts; no IdP
   # resource is needed.
