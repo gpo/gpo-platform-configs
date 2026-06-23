@@ -236,7 +236,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -258,7 +258,7 @@ metadata:
   namespace: superset
   labels:
     app: superset-worker
-    chart: superset-0.15.0
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -297,7 +297,7 @@ spec:
           name: wait-for-postgres-redis
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -338,7 +338,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -379,7 +379,7 @@ spec:
           name: wait-for-postgres
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -576,7 +576,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.0
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
   annotations:
@@ -602,7 +602,7 @@ spec:
           name: wait-for-postgres
       containers:
         - name: superset-init-db
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.1
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
           envFrom:
             - secretRef:
                 name: superset-env
