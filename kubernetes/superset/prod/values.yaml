@@ -28,24 +28,3 @@ configOverrides:
     FEATURE_FLAGS = {
       'DASHBOARD_RBAC': True,
     }
-
-    _GPO_THEME_TOKENS = {
-      'brandAppName': 'GPO Insights',
-      'colorPrimary': '#2F772F',
-      'colorSuccess': '#75AE55',
-      'colorLink': '#0085AE',
-      'colorWarning': '#F7E16D',
-      'colorError': '#FF1616',
-      'fontFamily': "'Avenir Next', Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    }
-
-    APP_ICON = 'https://files.ontariogreens.ca/branding/gpo/logos/gpo-logo-EN-horizontal-green.svg'
-
-    THEME_DEFAULT = {
-      'token': _GPO_THEME_TOKENS,
-    }
-
-    THEME_DARK = {
-      'algorithm': 'dark',
-      'token': _GPO_THEME_TOKENS,
-    }
