@@ -39,6 +39,8 @@ configOverrides:
       'fontFamily': "'Avenir Next', Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     }
 
+    APP_ICON = 'https://files.ontariogreens.ca/branding/gpo/logos/gpo-logo-EN-horizontal-green.svg'
+
     THEME_DEFAULT = {
       'token': _GPO_THEME_TOKENS,
     }
