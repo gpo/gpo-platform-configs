@@ -27,4 +27,6 @@ configOverrides:
   superset_config.py: |
     FEATURE_FLAGS = {
       'DASHBOARD_RBAC': True,
+      'DASHBOARD_VIRTUALIZATION_DEFER_DATA': True,
+      'MATRIXIFY': True,
     }
