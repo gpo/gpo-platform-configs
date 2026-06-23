@@ -11,6 +11,10 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/configmap.yaml
 apiVersion: v1
@@ -43,6 +47,10 @@ data:
     rename-command FLUSHDB ""
     rename-command FLUSHALL ""
     # End of replica configuration
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/health-configmap.yaml
 apiVersion: v1
@@ -150,6 +158,10 @@ data:
     "$script_dir/ping_liveness_local.sh" $1 || exit_status=$?
     "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
     exit $exit_status
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/scripts-configmap.yaml
 apiVersion: v1
@@ -178,6 +190,10 @@ data:
     ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
     ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
     exec redis-server "${ARGS[@]}"
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/headless-svc.yaml
 apiVersion: v1
@@ -201,6 +217,9 @@ spec:
   selector:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/master/service.yaml
 apiVersion: v1
@@ -227,6 +246,9 @@ spec:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
     app.kubernetes.io/component: master
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/templates/service.yaml
 apiVersion: v1
@@ -249,6 +271,9 @@ spec:
   selector:
     app: superset
     release: superset
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/templates/deployment-worker.yaml
 apiVersion: apps/v1
@@ -270,13 +295,13 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
+        checksum/superset_config.py: 9e67664480635c3f09ea2adbb061d10c143aff2dbe2a037fd036c2946ebaa390
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
+        checksum/connections: 9d7f9aa15a1c2500ba4c5049cb934e8f5860d207d2dd5764b3282a326bc46067
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
-        checksum/configOverrides: 0613ddf2357c467fff163f9a6d8566106d8af79d622189c01d45bef2adb0eb79
+        checksum/configOverrides: 0e7800fd26efa8a8a5a7131ee24878ea1c816f833d221a02a70873e918973115
         checksum/configOverridesFiles: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       labels:
         app: superset-worker
@@ -295,6 +320,9 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres-redis
+          resources:
+            limits:
+              memory: 256Mi
       containers:
         - name: superset
           image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
@@ -351,14 +379,14 @@ spec:
     metadata:
       annotations:
         # Force reload on config changes
-        checksum/superset_config.py: 7f9396795bb0a5a1b02cf8a9994fdfdd62b97e479a8f3c2bb04d1f7d638d65fa
+        checksum/superset_config.py: 9e67664480635c3f09ea2adbb061d10c143aff2dbe2a037fd036c2946ebaa390
         checksum/superset_init.sh: e6b1e8eac1f7a79a07a6c72a0e2ee6e09654eeb439c6bbe61bfd676917c41e02
         checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
-        checksum/connections: c3d3ce69117f3ced7a541d038ebb96b49ca06c3234928cb895f0b3941e3c3c19
+        checksum/connections: 9d7f9aa15a1c2500ba4c5049cb934e8f5860d207d2dd5764b3282a326bc46067
         checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
-        checksum/configOverrides: 0613ddf2357c467fff163f9a6d8566106d8af79d622189c01d45bef2adb0eb79
+        checksum/configOverrides: 0e7800fd26efa8a8a5a7131ee24878ea1c816f833d221a02a70873e918973115
         checksum/configOverridesFiles: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       labels:
         app: superset
@@ -377,6 +405,9 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres
+          resources:
+            limits:
+              memory: 256Mi
       containers:
         - name: superset
           image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
@@ -567,6 +598,7 @@ spec:
           emptyDir: {}
         - name: redis-data
           emptyDir: {}
+      initContainers: []
 ---
 # Source: superset/templates/init-job.yaml
 apiVersion: batch/v1
@@ -600,6 +632,9 @@ spec:
           image: apache/superset:dockerize
           imagePullPolicy: IfNotPresent
           name: wait-for-postgres
+          resources:
+            limits:
+              memory: 256Mi
       containers:
         - name: superset-init-db
           image: northamerica-northeast2-docker.pkg.dev/gpo-eng-prod/gpo/apache-superset:v0.0.3
