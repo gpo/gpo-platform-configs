@@ -11,6 +11,10 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/configmap.yaml
 apiVersion: v1
@@ -43,6 +47,10 @@ data:
     rename-command FLUSHDB ""
     rename-command FLUSHALL ""
     # End of replica configuration
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/health-configmap.yaml
 apiVersion: v1
@@ -150,6 +158,10 @@ data:
     "$script_dir/ping_liveness_local.sh" $1 || exit_status=$?
     "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
     exit $exit_status
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/scripts-configmap.yaml
 apiVersion: v1
@@ -178,6 +190,10 @@ data:
     ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
     ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
     exec redis-server "${ARGS[@]}"
+spec:
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/headless-svc.yaml
 apiVersion: v1
@@ -201,6 +217,9 @@ spec:
   selector:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/charts/redis/templates/master/service.yaml
 apiVersion: v1
@@ -227,6 +246,9 @@ spec:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
     app.kubernetes.io/component: master
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/templates/service.yaml
 apiVersion: v1
@@ -236,7 +258,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -249,6 +271,9 @@ spec:
   selector:
     app: superset
     release: superset
+  template:
+    spec:
+      initContainers: []
 ---
 # Source: superset/templates/deployment-worker.yaml
 apiVersion: apps/v1
@@ -258,7 +283,7 @@ metadata:
   namespace: superset
   labels:
     app: superset-worker
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -298,12 +323,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -344,7 +366,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
 spec:
@@ -386,12 +408,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -579,6 +598,7 @@ spec:
           emptyDir: {}
         - name: redis-data
           emptyDir: {}
+      initContainers: []
 ---
 # Source: superset/templates/init-job.yaml
 apiVersion: batch/v1
@@ -588,7 +608,7 @@ metadata:
   namespace: superset
   labels:
     app: superset
-    chart: superset-0.15.5
+    chart: superset-0.16.2
     release: superset
     heritage: Helm
   annotations:
@@ -615,12 +635,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 128Mi
       containers:
         - name: superset-init-db
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.2
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
           envFrom:
             - secretRef:
                 name: superset-env
