@@ -13,8 +13,8 @@ yq ea '
 ' - | \
 yq ea '(.spec.template.spec.initContainers[]?.resources) |= del(.requests)' - | \
 yq ea '
-  if .spec.template.spec.initContainers == [] then del(.spec.template.spec.initContainers) else . end |
-  if .spec.template.spec == {} then del(.spec.template.spec) else . end |
-  if .spec.template == {} then del(.spec.template) else . end |
-  if .spec == {} then del(.spec) else . end
+  del(.spec.template.spec.initContainers | select(. == [])) |
+  del(.spec.template.spec | select(. == {})) |
+  del(.spec.template | select(. == {})) |
+  del(.spec | select(. == {}))
 ' -
