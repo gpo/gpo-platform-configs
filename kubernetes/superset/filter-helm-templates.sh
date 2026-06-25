@@ -11,4 +11,10 @@ yq ea '
     )
   )
 ' - | \
-yq ea '(.spec.template.spec.initContainers[]?.resources) |= del(.requests)' -
+yq ea '(.spec.template.spec.initContainers[]?.resources) |= del(.requests)' - | \
+yq ea '
+  del(.spec.template.spec.initContainers | select(length == 0)) |
+  del(.spec.template.spec | select(length == 0)) |
+  del(.spec.template | select(length == 0)) |
+  del(.spec | select(length == 0))
+' -
