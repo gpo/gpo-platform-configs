@@ -12,9 +12,15 @@ yq ea '
   )
 ' - | \
 yq ea '(.spec.template.spec.initContainers[]?.resources) |= del(.requests)' - | \
-yq ea '
-  (.spec.template.spec | select(.initContainers == [])) |= del(.initContainers) |
-  (.spec.template | select(.spec == {})) |= del(.spec) |
-  (.spec | select(.template == {})) |= del(.template) |
-  select(.spec == {}) |= del(.spec)
-' -
+python3 -c '
+import sys, re
+content = sys.stdin.read()
+# Remove full spec.template.spec tree when initContainers: [] is its only child
+content = re.sub(r"spec:\n  template:\n    spec:\n      initContainers: \[\]\n", "", content)
+# Remove lone initContainers: [] (sibling of containers/volumes in a real pod spec)
+content = re.sub(r"      initContainers: \[\]\n", "", content)
+# Remove orphaned empty parent nodes left before a document separator
+content = re.sub(r"    spec:\n(?=---)", "", content)
+content = re.sub(r"  template:\n(?=---)", "", content)
+sys.stdout.write(content)
+'
