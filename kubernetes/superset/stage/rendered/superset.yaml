@@ -11,10 +11,6 @@ metadata:
     helm.sh/chart: redis-17.9.4
     app.kubernetes.io/instance: superset
     app.kubernetes.io/managed-by: Helm
-spec:
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/charts/redis/templates/configmap.yaml
 apiVersion: v1
@@ -47,10 +43,6 @@ data:
     rename-command FLUSHDB ""
     rename-command FLUSHALL ""
     # End of replica configuration
-spec:
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/charts/redis/templates/health-configmap.yaml
 apiVersion: v1
@@ -158,10 +150,6 @@ data:
     "$script_dir/ping_liveness_local.sh" $1 || exit_status=$?
     "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
     exit $exit_status
-spec:
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/charts/redis/templates/scripts-configmap.yaml
 apiVersion: v1
@@ -190,10 +178,6 @@ data:
     ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
     ARGS+=("--include" "/opt/bitnami/redis/etc/master.conf")
     exec redis-server "${ARGS[@]}"
-spec:
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/charts/redis/templates/headless-svc.yaml
 apiVersion: v1
@@ -217,9 +201,6 @@ spec:
   selector:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/charts/redis/templates/master/service.yaml
 apiVersion: v1
@@ -246,9 +227,6 @@ spec:
     app.kubernetes.io/name: redis
     app.kubernetes.io/instance: superset
     app.kubernetes.io/component: master
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/templates/service.yaml
 apiVersion: v1
@@ -271,9 +249,6 @@ spec:
   selector:
     app: superset
     release: superset
-  template:
-    spec:
-      initContainers: []
 ---
 # Source: superset/templates/deployment-worker.yaml
 apiVersion: apps/v1
@@ -598,7 +573,6 @@ spec:
           emptyDir: {}
         - name: redis-data
           emptyDir: {}
-      initContainers: []
 ---
 # Source: superset/templates/init-job.yaml
 apiVersion: batch/v1
