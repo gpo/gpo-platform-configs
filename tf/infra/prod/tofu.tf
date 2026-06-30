@@ -16,11 +16,6 @@ terraform {
       version = "0.7.2"
     }
 
-    aws = {
-      source  = "hashicorp/aws"
-      version = "5.81"
-    }
-
     google = {
       source  = "hashicorp/google"
       version = "7.12.0"
@@ -32,11 +27,6 @@ terraform {
     bucket = "gpo-tf-state-data"
     prefix = "prod/infra"
   }
-}
-
-provider "aws" {
-  region  = "ca-central-1"
-  profile = "gpo-prod"
 }
 
 provider "cloudflare" {
