@@ -300,7 +300,7 @@ spec:
               memory: 256Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.4
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -385,7 +385,7 @@ spec:
               memory: 256Mi
       containers:
         - name: superset
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.4
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -433,6 +433,27 @@ spec:
             successThreshold: 1
             timeoutSeconds: 1
           resources: {}
+        # MCP server sidecar (supersetNode.extraContainers in values.yaml).
+        # Shares the superset-config and superset-env secrets with the web
+        # container. Exposed in-cluster by the superset-mcp Service on 5008.
+        - name: mcp
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - . /app/pythonpath/superset_bootstrap.sh; superset mcp run --host 0.0.0.0 --port 5008
+          envFrom:
+            - secretRef:
+                name: superset-env
+          volumeMounts:
+            - name: superset-config
+              mountPath: /app/pythonpath
+              readOnly: true
+          ports:
+            - name: mcp
+              containerPort: 5008
+              protocol: TCP
       volumes:
         - name: superset-config
           secret:
@@ -611,7 +632,7 @@ spec:
               memory: 256Mi
       containers:
         - name: superset-init-db
-          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.3
+          image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.4
           envFrom:
             - secretRef:
                 name: superset-env
