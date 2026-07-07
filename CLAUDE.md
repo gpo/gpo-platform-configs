@@ -21,6 +21,14 @@ graph LR
 
 `singletons` is **global/production only** — no staging equivalent, changes are live immediately.
 
+## Hard rules
+
+These are also enforced by PreToolUse hooks in `.claude/settings.json` (the previous `"rules"` key there was not a real Claude Code setting and was silently ignored):
+
+- **Never write plaintext secrets to any file.** All secrets are SOPS-encrypted; source files are `secrets.env`, `secrets.prod.env`, and `secrets.stage.env` at the repo root. The hook blocks non-`ENC[...]` values in those files.
+- **`tf/infra/singletons/` applies to live production immediately.** Always plan first; the hook forces a user confirmation on any `tofu`/`terraform apply` that mentions singletons.
+- **Kubernetes manifests live in `/kubernetes`, Terraform in `/tf`.** The hook blocks `.tf` files under `kubernetes/` and K8s manifests under `tf/`.
+
 ## Naming conventions
 
 - Resource names: `snake_case`, environment-qualified where needed (e.g. `cloudflare_record.staging_gpo_ca`)
