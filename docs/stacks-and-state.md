@@ -21,3 +21,14 @@ Dependency order: `bootstrap` → `infra` → `app`. Singletons have no dependen
 ## tofu-all
 
 Repo root has a `tofu-all` helper script to run a command across all stacks at once.
+
+## Plan and apply
+
+Always save the plan and apply that exact file, rather than running a bare `tofu apply` (which re-plans on its own and can apply something other than what was reviewed):
+
+```bash
+tofu plan -out=plan
+tofu apply plan
+```
+
+Before applying, check the plan for changes unrelated to what you're working on — drift in other resources (e.g. a setting that was changed outside Terraform) will show up in the same plan. Apply it separately or fix the config to match reality instead of bundling it into an unrelated change.

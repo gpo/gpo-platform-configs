@@ -43,3 +43,4 @@ graph LR
 | Stack boundaries and remote state wiring | [docs/stacks-and-state.md](docs/stacks-and-state.md) |
 | Add a new application | [docs/app-layer.md](docs/app-layer.md) |
 | Bootstrap a new cloud account | [docs/bootstrap.md](docs/bootstrap.md) |
+| Plan/apply workflow | [docs/stacks-and-state.md](docs/stacks-and-state.md) |
