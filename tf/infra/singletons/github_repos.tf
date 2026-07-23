@@ -6,7 +6,6 @@ resource "github_repository" "secure_gpo_ca" {
   allow_merge_commit     = false
   allow_rebase_merge     = true
   delete_branch_on_merge = true
-  has_downloads          = true
   has_issues             = true
   vulnerability_alerts   = true
   has_projects           = true
@@ -26,7 +25,6 @@ resource "github_repository" "gpo_ca" {
   allow_merge_commit     = false
   allow_rebase_merge     = false
   delete_branch_on_merge = true
-  has_downloads          = true
   has_issues             = true
   has_projects           = true
   vulnerability_alerts   = true
@@ -43,7 +41,6 @@ resource "github_repository" "public" {
   name                 = "public"
   description          = "READMEs, Roadmap, and general onboarding information"
   visibility           = "public"
-  has_downloads        = true
   has_issues           = true
   has_projects         = true
   vulnerability_alerts = true
@@ -62,7 +59,6 @@ resource "github_repository" "gpo_platform_configs" {
   visibility             = "public"
   has_projects           = true
   has_issues             = true
-  has_downloads          = true
   allow_auto_merge       = true
   allow_merge_commit     = false
   allow_rebase_merge     = false
@@ -78,12 +74,11 @@ resource "github_branch_default" "gpo_platform_configs" {
 #---
 
 resource "github_repository" "gpo_it" {
-  name          = "gpo-it"
-  description   = "google workspace and future SAML config"
-  visibility    = "private"
-  has_downloads = true
-  has_issues    = true
-  has_projects  = true
+  name         = "gpo-it"
+  description  = "google workspace and future SAML config"
+  visibility   = "private"
+  has_issues   = true
+  has_projects = true
 }
 
 resource "github_branch_default" "gpo_it" {
@@ -94,11 +89,10 @@ resource "github_branch_default" "gpo_it" {
 #---
 
 resource "github_repository" "civicrm_api" {
-  name          = "civicrm-api"
-  description   = "JavaScript (and TypeScript) client for CiviCRM API v4"
-  visibility    = "public"
-  has_downloads = true
-  has_projects  = true
+  name         = "civicrm-api"
+  description  = "JavaScript (and TypeScript) client for CiviCRM API v4"
+  visibility   = "public"
+  has_projects = true
 }
 
 resource "github_branch_default" "civicrm_api" {
@@ -111,7 +105,6 @@ resource "github_branch_default" "civicrm_api" {
 resource "github_repository" "open_walk_sheets" {
   name                 = "open-walk-sheets"
   visibility           = "public"
-  has_downloads        = true
   has_issues           = true
   has_projects         = true
   vulnerability_alerts = true
@@ -128,7 +121,6 @@ resource "github_branch_default" "open_walk_sheets" {
 resource "github_repository" "dot_github" {
   name                 = ".github"
   visibility           = "public"
-  has_downloads        = true
   has_issues           = true
   has_projects         = true
   has_wiki             = true
@@ -146,7 +138,6 @@ resource "github_repository" "migrate_bitbucket_to_github" {
   name                 = "migrate_bitbucket_to_github"
   description          = "Simple Script for migrating repos from bitbucket to github"
   visibility           = "public"
-  has_downloads        = true
   has_issues           = true
   has_projects         = true
   has_wiki             = true
@@ -161,8 +152,7 @@ resource "github_branch_default" "migrate_bitbucket_to_github" {
 #---
 
 resource "github_repository" "cdn_tax_receipts" {
-  name          = "CDNTaxReceipts"
-  visibility    = "public"
-  has_downloads = true
-  has_projects  = true
+  name         = "CDNTaxReceipts"
+  visibility   = "public"
+  has_projects = true
 }
