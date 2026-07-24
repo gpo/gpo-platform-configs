@@ -9,6 +9,12 @@ resource "cloudflare_zone" "islandgetaway_ca" {
   zone       = "islandgetaway.ca"
 }
 
+module "islandgetaway_ca_no_email" {
+  source  = "../../modules/infra/no_email_dns"
+  zone_id = cloudflare_zone.islandgetaway_ca.id
+  domain  = "islandgetaway.ca"
+}
+
 # ---------------------------------------------------------------------------
 # Pages project + custom domain
 # ---------------------------------------------------------------------------
