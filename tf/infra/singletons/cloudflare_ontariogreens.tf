@@ -68,3 +68,9 @@ resource "cloudflare_record" "facebook_domain_verification_ontariogreens_ca" {
   type    = "TXT"
   ttl     = 300
 }
+
+module "ontariogreens_ca_no_email" {
+  source  = "../../modules/infra/no_email_dns"
+  zone_id = cloudflare_zone.ontariogreens_ca.id
+  domain  = "ontariogreens.ca"
+}
