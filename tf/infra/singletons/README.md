@@ -35,6 +35,7 @@ will *not* have a separate copy for stage and prod belongs here.
 
 | Name | Type |
 |------|------|
+| [cloudflare_bot_management.gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/bot_management) | resource |
 | [cloudflare_pages_domain.april_fools_1997_gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/pages_domain) | resource |
 | [cloudflare_pages_domain.islandgetaway_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/pages_domain) | resource |
 | [cloudflare_pages_project.april_fools](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/pages_project) | resource |
@@ -88,6 +89,8 @@ will *not* have a separate copy for stage and prod belongs here.
 | [cloudflare_record.web_e_gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_record.www_gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_record.www_islandgetaway_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
+| [cloudflare_ruleset.gpo_ca_admin_route_protection](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
+| [cloudflare_ruleset.gpo_ca_wp_login_rate_limit](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_ruleset.www_islandgetaway_ca_redirect](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_zone.gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/zone) | resource |
 | [cloudflare_zone.islandgetaway_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/zone) | resource |
