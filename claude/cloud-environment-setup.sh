@@ -16,15 +16,17 @@
 # without the Setup Script block configured.
 #
 # We'd rather just run `mise install`, and this script may become that one
-# day, but it can't right now: mise.jdx.dev is unreachable from this
-# environment (confirmed by direct curl - connection refused), and mise's
-# own installer script fails for the same reason, even though the plain
-# GitHub Release downloads it would eventually fetch on our behalf do not.
-# So this installs the same versions pinned in .mise.toml directly, parsed
-# from that file so they can't drift from a second hardcoded copy, via
-# pinned-version GitHub Releases downloads (not `go install`, which needs a
-# Go toolchain we can't assume is present) — a different, unblocked network
-# path from scoped git/API access.
+# day, but it can't by default: mise.jdx.dev is network-reachable (DNS/TCP/
+# TLS all fine) but blocked by this environment's egress allowlist out of
+# the box - confirmed via a real curl, which got a 403 with
+# `x-deny-reason: host_not_allowed` from the egress proxy, not a connection
+# failure. Adding mise.jdx.dev to the environment's Custom network access
+# list fixes it (confirmed working end to end once added). Until that's
+# standard for every environment this script runs in, it installs the same
+# versions pinned in .mise.toml directly, parsed from that file so they
+# can't drift from a second hardcoded copy, via pinned-version GitHub
+# Releases downloads (not `go install`, which needs a Go toolchain we can't
+# assume is present) — those aren't allowlist-gated the way mise.jdx.dev is.
 set -u
 REPO_DIR=/home/user/gpo-platform-configs
 BIN=/usr/local/bin
