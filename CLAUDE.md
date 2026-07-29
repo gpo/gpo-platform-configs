@@ -44,3 +44,9 @@ graph LR
 | Add a new application | [docs/app-layer.md](docs/app-layer.md) |
 | Bootstrap a new cloud account | [docs/bootstrap.md](docs/bootstrap.md) |
 | Plan/apply workflow | [docs/stacks-and-state.md](docs/stacks-and-state.md) |
+
+## Cloud agent sessions (Claude Code on the web)
+
+Tooling (`opentofu`, `pre-commit`, `sops`, `jq`, `argocd`, `helmfile`, `yq`, `helm`, `gh`, `aws`) installs via `claude/cloud-environment-setup.sh`, fetched by the environment's Setup Script — see the "Claude Code cloud environments" section in README.md. Check `~/.claude/cloud-setup-errors.log` at session start and report if non-empty.
+
+`registry.opentofu.org` is not reachable from this environment: `terraform_validate` and `terraform_providers_lock` fail under `pre-commit run --all-files` for that reason, not a tooling problem. `terraform_fmt` works fine (local-only).
