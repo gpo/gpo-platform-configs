@@ -4,14 +4,27 @@
 #
 # Self-contained: clones gpo-platform-configs itself if it isn't already
 # attached as a source, since a script fetched by curl can't assume a
-# pre-existing checkout.
+# pre-existing checkout. Logs its own failures (append-only) to
+# ~/.claude/cloud-setup-errors.log, so it must run after any step that
+# truncates that file.
 #
-# Installs the versions pinned in .mise.toml so they can't drift from a
-# second hardcoded copy. Uses direct pinned-version GitHub Releases
-# downloads (not `go install` or `mise` itself) for sops/yq/helmfile/
-# opentofu/argocd — mise.jdx.dev and its installer are unreachable from
-# this environment, and public release-asset downloads are a different,
-# unblocked network path from scoped git/API access.
+# Unlike canopy/gpo-ca, none of this needs the Setup Script phase to work
+# around GitHub access scoping — every tool here comes from public GitHub
+# Release binaries, apt, or pip, none of which are scope-blocked in a live
+# session. .claude/hooks/session-start.sh checks (but doesn't reinstall)
+# these at session start as a lighter-weight backstop for environments
+# without the Setup Script block configured.
+#
+# We'd rather just run `mise install`, and this script may become that one
+# day, but it can't right now: mise.jdx.dev is unreachable from this
+# environment (confirmed by direct curl - connection refused), and mise's
+# own installer script fails for the same reason, even though the plain
+# GitHub Release downloads it would eventually fetch on our behalf do not.
+# So this installs the same versions pinned in .mise.toml directly, parsed
+# from that file so they can't drift from a second hardcoded copy, via
+# pinned-version GitHub Releases downloads (not `go install`, which needs a
+# Go toolchain we can't assume is present) — a different, unblocked network
+# path from scoped git/API access.
 set -u
 REPO_DIR=/home/user/gpo-platform-configs
 BIN=/usr/local/bin

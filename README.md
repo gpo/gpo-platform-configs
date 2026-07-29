@@ -39,7 +39,6 @@ All our K8s configs live in the [kubernetes subdir](./kubernetes).
 
 We have a few helper scripts in the [scripts subdir](./scripts).
 
-
 # Auto Generated Docs
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
