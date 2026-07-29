@@ -350,6 +350,15 @@ resource "cloudflare_record" "scph1018__domainkey_gpo_ca" {
   ttl     = 300
 }
 
+# GitHub organization domain verification
+resource "cloudflare_record" "_gh_gpo_o_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "_gh-gpo-o.gpo.ca"
+  content = "2e873b4c9a"
+  type    = "TXT"
+  ttl     = 300
+}
+
 resource "cloudflare_record" "mar2019__domainkey_lists_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "mar2019._domainkey.lists.gpo.ca"
