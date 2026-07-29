@@ -3,7 +3,7 @@
 # README.md) is expected to have already installed everything before the
 # session starts, and re-running the full installer here on every session
 # start just slows things down for no benefit once tools are present. This
-# only checks versions and warns (to ~/.claude/cloud-setup-errors.log) if
+# only checks versions and warns (to ~/.cloud-setup-errors.log) if
 # something is missing or mismatched, so a broken Setup Script still
 # surfaces instead of silently leaving tools unavailable.
 set -uo pipefail
@@ -21,8 +21,7 @@ pin() {
 warn() {
   local msg="gpo-platform-configs: $1 - run claude/cloud-environment-setup.sh (or .claude/setup-env.sh) to fix"
   echo "!! $msg"
-  mkdir -p ~/.claude
-  echo "$msg" >> ~/.claude/cloud-setup-errors.log
+  echo "$msg" >> ~/.cloud-setup-errors.log
 }
 
 check() {

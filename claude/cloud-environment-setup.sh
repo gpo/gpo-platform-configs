@@ -5,7 +5,7 @@
 # Self-contained: clones gpo-platform-configs itself if it isn't already
 # attached as a source, since a script fetched by curl can't assume a
 # pre-existing checkout. Logs its own failures (append-only) to
-# ~/.claude/cloud-setup-errors.log, so it must run after any step that
+# ~/.cloud-setup-errors.log, so it must run after any step that
 # truncates that file.
 #
 # Unlike canopy/gpo-ca, none of this needs the Setup Script phase to work
@@ -35,8 +35,7 @@ warn() { echo "!! $*"; }
 fail() {
   local msg="gpo-platform-configs: $1 - unavailable until this is fixed"
   warn "$msg"
-  mkdir -p ~/.claude
-  echo "$msg" >> ~/.claude/cloud-setup-errors.log
+  echo "$msg" >> ~/.cloud-setup-errors.log
 }
 
 if [ ! -d "$REPO_DIR/.git" ]; then
