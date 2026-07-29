@@ -15,18 +15,21 @@
 # these at session start as a lighter-weight backstop for environments
 # without the Setup Script block configured.
 #
-# We'd rather just run `mise install`, and this script may become that one
-# day, but it can't by default: mise.jdx.dev is network-reachable (DNS/TCP/
-# TLS all fine) but blocked by this environment's egress allowlist out of
-# the box - confirmed via a real curl, which got a 403 with
-# `x-deny-reason: host_not_allowed` from the egress proxy, not a connection
-# failure. Adding mise.jdx.dev to the environment's Custom network access
-# list fixes it (confirmed working end to end once added). Until that's
-# standard for every environment this script runs in, it installs the same
-# versions pinned in .mise.toml directly, parsed from that file so they
-# can't drift from a second hardcoded copy, via pinned-version GitHub
-# Releases downloads (not `go install`, which needs a Go toolchain we can't
-# assume is present) — those aren't allowlist-gated the way mise.jdx.dev is.
+# `mise install` itself is NOT a viable replacement for this script, even
+# with mise.jdx.dev allowlisted (README's Requirements section) — tested
+# directly: mise's `aqua` backend resolves every tool through
+# api.github.com, which 403s with "GitHub access to this repository is not
+# enabled for this session" for any repo this session doesn't have git
+# access to (getsops/sops, opentofu/opentofu, etc. — none of them are this
+# repo). That's the same git/API-scoping problem documented in canopy for
+# composer/api.github.com. The plain release-asset URLs below
+# (github.com/<owner>/<repo>/releases/download/..., no API call involved)
+# are a different, unblocked code path, confirmed working with a plain
+# curl even where the api.github.com call for the same tool 403s. So this
+# installs the same versions pinned in .mise.toml directly, parsed from
+# that file so they can't drift from a second hardcoded copy, via those
+# pinned-version GitHub Releases downloads (not `go install` either, which
+# needs a Go toolchain we can't assume is present).
 set -u
 REPO_DIR=/home/user/gpo-platform-configs
 BIN=/usr/local/bin
