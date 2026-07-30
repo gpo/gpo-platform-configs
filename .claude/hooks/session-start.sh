@@ -33,7 +33,7 @@ check() {
   fi
 }
 
-check jq jq --version -- "$(pin jq)"  # apt tops out around 1.7.x; a 1.7.x warning here is expected, not a real gap
+check jq jq --version -- "$(pin jq)"
 check gh command -v gh -- gh
 check aws command -v aws -- aws
 check pre-commit pre-commit --version -- "$(pin pre-commit)"

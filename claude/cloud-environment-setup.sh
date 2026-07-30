@@ -66,18 +66,30 @@ HELMFILE_VERSION="$(pin helmfile)"
 YQ_VERSION="$(pin yq)"
 HELM_VERSION="$(pin helm)"
 
-# --- jq ---
-if ! command -v jq >/dev/null 2>&1; then
-  log "installing jq via apt"
-  apt-get update -qq && apt-get install -y -qq jq || fail "jq apt install failed"
+# --- jq (pinned GitHub Release, raw binary) ---
+# apt's jq tops out around 1.7.x on this base image, short of the 1.8.1
+# pin, so - like the other tools below - install the exact pinned version
+# from a release binary instead of relying on apt.
+if ! jq --version 2>/dev/null | grep -q "$JQ_VERSION"; then
+  log "installing jq $JQ_VERSION from GitHub release"
+  if curl -fsSL -o "$BIN/jq" "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64"; then
+    chmod 0755 "$BIN/jq"
+  else
+    fail "jq release download failed"
+  fi
 else
-  log "jq already present: $(jq --version)"
+  log "jq already at $JQ_VERSION"
 fi
 
 # --- gh CLI (README prerequisite, not version-pinned) ---
+# `apt-get update` can fail non-zero here because of unrelated third-party
+# PPAs in this base image's sources.list (deadsnakes, ondrej/php) being
+# unreachable/unsigned - that's not a reason to skip installing gh, so its
+# failure is tolerated separately from the actual install step.
 if ! command -v gh >/dev/null 2>&1; then
   log "installing gh via apt"
-  apt-get update -qq && apt-get install -y -qq gh || fail "gh apt install failed"
+  apt-get update -qq || true
+  apt-get install -y -qq gh || fail "gh apt install failed"
 else
   log "gh already present: $(gh --version | head -1)"
 fi
@@ -105,15 +117,19 @@ else
   log "pre-commit already at $PRECOMMIT_VERSION"
 fi
 
-# --- helm (official install script) ---
+# --- helm (pinned tarball from get.helm.sh, raw download) ---
+# The official get-helm-3 install script's checksum-verification step
+# failed in this environment even though the tarball itself downloaded
+# fine - rather than chase that, download and extract the tarball directly
+# like the other tools below.
 if ! helm version --short 2>/dev/null | grep -q "v${HELM_VERSION#v}"; then
-  log "installing helm $HELM_VERSION via official install script"
+  log "installing helm $HELM_VERSION from get.helm.sh"
   tmp=$(mktemp -d)
-  if curl -fsSL -o "$tmp/get-helm.sh" "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"; then
-    chmod +x "$tmp/get-helm.sh"
-    "$tmp/get-helm.sh" --version "v${HELM_VERSION#v}" --no-sudo || fail "helm install failed"
+  if curl -fsSL -o "$tmp/helm.tar.gz" "https://get.helm.sh/helm-v${HELM_VERSION#v}-linux-amd64.tar.gz"; then
+    tar -xzf "$tmp/helm.tar.gz" -C "$tmp"
+    install -m 0755 "$tmp/linux-amd64/helm" "$BIN/helm"
   else
-    fail "could not fetch helm install script"
+    fail "helm download failed"
   fi
   rm -rf "$tmp"
 else
