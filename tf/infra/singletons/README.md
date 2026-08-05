@@ -88,6 +88,7 @@ will *not* have a separate copy for stage and prod belongs here.
 | [cloudflare_record.web_e_gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_record.www_gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_record.www_islandgetaway_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
+| [cloudflare_ruleset.www_gpo_ca_redirect](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_ruleset.www_islandgetaway_ca_redirect](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_zone.gpo_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/zone) | resource |
 | [cloudflare_zone.islandgetaway_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/zone) | resource |

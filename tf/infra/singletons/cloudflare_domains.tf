@@ -112,12 +112,42 @@ resource "cloudflare_record" "_28200265_gpo_ca" {
   ttl     = 300
 }
 
+# Proxied so Cloudflare's Universal SSL cert (gpo.ca + *.gpo.ca) terminates TLS
+# at the edge. DNS-only sent browsers straight to the origin, which only holds a
+# cert for the apex, producing a certificate-name-mismatch warning on www.
 resource "cloudflare_record" "www_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "www.gpo.ca"
   content = "gpo.ca"
   type    = "CNAME"
-  ttl     = 300
+  ttl     = 1
+  proxied = true
+}
+
+# 301 www → apex, preserving path and query string
+resource "cloudflare_ruleset" "www_gpo_ca_redirect" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "Redirect www to apex"
+  kind    = "zone"
+  phase   = "http_request_dynamic_redirect"
+
+  rules {
+    action      = "redirect"
+    expression  = "(http.host eq \"www.gpo.ca\")"
+    description = "301 www.gpo.ca -> gpo.ca"
+    enabled     = true
+
+    action_parameters {
+      from_value {
+        status_code           = 301
+        preserve_query_string = true
+
+        target_url {
+          expression = "concat(\"https://gpo.ca\", http.request.uri.path)"
+        }
+      }
+    }
+  }
 }
 
 resource "cloudflare_record" "agmsurvey_gpo_ca" {
