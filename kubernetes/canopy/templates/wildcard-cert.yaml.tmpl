@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-canopy
+  namespace: canopy
+spec:
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-dns-prod
+  secretName: wildcard-canopy
+  dnsNames:
+  - "*.${hostname}"

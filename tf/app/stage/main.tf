@@ -20,6 +20,13 @@ module "grassroots" {
   }
 }
 
+module "canopy" {
+  source             = "../../modules/app/canopy"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpogear
+  environment        = local.environment
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.canopy_ingress_ip
+}
+
 module "superset" {
   source             = "../../modules/app/superset"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools

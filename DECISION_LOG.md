@@ -6,6 +6,14 @@ A decisions provides context on the project and the reasons behind certain choic
 ## Decisions
 The most recent decision should be at the top.
 
+### 2026-08-11 Canopy gets a dedicated Gateway, tested on gpogear.ca
+
+Canopy (`gpo/canopy`, the GKE-hosted WordPress multisite network) needs a public Gateway. The existing `gpotools` Gateway (`kubernetes/gateway`) only serves internal tooling (grassroots, superset) on `gpotools.ca`/`gpotoolsstage.ca`.
+
+Decision: canopy gets its own dedicated Gateway (`kubernetes/canopy/{stage,prod}/gateway.yaml`) rather than joining `gpotools`, since riding/campaign sites are public-facing and shouldn't share a trust/blast-radius boundary with internal tools. This costs one more reserved static IP and `ClusterIssuer` wiring per environment, accepted as the price of isolation.
+
+The real production domain is `gpo.ca`, but repointing that domain's DNS is a separate, deliberately deferred migration - not touched here. In the meantime the canopy Gateway is proven out end-to-end (wildcard cert issuance, HTTPRoute, DNS) against `gpogear.ca`, wildcarded, a new zone dedicated to this purpose.
+
 ### 2026-01-12 Rendered Manifests Pattern
 
 We've decided to adopt the [rendered manifests pattern](https://akuity.io/blog/the-rendered-manifests-pattern) which basically means that our CD tooling doesn't render templates, or helm charts, or do anything dynamic at all. It just applies the static manifests which we have pre-rendered into our repo.

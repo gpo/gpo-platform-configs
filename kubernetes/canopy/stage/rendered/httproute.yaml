@@ -1,0 +1,20 @@
+# genk8s:hash=PENDING - hand-authored placeholder, not yet produced by `mise canopy:genk8s`
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: canopy
+  namespace: canopy
+  labels:
+    gateway: canopy
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: canopy
+    namespace: canopy
+    sectionName: tls
+  hostnames:
+  - "*.gpogear.ca"
+  rules:
+  - backendRefs:
+    - name: canopy
+      port: 80

@@ -1,0 +1,22 @@
+# same chicken/egg workaround as kubernetes/gateway/resources/gateway.bootstrap.yaml:
+# apply this HTTP-only version first, let cert-manager issue the wildcard
+# cert into a secret, then apply stage/gateway.yaml for the TLS listener.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: canopy
+  namespace: canopy
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  addresses:
+  - type: NamedAddress
+    value: canopy-ingress-ip

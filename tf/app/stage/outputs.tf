@@ -43,6 +43,15 @@ output "canopy" {
     secret = {
       environment = local.environment
     }
+    httproute = {
+      hostname = module.canopy.wildcard_hostname
+    }
+    wildcard-cert = {
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpogear.zone
+    }
+    gateway = {
+      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpogear.zone
+    }
   }
 }
 

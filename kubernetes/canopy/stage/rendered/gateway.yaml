@@ -1,0 +1,34 @@
+# genk8s:hash=PENDING - hand-authored placeholder, not yet produced by `mise canopy:genk8s`
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: canopy
+  namespace: canopy
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    hostname: "*.gpogear.ca"
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  - name: tls
+    hostname: "*.gpogear.ca"
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-canopy
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  addresses:
+  - type: NamedAddress
+    value: canopy-ingress-ip
