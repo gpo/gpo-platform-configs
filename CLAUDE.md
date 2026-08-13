@@ -21,6 +21,15 @@ graph LR
 
 `singletons` is **global/production only** — no staging equivalent, changes are live immediately.
 
+## How change reaches production
+
+Read [docs/pull-requests.md](docs/pull-requests.md) before opening or merging any PR. The invariant it enforces:
+
+- **Stage first, always, as two PRs.** Terraform: stage PR → apply stage → merge → prod PR → apply prod → merge. The apply happens while the PR is open; merging records that it worked. Kubernetes inverts this — ArgoCD deploys on merge — so merge the stage PR, verify the sync, then open the prod PR.
+- **Stage and prod run the same code.** Shared logic lives in `tf/modules/` or a shared template; the environments differ only in variables. If the prod PR needs to touch the module, stage never ran what prod is about to run.
+- **Record the plan and apply output in the PR body**, for whichever environment that PR targets.
+- `tf/infra/singletons/` and `tf/bootstrap/` have no stage tier — put the plan in the PR and get a human to approve before applying.
+
 ## Naming conventions
 
 - Resource names: `snake_case`, environment-qualified where needed (e.g. `cloudflare_record.staging_gpo_ca`)
@@ -44,6 +53,7 @@ graph LR
 | Add a new application | [docs/app-layer.md](docs/app-layer.md) |
 | Bootstrap a new cloud account | [docs/bootstrap.md](docs/bootstrap.md) |
 | Plan/apply workflow | [docs/stacks-and-state.md](docs/stacks-and-state.md) |
+| Open, review, or merge a PR | [docs/pull-requests.md](docs/pull-requests.md) |
 
 ## Cloud agent sessions (Claude Code on the web)
 
