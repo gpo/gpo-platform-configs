@@ -11,8 +11,11 @@ spec:
     namespace: canopy
     server: https://kubernetes.default.svc
   project: default
-  source:
-    path: kubernetes/canopy/stage
+  sources:
+  - path: kubernetes/canopy/resources
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: canopy-app-scaffolding
+  - path: kubernetes/canopy/stage/rendered
     repoURL: https://github.com/gpo/gpo-platform-configs
     targetRevision: canopy-app-scaffolding
   syncPolicy:
