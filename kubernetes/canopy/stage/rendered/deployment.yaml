@@ -22,8 +22,8 @@ spec:
           name: canopy-nginx
       containers:
       - name: app
-        imagePullPolicy: Always
-        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:latest
+        imagePullPolicy: IfNotPresent
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:b49d9d69e03d497073b26caf3f9579b8291cc3e1
         envFrom:
         - secretRef:
             name: canopy
