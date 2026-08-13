@@ -5,14 +5,16 @@
 ## Applied
 
 <!--
-Terraform: which environment, plan summary, apply result. Stage is applied before this
-merges; prod is applied after. See docs/pull-requests.md.
-Kubernetes: rendered diff is in the diff; note the ArgoCD sync status once it lands.
-Write "not applied" and why, if it was not.
+Terraform: paste the plan and the apply output for the environment THIS PR targets.
+It is applied before this merges. Stage and prod are separate PRs — see docs/pull-requests.md.
+Kubernetes: the rendered diff is the review; ArgoCD deploys on merge, so note the sync
+status after it lands. Write "not applied" and why, if it was not.
 -->
 
-- [ ] Stage applied / synced and verified
-- [ ] Prod plan reviewed (apply happens after merge)
+Environment: <!-- stage | prod | singletons | bootstrap -->
+
+- [ ] Applied (Terraform) or rendered manifests committed (Kubernetes)
+- [ ] Stage shipped and verified first, and the module is unchanged since (prod PRs only)
 - [ ] Stage and prod share the same module or template; only variables differ
 - [ ] Docs updated in this PR
 
