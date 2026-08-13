@@ -31,4 +31,6 @@ tofu plan -out=plan
 tofu apply plan
 ```
 
+Apply **stage before prod**, and never merge a PR whose change has not been applied to stage. `singletons` and `bootstrap` have no stage tier — PR the plan and get a human to approve the apply. Full rules: [pull-requests.md](pull-requests.md).
+
 Before applying, check the plan for changes unrelated to what you're working on — drift in other resources (e.g. a setting that was changed outside Terraform) will show up in the same plan. Apply it separately or fix the config to match reality instead of bundling it into an unrelated change.

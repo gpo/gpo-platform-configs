@@ -12,6 +12,8 @@ All our K8s resources are managed by ArgoCD. In an ideal world, no one should ev
 
 > Note: we do not yet live in an ideal world 🌏
 
+Because ArgoCD syncs from `main`, **merging is deploying**. Ship stage and prod as two separate PRs: merge stage, verify the sync, then open the prod PR. Always commit the re-rendered manifests alongside the values or template change — the rendered diff is the review. Full rules: [docs/pull-requests.md](../docs/pull-requests.md).
+
 ## Templating
 
 There are three levels of templating in effect.
