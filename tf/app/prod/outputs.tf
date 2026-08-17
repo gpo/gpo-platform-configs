@@ -34,6 +34,18 @@ output "superset" {
   }
 }
 
+output "canopy" {
+  description = "All outputs required for kubernetes/canopy."
+  value = {
+    deployment = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+    secret = {
+      environment = local.environment
+    }
+  }
+}
+
 output "gateway" {
   description = "All outputs required for kubernetes/gateway."
   value = {

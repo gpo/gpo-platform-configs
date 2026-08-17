@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canopy
+  labels:
+    app: canopy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canopy
+  template:
+    metadata:
+      labels:
+        app: canopy
+    spec:
+      volumes:
+      - name: canopy-nginx-config
+        configMap:
+          name: canopy-nginx
+      containers:
+      - name: app
+        imagePullPolicy: IfNotPresent
+        image: ${image_repository_uri}/canopy:${image_tag}
+        envFrom:
+        - secretRef:
+            name: canopy
+        ports:
+        - containerPort: 9000
+          name: fpm
+      # sidecar until the image runs its own web server - see resources/configmap-nginx.yaml
+      - name: nginx
+        image: nginx:1.27-alpine
+        volumeMounts:
+        - name: canopy-nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http

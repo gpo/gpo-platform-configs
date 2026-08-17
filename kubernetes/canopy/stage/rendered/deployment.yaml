@@ -1,0 +1,49 @@
+# genk8s:hash=PENDING - hand-authored placeholder, not yet produced by `mise canopy:genk8s`
+# regenerate once kubernetes/canopy/templates/deployment.yaml.tmpl has a real tf output feeding it
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canopy
+  labels:
+    app: canopy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canopy
+  template:
+    metadata:
+      labels:
+        app: canopy
+    spec:
+      volumes:
+      - name: canopy-nginx-config
+        configMap:
+          name: canopy-nginx
+      containers:
+      - name: app
+        imagePullPolicy: IfNotPresent
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:b49d9d69e03d497073b26caf3f9579b8291cc3e1
+        envFrom:
+        - secretRef:
+            name: canopy
+        ports:
+        - containerPort: 9000
+          name: fpm
+      - name: nginx
+        image: nginx:1.27-alpine
+        volumeMounts:
+        - name: canopy-nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
