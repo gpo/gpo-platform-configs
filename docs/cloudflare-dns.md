@@ -7,6 +7,7 @@
 | `gpo.ca` | `cloudflare_zone.gpo_ca` | `tf/infra/singletons/cloudflare_domains.tf` |
 | `gpotools.ca` | `cloudflare_zone.gpo_tools` | `tf/infra/prod/cloudflare_zone.tf` |
 | `gpotoolsstage.ca` | `cloudflare_zone.gpo_tools` | `tf/infra/stage/cloudflare_zone.tf` |
+| `gpogear.ca` | `cloudflare_zone.gpogear_ca` | `tf/infra/singletons/cloudflare_gpogear.tf` |
 | `islandgetaway.ca` | `cloudflare_zone.islandgetaway_ca` | `tf/infra/singletons/cloudflare_islandgetaway.tf` |
 | `ontariogreens.ca` | `cloudflare_zone.ontariogreens_ca` | `tf/infra/singletons/cloudflare_ontariogreens.tf` |
 
