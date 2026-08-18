@@ -40,7 +40,7 @@ output "canopy" {
     deployment = {
       image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
     }
-    secret = {
+    configmap = {
       environment = local.environment
     }
   }
