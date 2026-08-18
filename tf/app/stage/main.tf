@@ -9,6 +9,16 @@ module "legacy_logging" {
   source = "../../modules/app/legacy_logging"
 }
 
+module "canopy" {
+  source             = "../../modules/app/canopy"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
+  environment        = local.environment
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+  providers = {
+    google = google.gpo_eng
+  }
+}
+
 module "grassroots" {
   source             = "../../modules/app/grassroots"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools

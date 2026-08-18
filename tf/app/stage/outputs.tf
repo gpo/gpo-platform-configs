@@ -43,6 +43,9 @@ output "canopy" {
     configmap = {
       environment = local.environment
     }
+    httproute = {
+      hostname = module.canopy.hostname
+    }
   }
 }
 
