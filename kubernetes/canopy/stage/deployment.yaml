@@ -1,4 +1,4 @@
-# genk8s:hash=201f6a44511dfd9cdc86ea7e528c38c4
+# genk8s:hash=746537738d29bd1c4b14253e9ea9fa41
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +21,7 @@ spec:
           name: canopy-nginx
       containers:
       - name: app
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:latest
         envFrom:
         - configMapRef:

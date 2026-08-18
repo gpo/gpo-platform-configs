@@ -20,8 +20,8 @@ spec:
           name: canopy-nginx
       containers:
       - name: app
-        imagePullPolicy: IfNotPresent
-        image: ${image_repository_uri}/canopy:${image_tag}
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/canopy:latest
         envFrom:
         - configMapRef:
             name: canopy
