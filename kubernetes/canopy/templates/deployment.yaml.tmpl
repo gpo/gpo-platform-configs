@@ -25,9 +25,6 @@ spec:
         envFrom:
         - configMapRef:
             name: canopy
-        ports:
-        - containerPort: 9000
-          name: fpm
       # sidecar until the image runs its own web server - see resources/configmap-nginx.yaml
       - name: nginx
         image: nginx:1.27-alpine
