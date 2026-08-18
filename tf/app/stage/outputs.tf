@@ -53,7 +53,8 @@ output "gateway" {
   description = "All outputs required for kubernetes/gateway."
   value = {
     wildcard-cert = {
-      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_tools_hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_gear_hostname  = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear.zone
     }
     gateway = {
       gpo_tools_hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
