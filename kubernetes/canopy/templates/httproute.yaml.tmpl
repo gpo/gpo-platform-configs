@@ -1,0 +1,21 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: canopy
+  namespace: canopy
+  labels:
+    gateway: gpogear
+spec:
+  # this connects us to the gateway
+  parentRefs:
+  - kind: Gateway
+    name: gpogear
+    namespace: gateway
+    sectionName: tls
+  hostnames:
+  - "${hostname}"
+  rules:
+  - matches:
+    backendRefs:
+    - name: canopy
+      port: 8080
