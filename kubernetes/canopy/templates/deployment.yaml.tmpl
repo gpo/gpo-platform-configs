@@ -23,7 +23,7 @@ spec:
         imagePullPolicy: IfNotPresent
         image: ${image_repository_uri}/canopy:${image_tag}
         envFrom:
-        - secretRef:
+        - configMapRef:
             name: canopy
         ports:
         - containerPort: 9000
