@@ -33,7 +33,7 @@ resource "cloudflare_api_token" "cert_manager" {
     # scope token to exactly one zone
     resources = jsonencode({
       "com.cloudflare.api.account.${var.cloudflare_account_id}" = {
-        "com.cloudflare.api.account.zone.${var.cloudflare_zone.id}" = "*"
+        for zone in var.cloudflare_zones : "com.cloudflare.api.account.zone.${zone.id}" => "*"
       }
     })
   }]
