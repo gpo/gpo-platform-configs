@@ -1,4 +1,4 @@
-# genk8s:hash=2ada9fdbffed2a148b3f7da910f4d149
+# genk8s:hash=d4b862e8ccb660c3ae5bbb37bc79e83e
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -11,3 +11,18 @@ spec:
   secretName: wildcard-gpotools
   dnsNames:
   - "*.gpotoolsstage.ca"
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-gpogear
+  namespace: gateway
+spec:
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-dns-prod
+  secretName: wildcard-gpogear
+  dnsNames:
+  - "*.gpogear.ca"
