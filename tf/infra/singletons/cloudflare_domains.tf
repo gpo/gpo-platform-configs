@@ -45,7 +45,8 @@ resource "cloudflare_record" "staging_secure_gpo_ca" {
   name    = "staging.secure.gpo.ca"
   content = "137.184.128.54"
   type    = "A"
-  ttl     = 300
+  ttl     = 1
+  proxied = true
 }
 
 resource "cloudflare_record" "o1_list_gpo_ca" {

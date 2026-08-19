@@ -43,6 +43,7 @@ Read [docs/pull-requests.md](docs/pull-requests.md) before opening or merging an
 | Task | Doc |
 |---|---|
 | Add or change DNS records / zones | [docs/cloudflare-dns.md](docs/cloudflare-dns.md) |
+| secure.gpo.ca admin geo-restriction (WAF) | [docs/cloudflare-secure-admin-geo.md](docs/cloudflare-secure-admin-geo.md) |
 | Deploy a Cloudflare Pages site | [docs/cloudflare-pages.md](docs/cloudflare-pages.md) |
 | Create or configure a GitHub repository | [docs/github-repos.md](docs/github-repos.md) |
 | GKE, GCP projects, Artifact Registry | [docs/gke-and-gcp.md](docs/gke-and-gcp.md) |
