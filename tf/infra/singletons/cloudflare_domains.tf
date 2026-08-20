@@ -40,6 +40,12 @@ resource "cloudflare_record" "dev_gpo_ca" {
   proxied = true
 }
 
+# NOT proxied: Universal SSL on the Free plan covers only gpo.ca and
+# *.gpo.ca, so Cloudflare has no edge cert for this second-level name —
+# proxying it would serve a mismatched cert and break the site. Staging the
+# secure.gpo.ca WAF branch is blocked on that cert decision (ACM, a
+# first-level staging-secure.gpo.ca hostname, or skipping the staging phase);
+# see docs/cloudflare-waf.md (staged rollout section).
 resource "cloudflare_record" "staging_secure_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "staging.secure.gpo.ca"
