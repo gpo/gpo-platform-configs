@@ -9,11 +9,12 @@ Everything here was derived from the actual sources (`gpo/gpo-ca`, `gpo/secure-g
 - **Budget: 5 custom rules + 1 rate-limit rule per zone**, shared by gpo.ca and secure.gpo.ca. All slots are used; anything new must fit this file's single ruleset per phase (Cloudflare allows one `cloudflare_ruleset` per zone per phase).
 - **No regex.** The `matches` operator is Business+; expressions use only `eq`/`in`/`starts_with`/`ends_with`/`contains`.
 - **No province-level geo.** `ip.src.region_code` is Business+; geo rules use `ip.src.country ne "CA"`. Tighten to `eq "ON"` if the zone is ever upgraded.
+- **Rate-limit rules are entitled to a 10-second counting window only.** `period=60` is rejected at apply; use `period=10` and size `requests_per_period` for that window.
 - **Universal SSL covers only `gpo.ca` and `*.gpo.ca`** — second-level names like `staging.secure.gpo.ca` cannot be proxied without an ACM cert.
 
 ## The rules
 
-Rate limit (the single slot): block an IP for 10 minutes after 5 POSTs in 60 seconds to any of `wp-login.php` or `/api/*` (gpo.ca hosts) or `/user/login` (secure hosts), counted together. `/api/*` is included because those form handlers create CiviCRM contacts and send mail with no captcha; legitimate users never POST 5 times a minute across these. Tunable via `wp_login_rate_limit_*` locals.
+Rate limit (the single slot): block an IP for 10 minutes after 5 POSTs in 10 seconds to any of `wp-login.php` or `/api/*` (gpo.ca hosts) or `/user/login` (secure hosts), counted together. The 10-second window is a Free-plan constraint, not a design choice: `period=60` is rejected at apply ("not entitled to use the period 60, can only use a period among [10]"). `/api/*` is included because those form handlers create CiviCRM contacts and send mail with no captcha; legitimate users never POST 5 times in 10 seconds across these. Tunable via `wp_login_rate_limit_*` locals.
 
 | # | Rule | Action | Why it's safe |
 |---|---|---|---|

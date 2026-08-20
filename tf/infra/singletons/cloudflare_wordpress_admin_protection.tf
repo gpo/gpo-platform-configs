@@ -42,10 +42,13 @@ locals {
   # must stay reachable worldwide.
   secure_admin_route_expression = "((starts_with(http.request.uri.path, \"/admin\")) or (http.request.uri.path eq \"/user/login\") or (starts_with(http.request.uri.path, \"/civicrm/admin\")) or (starts_with(http.request.uri.path, \"/civicrm/a/\")))"
 
-  # Requests per source IP per minute allowed to POST the login form before
-  # Cloudflare starts blocking that IP.
-  wp_login_rate_limit_requests_per_minute = 5
-  wp_login_rate_limit_block_seconds       = 600
+  # Requests per source IP allowed within the counting window before
+  # Cloudflare starts blocking that IP. Free-plan rate-limit rules are only
+  # entitled to a 10-second window (period=60 is rejected at apply:
+  # "not entitled to use the period 60, can only use a period among [10]").
+  wp_login_rate_limit_period_seconds  = 10
+  wp_login_rate_limit_requests_period = 5
+  wp_login_rate_limit_block_seconds   = 600
 
   # gpo-ca is a Bedrock-style install: WP core lives under /wordpress
   # (ABSPATH = web/wordpress/), so the real admin surface is
@@ -136,7 +139,7 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
 # Rate limiting — throttle anonymous write POSTs per source IP: the login
 # forms (wp-login.php, /user/login) and gpo.ca's /api/* form handlers, which
 # create CiviCRM contacts and send mail with no captcha of their own.
-# Legitimate users never POST 5 times in a minute across these.
+# Legitimate users never POST 5 times in 10 seconds across these.
 #
 # Free-plan budget: 1 rate limiting rule per zone.
 # ---------------------------------------------------------------------------
@@ -154,8 +157,8 @@ resource "cloudflare_ruleset" "gpo_ca_wp_login_rate_limit" {
 
     ratelimit {
       characteristics     = ["cf.colo.id", "ip.src"]
-      period              = 60
-      requests_per_period = local.wp_login_rate_limit_requests_per_minute
+      period              = local.wp_login_rate_limit_period_seconds
+      requests_per_period = local.wp_login_rate_limit_requests_period
       mitigation_timeout  = local.wp_login_rate_limit_block_seconds
     }
   }
