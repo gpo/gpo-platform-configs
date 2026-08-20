@@ -57,11 +57,21 @@ locals {
   wp_login_rate_limit_requests_period = 5
   wp_login_rate_limit_block_seconds   = 10
 
-  # Source IPs exempt from the rate limit below (staff/office/monitoring —
-  # traffic that legitimately POSTs to these paths repeatedly during testing).
-  wp_login_rate_limit_allowlist_ips = ["142.93.48.15"]
-
-  wp_login_rate_limit_allowlist_expression = format("(ip.src in {%s})", join(" ", local.wp_login_rate_limit_allowlist_ips))
+  # IP allowlist for the rate limit below (staff/office/monitoring — traffic
+  # that legitimately POSTs to these paths repeatedly during testing) is NOT
+  # implemented here. Free-plan http_ratelimit rules can use ip.src as a
+  # `characteristics` grouping key (that already works — see the ratelimit
+  # block below) but not inside the rule's own matching expression: apply
+  # rejects with "not entitled: the use of field ip.src is not allowed, an
+  # higher Advanced Rate Limiting plan is required" the moment `ip.src` is
+  # used to filter/exclude requests rather than just group them.
+  #
+  # The one Free-plan-compatible way to exempt an IP is a dedicated
+  # `action = "skip"` rule (targeting the http_ratelimit phase) in the WAF
+  # custom-rule ruleset above — but that ruleset is already at its 5-rule
+  # Free-plan ceiling, so adding one means dropping something else first.
+  # 142.93.48.15 was the IP requested for allowlisting; revisit if it turns
+  # out to matter in practice, or if the zone is ever upgraded.
 
   # gpo-ca is a Bedrock-style install: WP core lives under /wordpress
   # (ABSPATH = web/wordpress/), so the real admin surface is
@@ -198,7 +208,8 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
 # own), and secure.gpo.ca's donation charge endpoint (the card-testing-fraud
 # target — see the pre-existing fraud rules in the ruleset above).
 # Legitimate traffic never POSTs 5 times in 10 seconds across these.
-# Exempts local.wp_login_rate_limit_allowlist_ips (staff/monitoring).
+# No IP allowlist: see the wp_login_rate_limit_allowlist_ips comment in
+# the locals block above for why Free plan blocks it here.
 #
 # Free-plan budget: 1 rate limiting rule per zone.
 # ---------------------------------------------------------------------------
@@ -212,7 +223,7 @@ resource "cloudflare_ruleset" "gpo_ca_wp_login_rate_limit" {
     action      = "block"
     description = "Rate limit login/donation/api form POSTs per source IP"
     enabled     = true
-    expression  = "((${local.waf_host_expression} and (${local.wp_login_path_expression} or starts_with(http.request.uri.path, \"/api/\"))) or (${local.secure_host_expression} and (http.request.uri.path in {\"/user/login\" \"/user/password\" \"/civicrm/contribute/transact\"}))) and (http.request.method eq \"POST\") and not (${local.wp_login_rate_limit_allowlist_expression})"
+    expression  = "((${local.waf_host_expression} and (${local.wp_login_path_expression} or starts_with(http.request.uri.path, \"/api/\"))) or (${local.secure_host_expression} and (http.request.uri.path in {\"/user/login\" \"/user/password\" \"/civicrm/contribute/transact\"}))) and (http.request.method eq \"POST\")"
 
     ratelimit {
       characteristics     = ["cf.colo.id", "ip.src"]
