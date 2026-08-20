@@ -14,15 +14,19 @@ Everything here was derived from the actual sources (`gpo/gpo-ca`, `gpo/secure-g
 
 ## The rules
 
-Rate limit (the single slot): block an IP for 10 minutes after 5 POSTs in 10 seconds to any of `wp-login.php` or `/api/*` (gpo.ca hosts) or `/user/login` (secure hosts), counted together. The 10-second window is a Free-plan constraint, not a design choice: `period=60` is rejected at apply ("not entitled to use the period 60, can only use a period among [10]"). `/api/*` is included because those form handlers create CiviCRM contacts and send mail with no captcha; legitimate users never POST 5 times in 10 seconds across these. Tunable via `wp_login_rate_limit_*` locals.
+**The custom-rule ruleset was not empty when this work started.** The zone already had 3 dashboard-managed rules fighting credit-card-testing fraud on the donation forms. Per the zone owner: the wp2shell REST-batch rule was dropped (stale, superseded by rule 2 below); the IP block and the general geo challenge were kept and folded into this ruleset (rules 1 and 5) since Cloudflare allows only one `http_request_firewall_custom` ruleset per zone. **Importing the existing ruleset is required before `tofu apply` will succeed** — see the comment above `cloudflare_ruleset.gpo_ca_admin_route_protection` in the `.tf` file for the exact `tofu import` command and how to find the ruleset ID.
 
-| # | Rule | Action | Why it's safe |
-|---|---|---|---|
-| 1 | Unused WP endpoints: `xmlrpc.php`, `wp-comments-post.php`, `wp-signup/register.php`, `/trackback` | block | nothing calls XML-RPC; comments are filtered off site-wide; no public registration |
-| 2 | WP user enumeration: `/wp-json/wp/v2/users`, `?author=<id>` | block | the front end only uses the `gpo-action-blocks/v1` REST namespace |
-| 3 | Non-CA traffic to admin surfaces, both sites | block | see path lists below; agreed policy |
-| 4 | WP admin/login surfaces | managed challenge | front end is fully anonymous; only staff hit these |
-| 5 | PHP under upload dirs: `/uploads/` (gpo.ca), `/sites/default/files/` (secure) | block | media dirs; nothing legitimate serves PHP from them |
+Rate limit (the single slot): block an IP for 10 minutes after 5 POSTs in 10 seconds to any of `wp-login.php` or `/api/*` (gpo.ca hosts) or `/user/login` (secure hosts), counted together. The 10-second window is a Free-plan constraint, not a design choice: `period=60` is rejected at apply ("not entitled to use the period 60, can only use a period among [10]"). `/api/*` is included because those form handlers create CiviCRM contacts and send mail with no captcha; legitimate users never POST 5 times in 10 seconds across these. Tunable via `wp_login_rate_limit_*` locals. This rule was created fresh — the zone had 0/1 rate-limit slots used before this work.
+
+| # | Rule | Action | Scope | Why it's safe |
+|---|---|---|---|---|
+| 1 | Known abusive IP (card-testing fraud) | block | zone-wide (pre-existing) | specific known-bad source, blocked outright |
+| 2 | Unused WP endpoints, user enumeration, PHP under upload dirs | block | staging hosts only (new) | nothing calls xmlrpc/comments-post/signup/register/trackback; the only REST namespace the front end uses is `gpo-action-blocks/v1`; nothing legitimate serves PHP from `/uploads` or `/sites/default/files` |
+| 3 | Non-CA traffic to admin surfaces, both sites | block | staging hosts only (new) | see path lists below; agreed policy |
+| 4 | WP admin/login surfaces | managed challenge | staging hosts only (new) | front end is fully anonymous; only staff hit these |
+| 5 | Non-CA/US traffic, zone-wide | managed challenge | zone-wide (pre-existing) | general card-testing-fraud mitigation on the donation forms; ordered last so rules 2-4's more specific blocks fire first for admin-path traffic |
+
+Rules 1 and 5 are zone-wide and already live in production — they are not part of the staged rollout below and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4 are the new admin-protection work and follow the staged rollout.
 
 Path facts baked into the expressions:
 

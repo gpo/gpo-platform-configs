@@ -68,9 +68,36 @@ locals {
 }
 
 # ---------------------------------------------------------------------------
-# WAF custom rules — WordPress admin/login route protection
+# WAF custom rules. Free-plan budget: 5 per zone, all used.
 #
-# Free-plan budget: 5 custom rules per zone. All 5 are used here.
+# This ruleset already existed on the zone with 3 dashboard-managed rules
+# fighting credit-card-testing fraud on the donation forms (an attacker
+# validates stolen card numbers by running small charges through payment
+# forms). Per the zone owner: drop the wp2shell REST-batch rule (a stale WP
+# exploit mitigation, superseded by rule 2 below), keep and import the other
+# two verbatim so `tofu apply` reconciles instead of conflicting ("A similar
+# configuration with rules already exists" — Cloudflare refuses to create a
+# second ruleset in this phase). Import first:
+#
+#   tofu import 'cloudflare_ruleset.gpo_ca_admin_route_protection' <zone_id>/<ruleset_id>
+#
+# Find <ruleset_id> via the dashboard (Security > WAF > Custom rules > the
+# existing ruleset's URL/API) or:
+#
+#   curl -s -H "Authorization: Bearer $CF_API_TOKEN" \
+#     "https://api.cloudflare.com/client/v4/zones/<zone_id>/rulesets/phases/http_request_firewall_custom/entrypoint" \
+#     | jq '.result.id'
+#
+# After import, `tofu plan` will show: the wp2shell rule removed, the two
+# fraud rules unchanged (verify the plan says "no changes" for those two,
+# not "replace" — if it wants to replace them, the expressions below don't
+# match production exactly and need adjusting before apply), and the three
+# new rules added.
+#
+# Rules 1-2 are zone-wide (unscoped by waf_host_expression) because they are
+# live fraud mitigations already protecting production — staging them would
+# turn off active protection. Rules 3-5 are the new admin-protection work
+# and stay staging-scoped per the rollout in docs/cloudflare-waf.md.
 # ---------------------------------------------------------------------------
 resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   zone_id = cloudflare_zone.gpo_ca.id
@@ -78,30 +105,40 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   kind    = "zone"
   phase   = "http_request_firewall_custom"
 
-  # Endpoints gpo-ca verifiably does not use. Each was confirmed against the
-  # gpo/gpo-ca source rather than assumed from a generic WordPress checklist:
-  #   xmlrpc.php        — not disabled anywhere in code, and nothing calls it
-  #   wp-comments-post  — comments_open is filtered to __return_false site-wide
-  #   wp-signup/register— no public registration; only staff have accounts
-  #   trackback         — pingback/trackback surface, unused with comments off
-  # Blocked outright rather than challenged: a challenge page still costs a
-  # round trip, and there is no legitimate traffic to preserve here.
+  # Pre-existing: blocks a known card-testing-fraud source IP outright,
+  # regardless of geography. Kept first so it's evaluated before the
+  # broader geo challenge below.
   rules {
     action      = "block"
-    description = "Block unused WordPress endpoints (xmlrpc, comments, signup, trackback)"
+    description = "Block known abusive IP (card-testing fraud)"
     enabled     = true
-    expression  = "${local.waf_host_expression} and ((http.request.uri.path in {\"/wordpress/xmlrpc.php\" \"/xmlrpc.php\" \"/wordpress/wp-comments-post.php\" \"/wp-comments-post.php\" \"/wordpress/wp-signup.php\" \"/wp-signup.php\" \"/wordpress/wp-register.php\" \"/wp-register.php\"}) or (ends_with(http.request.uri.path, \"/trackback\")) or (ends_with(http.request.uri.path, \"/trackback/\")))"
+    expression  = "(ip.src eq 136.116.198.170)"
   }
 
-  # WordPress exposes contributors at /wp-json/wp/v2/users and redirects
-  # /?author=<id> to the author archive, both of which leak valid usernames
-  # to feed credential stuffing. The theme never queries either, and the only
-  # REST namespace the front end uses is gpo-action-blocks/v1.
+  # Consolidated: unused WordPress endpoints, REST/author-archive user
+  # enumeration, and PHP execution under upload directories. Each was
+  # confirmed against the gpo/gpo-ca source rather than assumed from a
+  # generic checklist:
+  #   xmlrpc.php         — not disabled anywhere in code, and nothing calls it
+  #   wp-comments-post   — comments_open is filtered to __return_false site-wide
+  #   wp-signup/register — no public registration; only staff have accounts
+  #   trackback          — pingback/trackback surface, unused with comments off
+  #   /wp-json/wp/v2/users, ?author=<id> — leak usernames that feed credential
+  #     stuffing; the theme only uses the gpo-action-blocks/v1 REST namespace
+  #   /uploads (gpo.ca), /sites/default/files (secure.gpo.ca) — WP_CONTENT_DIR
+  #     is the web root and Drupal's public files dir doubles as CiviCRM's
+  #     upload target; nothing legitimate serves PHP from either
+  # All blocked outright: a challenge page still costs a round trip, and
+  # there is no legitimate traffic to preserve on any of these paths.
   rules {
     action      = "block"
-    description = "Block WordPress user enumeration (REST users endpoint, author archives)"
+    description = "Block unused WP endpoints, user enumeration, and PHP under upload dirs"
     enabled     = true
-    expression  = "${local.waf_host_expression} and ((starts_with(http.request.uri.path, \"/wp-json/wp/v2/users\")) or (starts_with(http.request.uri.query, \"author=\")) or (http.request.uri.query contains \"&author=\"))"
+    expression  = <<-EOT
+      (${local.waf_host_expression} and ((http.request.uri.path in {"/wordpress/xmlrpc.php" "/xmlrpc.php" "/wordpress/wp-comments-post.php" "/wp-comments-post.php" "/wordpress/wp-signup.php" "/wp-signup.php" "/wordpress/wp-register.php" "/wp-register.php"}) or (ends_with(http.request.uri.path, "/trackback")) or (ends_with(http.request.uri.path, "/trackback/"))))
+      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users")) or (starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")))
+      or (((${local.waf_host_expression} and starts_with(http.request.uri.path, "/uploads/")) or (${local.secure_host_expression} and starts_with(http.request.uri.path, "/sites/default/files/"))) and ((ends_with(http.request.uri.path, ".php")) or (ends_with(http.request.uri.path, ".php3")) or (ends_with(http.request.uri.path, ".php4")) or (ends_with(http.request.uri.path, ".php5")) or (ends_with(http.request.uri.path, ".php7")) or (ends_with(http.request.uri.path, ".php8")) or (ends_with(http.request.uri.path, ".phtml")) or (ends_with(http.request.uri.path, ".phar"))))
+    EOT
   }
 
   # Admins are all in Ontario. Province-level matching needs a Business plan,
@@ -122,16 +159,16 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     expression  = "${local.waf_host_expression} and ${local.wp_admin_route_expression}"
   }
 
-  # Defence in depth against an upload-to-RCE chain, on both sites. gpo.ca:
-  # WP_CONTENT_DIR is the web root (CONTENT_DIR = ""), so media lands in
-  # /uploads. secure.gpo.ca: Drupal's public files (and CiviCRM's uploads
-  # under it) live at /sites/default/files. Nothing legitimate serves PHP
-  # out of either.
+  # Pre-existing: the zone's general card-testing-fraud mitigation, applying
+  # to every request (not just admin routes) since fraud hits the public
+  # donation/contribution forms. Kept last: rules 2-4 above should get first
+  # crack at admin-path traffic since they're more specific (block instead
+  # of challenge), and nothing follows this rule in the ruleset either way.
   rules {
-    action      = "block"
-    description = "Block PHP execution under upload directories (/uploads, /sites/default/files)"
+    action      = "managed_challenge"
+    description = "IPs outside Canada receive challenge"
     enabled     = true
-    expression  = "((${local.waf_host_expression} and starts_with(http.request.uri.path, \"/uploads/\")) or (${local.secure_host_expression} and starts_with(http.request.uri.path, \"/sites/default/files/\"))) and ((ends_with(http.request.uri.path, \".php\")) or (ends_with(http.request.uri.path, \".php3\")) or (ends_with(http.request.uri.path, \".php4\")) or (ends_with(http.request.uri.path, \".php5\")) or (ends_with(http.request.uri.path, \".php7\")) or (ends_with(http.request.uri.path, \".php8\")) or (ends_with(http.request.uri.path, \".phtml\")) or (ends_with(http.request.uri.path, \".phar\")))"
+    expression  = "(not (ip.src.country in {\"CA\" \"US\"}))"
   }
 }
 
