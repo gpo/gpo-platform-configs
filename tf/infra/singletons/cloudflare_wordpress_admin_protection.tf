@@ -57,6 +57,12 @@ locals {
   wp_login_rate_limit_requests_period = 5
   wp_login_rate_limit_block_seconds   = 10
 
+  # Source IPs exempt from the rate limit below (staff/office/monitoring —
+  # traffic that legitimately POSTs to these paths repeatedly during testing).
+  wp_login_rate_limit_allowlist_ips = ["142.93.48.15"]
+
+  wp_login_rate_limit_allowlist_expression = format("(ip.src in {%s})", join(" ", local.wp_login_rate_limit_allowlist_ips))
+
   # gpo-ca is a Bedrock-style install: WP core lives under /wordpress
   # (ABSPATH = web/wordpress/), so the real admin surface is
   # /wordpress/wp-admin and the real login is /wordpress/wp-login.php.
@@ -187,9 +193,12 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
 
 # ---------------------------------------------------------------------------
 # Rate limiting — throttle anonymous write POSTs per source IP: the login
-# forms (wp-login.php, /user/login) and gpo.ca's /api/* form handlers, which
-# create CiviCRM contacts and send mail with no captcha of their own.
-# Legitimate users never POST 5 times in 10 seconds across these.
+# forms (wp-login.php, /user/login, /user/password), gpo.ca's /api/* form
+# handlers (create CiviCRM contacts and send mail with no captcha of their
+# own), and secure.gpo.ca's donation charge endpoint (the card-testing-fraud
+# target — see the pre-existing fraud rules in the ruleset above).
+# Legitimate traffic never POSTs 5 times in 10 seconds across these.
+# Exempts local.wp_login_rate_limit_allowlist_ips (staff/monitoring).
 #
 # Free-plan budget: 1 rate limiting rule per zone.
 # ---------------------------------------------------------------------------
@@ -201,9 +210,9 @@ resource "cloudflare_ruleset" "gpo_ca_wp_login_rate_limit" {
 
   rules {
     action      = "block"
-    description = "Rate limit login and /api form POSTs per source IP"
+    description = "Rate limit login/donation/api form POSTs per source IP"
     enabled     = true
-    expression  = "((${local.waf_host_expression} and (${local.wp_login_path_expression} or starts_with(http.request.uri.path, \"/api/\"))) or (${local.secure_host_expression} and (http.request.uri.path eq \"/user/login\"))) and (http.request.method eq \"POST\")"
+    expression  = "((${local.waf_host_expression} and (${local.wp_login_path_expression} or starts_with(http.request.uri.path, \"/api/\"))) or (${local.secure_host_expression} and (http.request.uri.path in {\"/user/login\" \"/user/password\" \"/civicrm/contribute/transact\"}))) and (http.request.method eq \"POST\") and not (${local.wp_login_rate_limit_allowlist_expression})"
 
     ratelimit {
       characteristics     = ["cf.colo.id", "ip.src"]
