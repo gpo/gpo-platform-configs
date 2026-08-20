@@ -45,10 +45,17 @@ locals {
   # Requests per source IP allowed within the counting window before
   # Cloudflare starts blocking that IP. Free-plan rate-limit rules are only
   # entitled to a 10-second window (period=60 is rejected at apply:
-  # "not entitled to use the period 60, can only use a period among [10]").
+  # "not entitled to use the period 60, can only use a period among [10]"),
+  # and the mitigation timeout is likewise pinned to that same 10 seconds
+  # ("not entitled to use a mitigation timeout different from 10" — Business+
+  # unlocks independent period/timeout values). So this isn't "5 attempts,
+  # then locked out for 10 minutes" as originally designed; it's closer to a
+  # burst limiter: exceed 5 POSTs in a 10-second window and every POST in
+  # the next 10 seconds is blocked, then the window resets. Still stops
+  # scripted rapid-fire submission; doesn't stop slow, patient brute force.
   wp_login_rate_limit_period_seconds  = 10
   wp_login_rate_limit_requests_period = 5
-  wp_login_rate_limit_block_seconds   = 600
+  wp_login_rate_limit_block_seconds   = 10
 
   # gpo-ca is a Bedrock-style install: WP core lives under /wordpress
   # (ABSPATH = web/wordpress/), so the real admin surface is
