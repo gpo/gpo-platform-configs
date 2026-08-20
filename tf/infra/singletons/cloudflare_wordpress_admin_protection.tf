@@ -101,9 +101,15 @@ locals {
 # ---------------------------------------------------------------------------
 resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   zone_id = cloudflare_zone.gpo_ca.id
-  name    = "WordPress admin route protection"
-  kind    = "zone"
-  phase   = "http_request_firewall_custom"
+  # Must stay "default": that's the live name of the zone's existing
+  # http_request_firewall_custom entry-point ruleset (imported, not
+  # created), and `name` forces replacement — changing it would destroy
+  # and recreate the whole ruleset, briefly dropping every rule in it,
+  # including the pre-existing fraud rules. Individual rule `description`
+  # fields carry the human-readable names instead.
+  name  = "default"
+  kind  = "zone"
+  phase = "http_request_firewall_custom"
 
   # Pre-existing: blocks a known card-testing-fraud source IP outright,
   # regardless of geography. Kept first so it's evaluated before the
@@ -168,7 +174,7 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     action      = "managed_challenge"
     description = "IPs outside Canada receive challenge"
     enabled     = true
-    expression  = "(not (ip.src.country in {\"CA\" \"US\"}))"
+    expression  = "(not ip.src.country in {\"CA\" \"US\"})"
   }
 }
 
