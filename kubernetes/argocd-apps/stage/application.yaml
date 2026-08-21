@@ -14,10 +14,10 @@ spec:
   sources:
   - path: kubernetes/canopy/resources
     repoURL: https://github.com/gpo/gpo-platform-configs
-    targetRevision: canopy-config
+    targetRevision: HEAD
   - path: kubernetes/canopy/stage
     repoURL: https://github.com/gpo/gpo-platform-configs
-    targetRevision: canopy-config
+    targetRevision: HEAD
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
