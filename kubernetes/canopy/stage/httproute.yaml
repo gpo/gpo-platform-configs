@@ -1,4 +1,4 @@
-# genk8s:hash=dbbd4878608fa3bcdb15b7459f17761e
+# genk8s:hash=ac2296a6d5d75dac793a9cd6b74d86cc
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
@@ -12,7 +12,7 @@ spec:
   - kind: Gateway
     name: gpogear
     namespace: gateway
-    sectionName: tls_gear
+    sectionName: tls-gear
   hostnames:
   - "canopy.gpogear.ca"
   rules:
