@@ -1,32 +1,4 @@
-# genk8s:hash=e11acda4a525effecbcf2c297baa06a3
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: canopy
-  namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
-spec:
-  destination:
-    namespace: canopy
-    server: https://kubernetes.default.svc
-  project: default
-  sources:
-  - path: kubernetes/canopy/resources
-    repoURL: https://github.com/gpo/gpo-platform-configs
-    targetRevision: HEAD
-  - path: kubernetes/canopy/prod
-    repoURL: https://github.com/gpo/gpo-platform-configs
-    targetRevision: HEAD
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-    automated:
-      enabled: true
-      prune: true
-
----
-
+# genk8s:hash=35cb94eeea8b2eca28e74a868b61d4c0
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
