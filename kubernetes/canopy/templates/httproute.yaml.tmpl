@@ -17,5 +17,7 @@ spec:
   rules:
   - matches:
     backendRefs:
-    - name: canopy
+    - group: ""
+      kind: Service
+      name: canopy
       port: 8080

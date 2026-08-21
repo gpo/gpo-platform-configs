@@ -1,4 +1,4 @@
-# genk8s:hash=a5f0559c96f29275cefb8984ebea61b6
+# genk8s:hash=946e10bd58fb9eb09c98b20da63188dc
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
@@ -18,5 +18,7 @@ spec:
   rules:
   - matches:
     backendRefs:
-    - name: canopy
+    - group: ""
+      kind: Service
+      name: canopy
       port: 8080
