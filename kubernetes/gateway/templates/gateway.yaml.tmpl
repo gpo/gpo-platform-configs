@@ -8,23 +8,45 @@ spec:
   # https://docs.cloud.google.com/load-balancing/docs/https#load-balancer-mode
   gatewayClassName: gke-l7-global-external-managed
   listeners:
-  - name: http
+  - name: http-tools
     protocol: HTTP
     port: 80
-    hostname: "*.${hostname}"
+    hostname: "*.${gpo_tools_hostname}"
     allowedRoutes:
       namespaces:
         from: All
       kinds:
       - kind: HTTPRoute
-  - name: tls
-    hostname: "*.${hostname}"
+  - name: tls-tools
+    hostname: "*.${gpo_tools_hostname}"
     protocol: HTTPS
     port: 443
     tls:
       mode: Terminate
       certificateRefs:
       - name: wildcard-gpotools
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  - name: http-gear
+    protocol: HTTP
+    port: 80
+    hostname: "*.${gpo_gear_hostname}"
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  - name: tls-gear
+    hostname: "*.${gpo_gear_hostname}"
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-gpogear
     allowedRoutes:
       namespaces:
         from: All

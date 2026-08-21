@@ -1,0 +1,46 @@
+# genk8s:hash=ca3df7ce6a5dc0effbe45f846eeab8fb
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canopy
+  labels:
+    app: canopy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canopy
+  template:
+    metadata:
+      labels:
+        app: canopy
+    spec:
+      volumes:
+      - name: canopy-nginx-config
+        configMap:
+          name: canopy-nginx
+      containers:
+      - name: app
+        imagePullPolicy: Always
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:latest
+        envFrom:
+        - configMapRef:
+            name: canopy
+      # sidecar until the image runs its own web server - see resources/configmap-nginx.yaml
+      - name: nginx
+        image: nginx:1.27-alpine
+        volumeMounts:
+        - name: canopy-nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http

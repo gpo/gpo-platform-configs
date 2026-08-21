@@ -28,14 +28,31 @@ output "superset" {
   }
 }
 
+output "canopy" {
+  description = "All outputs required for kubernetes/canopy."
+  value = {
+    deployment = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+    configmap = {
+      environment = local.environment
+    }
+    httproute = {
+      hostname = module.canopy.hostname
+    }
+  }
+}
+
 output "gateway" {
   description = "All outputs required for kubernetes/gateway."
   value = {
     wildcard-cert = {
-      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_tools_hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_gear_hostname  = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear.zone
     }
     gateway = {
-      hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_tools_hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone
+      gpo_gear_hostname  = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear.zone
     }
     redirect = {
       hostname = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools.zone

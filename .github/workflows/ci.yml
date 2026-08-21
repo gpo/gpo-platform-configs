@@ -21,6 +21,10 @@ jobs:
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
+        with:
+          # keep in sync with .mise.toml's `opentofu` version - a mismatch
+          # here causes spurious lock-file diffs on any PR touching *.tf
+          tofu_version: '1.9.1'
 
       - name: Use OpenTofu for Terraform
         run: echo "PCT_TFPATH=$(which tofu)" >> $GITHUB_ENV

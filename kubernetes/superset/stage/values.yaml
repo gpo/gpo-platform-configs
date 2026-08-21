@@ -18,7 +18,7 @@ redis:
 # for MySQL and PostgreSQL drivers.
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
-  tag: v0.0.1
+  tag: v0.0.3
 # Enabling feature flags. Note this is Python code injected into config.py.
 # See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
 # and https://github.com/apache/superset/tree/master/helm/superset#values for
@@ -27,4 +27,27 @@ configOverrides:
   superset_config.py: |
     FEATURE_FLAGS = {
       'DASHBOARD_RBAC': True,
+      'DASHBOARD_VIRTUALIZATION_DEFER_DATA': True,
+      'MATRIXIFY': True,
+    }
+
+    _GPO_THEME_TOKENS = {
+      'brandAppName': 'GPO Insights',
+      'colorPrimary': '#2F772F',
+      'colorSuccess': '#75AE55',
+      'colorLink': '#0085AE',
+      'colorWarning': '#F7E16D',
+      'colorError': '#FF1616',
+      'fontFamily': "'Avenir Next', Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    }
+
+    APP_ICON = 'https://files.ontariogreens.ca/branding/gpo/logos/gpo-logo-EN-horizontal-green.svg'
+
+    THEME_DEFAULT = {
+      'token': _GPO_THEME_TOKENS,
+    }
+
+    THEME_DARK = {
+      'algorithm': 'dark',
+      'token': _GPO_THEME_TOKENS,
     }

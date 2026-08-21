@@ -1,4 +1,4 @@
-# genk8s:hash=b932248126fac530ece6ced5a3b76037
+# genk8s:hash=ec615b1e67e8e31a13cfe5690bffc7c3
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
@@ -12,7 +12,7 @@ spec:
   - kind: Gateway
     name: gpotools
     namespace: gateway
-    sectionName: tls
+    sectionName: tls-tools
   hostnames:
   - "superset.gpotoolsstage.ca"
   rules:

@@ -1,6 +1,6 @@
-variable "cloudflare_zone" {
-  description = "The CF zone cert mgr will solve DNS01 acme challenges on."
-  type        = object({ id = string, zone = string })
+variable "cloudflare_zones" {
+  description = "The CF zones cert mgr will solve DNS01 acme challenges on."
+  type        = list(object({ id = string, zone = string }))
 }
 
 variable "cloudflare_account_id" {

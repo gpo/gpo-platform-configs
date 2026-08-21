@@ -40,6 +40,12 @@ resource "cloudflare_record" "dev_gpo_ca" {
   proxied = true
 }
 
+# NOT proxied: Universal SSL on the Free plan covers only gpo.ca and
+# *.gpo.ca, so Cloudflare has no edge cert for this second-level name —
+# proxying it would serve a mismatched cert and break the site. Staging the
+# secure.gpo.ca WAF branch is blocked on that cert decision (ACM, a
+# first-level staging-secure.gpo.ca hostname, or skipping the staging phase);
+# see docs/cloudflare-waf.md (staged rollout section).
 resource "cloudflare_record" "staging_secure_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "staging.secure.gpo.ca"
@@ -112,12 +118,42 @@ resource "cloudflare_record" "_28200265_gpo_ca" {
   ttl     = 300
 }
 
+# Proxied so Cloudflare's Universal SSL cert (gpo.ca + *.gpo.ca) terminates TLS
+# at the edge. DNS-only sent browsers straight to the origin, which only holds a
+# cert for the apex, producing a certificate-name-mismatch warning on www.
 resource "cloudflare_record" "www_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "www.gpo.ca"
   content = "gpo.ca"
   type    = "CNAME"
-  ttl     = 300
+  ttl     = 1
+  proxied = true
+}
+
+# 301 www → apex, preserving path and query string
+resource "cloudflare_ruleset" "www_gpo_ca_redirect" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "Redirect www to apex"
+  kind    = "zone"
+  phase   = "http_request_dynamic_redirect"
+
+  rules {
+    action      = "redirect"
+    expression  = "(http.host eq \"www.gpo.ca\")"
+    description = "301 www.gpo.ca -> gpo.ca"
+    enabled     = true
+
+    action_parameters {
+      from_value {
+        status_code           = 301
+        preserve_query_string = true
+
+        target_url {
+          expression = "concat(\"https://gpo.ca\", http.request.uri.path)"
+        }
+      }
+    }
+  }
 }
 
 resource "cloudflare_record" "agmsurvey_gpo_ca" {
@@ -350,6 +386,15 @@ resource "cloudflare_record" "scph1018__domainkey_gpo_ca" {
   ttl     = 300
 }
 
+# GitHub organization domain verification
+resource "cloudflare_record" "_gh_gpo_o_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "_gh-gpo-o.gpo.ca"
+  content = "2e873b4c9a"
+  type    = "TXT"
+  ttl     = 300
+}
+
 resource "cloudflare_record" "mar2019__domainkey_lists_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "mar2019._domainkey.lists.gpo.ca"
@@ -378,6 +423,30 @@ resource "cloudflare_record" "facebook_secure_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "secure.gpo.ca"
   content = "facebook-domain-verification=ma7wgbljzgdw67csxyip3ce1imh301"
+  type    = "TXT"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "brevo1__domainkey_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "brevo1._domainkey.gpo.ca"
+  content = "b1.gpo-ca.dkim.brevo.com"
+  type    = "CNAME"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "brevo2__domainkey_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "brevo2._domainkey.gpo.ca"
+  content = "b2.gpo-ca.dkim.brevo.com"
+  type    = "CNAME"
+  ttl     = 300
+}
+
+resource "cloudflare_record" "brevo_code_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "gpo.ca"
+  content = "brevo-code:fd451e5873e98d8026c77d5adab32379"
   type    = "TXT"
   ttl     = 300
 }
