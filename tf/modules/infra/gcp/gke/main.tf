@@ -1,9 +1,3 @@
-resource "google_compute_network" "main" {
-  depends_on              = [google_project_service.compute]
-  name                    = "${var.name}-${var.environment}"
-  auto_create_subnetworks = true
-}
-
 resource "google_service_account" "main" {
   account_id   = "gke-${var.name}-${var.environment}"
   display_name = "GKE ${var.name} ${var.environment}"

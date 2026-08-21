@@ -16,6 +16,10 @@ output "gke_ingress_ip" {
   value = module.gke.ingress_ip
 }
 
+output "gke_vpc_network_name" {
+  value = module.gke.vpc_network_name
+}
+
 output "image_repository_uri" {
   value = module.gar.repository_uri
 }

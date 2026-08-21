@@ -5,14 +5,15 @@ module "drupal" {
   environment = local.environment
 }*/
 
-module "legacy_logging" {
-  source = "../../modules/app/legacy_logging"
-}
-
 module "canopy" {
   source             = "../../modules/app/canopy"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
   environment        = local.environment
+  database_tier      = local.canopy_db_tier
+  database_edition   = local.canopy_db_edition
+  region             = local.region_toronto
+  zone               = local.zone_toronto
+  vpc_network_name   = data.terraform_remote_state.infra.outputs.gke_vpc_network_name
   ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
   providers = {
     google = google.gpo_eng
@@ -52,7 +53,12 @@ module "external_secrets" {
     google = google.gpo_eng
   }
   secrets = [
-    module.cert_manager.gsm_secret_name
+    module.cert_manager.cf_gsm_secret_id,
+    module.canopy.db_gsm_secret_id
+  ]
+  depends_on = [
+    module.cert_manager,
+    module.canopy
   ]
 }
 

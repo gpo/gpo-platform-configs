@@ -1,4 +1,4 @@
-output "gsm_secret_name" {
-  description = "Name of the secret in google secret manager where the cloudflare API token is stored."
-  value       = google_secret_manager_secret.cf_token.name
+output "cf_gsm_secret_id" {
+  description = "ID of the secret in GSM where the cloudflare API token is stored."
+  value       = local.secret_id
 }
