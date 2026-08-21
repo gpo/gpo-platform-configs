@@ -4,6 +4,12 @@ resource "cloudflare_zone" "gpo_tools" {
   zone       = "gpotoolsstage.ca"
 }
 
+/* used for testing canopy - do NOT use in prod */
+resource "cloudflare_zone" "gpo_gear" {
+  account_id = data.sops_file.secrets.data["cloudflare_account_id"]
+  zone       = "gpogear.ca"
+}
+
 module "gpo_tools_no_email" {
   source  = "../../modules/infra/no_email_dns"
   zone_id = cloudflare_zone.gpo_tools.id

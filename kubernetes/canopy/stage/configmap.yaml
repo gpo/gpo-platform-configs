@@ -1,0 +1,11 @@
+# genk8s:hash=3dc6a4a70ffeea6a9c482920f3cbbd71
+apiVersion: v1
+data:
+  WP_ENV: stage
+kind: ConfigMap
+metadata:
+  annotations:
+  labels:
+    app: canopy
+  name: canopy
+  namespace: canopy

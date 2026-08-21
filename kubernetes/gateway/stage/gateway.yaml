@@ -1,4 +1,4 @@
-# genk8s:hash=0231ce43b6d29be2a10c2a2a78cc3905
+# genk8s:hash=0d35d55123e4a1eb8dc20fd51d2680a3
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -9,7 +9,7 @@ spec:
   # https://docs.cloud.google.com/load-balancing/docs/https#load-balancer-mode
   gatewayClassName: gke-l7-global-external-managed
   listeners:
-  - name: http
+  - name: http-tools
     protocol: HTTP
     port: 80
     hostname: "*.gpotoolsstage.ca"
@@ -18,7 +18,7 @@ spec:
         from: All
       kinds:
       - kind: HTTPRoute
-  - name: tls
+  - name: tls-tools
     hostname: "*.gpotoolsstage.ca"
     protocol: HTTPS
     port: 443
@@ -26,6 +26,28 @@ spec:
       mode: Terminate
       certificateRefs:
       - name: wildcard-gpotools
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  - name: http-gear
+    protocol: HTTP
+    port: 80
+    hostname: "*.gpogear.ca"
+    allowedRoutes:
+      namespaces:
+        from: All
+      kinds:
+      - kind: HTTPRoute
+  - name: tls-gear
+    hostname: "*.gpogear.ca"
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-gpogear
     allowedRoutes:
       namespaces:
         from: All

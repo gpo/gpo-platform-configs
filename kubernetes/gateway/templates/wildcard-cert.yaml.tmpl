@@ -9,4 +9,19 @@ spec:
     name: letsencrypt-dns-prod
   secretName: wildcard-gpotools
   dnsNames:
-  - "*.${hostname}"
+  - "*.${gpo_tools_hostname}"
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-gpogear
+  namespace: gateway
+spec:
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-dns-prod
+  secretName: wildcard-gpogear
+  dnsNames:
+  - "*.${gpo_gear_hostname}"

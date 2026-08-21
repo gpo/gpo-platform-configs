@@ -29,7 +29,8 @@ run = [{tasks = [
  "argocd:genk8s",
  "argocd-apps:genk8s",
  "external-secrets:genk8s",
- "gateway:genk8s"
+ "gateway:genk8s",
+ "canopy:genk8s"
 ]}]
 
 [tasks.render]
@@ -40,6 +41,11 @@ run = [{tasks = [
   "external-secrets:render",
   "superset:render",
 ]}]
+
+[tasks."canopy:genk8s"]
+description = "Transform TF outputs into k8s manifests for canopy."
+dir = "kubernetes/canopy"
+run = "../../scripts/genk8s.sh"
 
 [tasks."argocd:genk8s"]
 description = "Transform TF outputs into helm values for argocd."

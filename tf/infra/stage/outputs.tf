@@ -5,6 +5,13 @@ output "cloudflare_zone_gpo_tools" {
   }
 }
 
+output "cloudflare_zone_gpo_gear" {
+  value = {
+    id   = cloudflare_zone.gpo_gear.id,
+    zone = cloudflare_zone.gpo_gear.zone
+  }
+}
+
 output "gke_ingress_ip" {
   value = module.gke.ingress_ip
 }

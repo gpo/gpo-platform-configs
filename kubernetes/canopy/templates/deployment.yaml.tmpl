@@ -20,14 +20,11 @@ spec:
           name: canopy-nginx
       containers:
       - name: app
-        imagePullPolicy: IfNotPresent
-        image: ${image_repository_uri}/canopy:${image_tag}
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/canopy:latest
         envFrom:
-        - secretRef:
+        - configMapRef:
             name: canopy
-        ports:
-        - containerPort: 9000
-          name: fpm
       # sidecar until the image runs its own web server - see resources/configmap-nginx.yaml
       - name: nginx
         image: nginx:1.27-alpine

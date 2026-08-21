@@ -9,6 +9,16 @@ module "legacy_logging" {
   source = "../../modules/app/legacy_logging"
 }
 
+module "canopy" {
+  source             = "../../modules/app/canopy"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
+  environment        = local.environment
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+  providers = {
+    google = google.gpo_eng
+  }
+}
+
 module "grassroots" {
   source             = "../../modules/app/grassroots"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
@@ -47,9 +57,13 @@ module "external_secrets" {
 }
 
 module "cert_manager" {
-  source                = "../../modules/app/cert_manager"
-  environment           = local.environment
-  cloudflare_zone       = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  source      = "../../modules/app/cert_manager"
+  environment = local.environment
+  cloudflare_zones = [
+    data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools,
+    data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
+  ]
+
   cloudflare_account_id = data.sops_file.secrets.data["cloudflare_account_id"]
   providers = {
     google = google.gpo_eng

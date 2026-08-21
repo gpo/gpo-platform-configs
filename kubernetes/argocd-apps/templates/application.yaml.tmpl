@@ -1,6 +1,34 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: canopy
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: canopy
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - path: kubernetes/canopy/resources
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  - path: kubernetes/canopy/${environment}
+    repoURL: https://github.com/gpo/gpo-platform-configs
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      enabled: true
+      prune: true
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: cert-manager
   namespace: argocd
   finalizers:

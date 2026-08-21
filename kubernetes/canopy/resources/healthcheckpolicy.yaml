@@ -1,0 +1,18 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: canopy
+  namespace: canopy
+spec:
+  # Note: without one of these GKE will default to hitting / instead of /healthz
+  # if / doesn't serve a 200 the default check will fail
+  default:
+    config:
+      httpHealthCheck:
+        port: 8080
+        requestPath: /healthz
+      type: HTTP
+  targetRef:
+    group: ""
+    kind: Service
+    name: canopy
