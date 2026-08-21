@@ -16,7 +16,8 @@ spec:
   hostnames:
   - "canopy.gpogear.ca"
   rules:
-  - matches:
-    backendRefs:
-    - name: canopy
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: canopy
       port: 8080
