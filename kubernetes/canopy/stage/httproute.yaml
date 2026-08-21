@@ -1,4 +1,4 @@
-# genk8s:hash=ac2296a6d5d75dac793a9cd6b74d86cc
+# genk8s:hash=a5f0559c96f29275cefb8984ebea61b6
 kind: HTTPRoute
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
@@ -10,14 +10,13 @@ spec:
   # this connects us to the gateway
   parentRefs:
   - kind: Gateway
-    name: gpogear
+    name: gpotools
     namespace: gateway
     sectionName: tls-gear
   hostnames:
   - "canopy.gpogear.ca"
   rules:
-  - backendRefs:
-    - group: ""
-      kind: Service
-      name: canopy
+  - matches:
+    backendRefs:
+    - name: canopy
       port: 8080
