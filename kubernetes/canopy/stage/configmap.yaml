@@ -1,4 +1,4 @@
-# genk8s:hash=5699ac5ff5dc9d0f337bfbded1fa287a
+# genk8s:hash=37c33c7c53de4e904372bce109f20ad6
 apiVersion: v1
 data:
   WP_ENV: stage
