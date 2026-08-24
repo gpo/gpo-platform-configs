@@ -36,6 +36,8 @@ output "canopy" {
     }
     configmap = {
       environment = local.environment
+      WP_HOME     = "https://${module.canopy.hostname}"
+      WP_SITEURL  = "https://${module.canopy.hostname}/wp"
     }
     httproute = {
       hostname = module.canopy.hostname

@@ -1,6 +1,8 @@
 apiVersion: v1
 data:
   WP_ENV: ${environment}
+  WP_HOME: ${WP_HOME}
+  WP_SITEURL: ${WP_SITEURL}
 kind: ConfigMap
 metadata:
   annotations:
