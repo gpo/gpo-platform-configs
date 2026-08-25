@@ -1,4 +1,4 @@
-# genk8s:hash=ca3df7ce6a5dc0effbe45f846eeab8fb
+# genk8s:hash=18b5278616befe6816337af452a0827d
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,6 +26,8 @@ spec:
         envFrom:
         - configMapRef:
             name: canopy
+        - secretRef:
+            name: canopy-db
       # sidecar until the image runs its own web server - see resources/configmap-nginx.yaml
       - name: nginx
         image: nginx:1.27-alpine

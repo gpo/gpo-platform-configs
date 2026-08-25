@@ -1,5 +1,9 @@
-resource "google_secret_manager_secret" "cf_token" {
+locals {
   secret_id = "cert-manager-cf-api-token"
+}
+
+resource "google_secret_manager_secret" "cf_token" {
+  secret_id = local.secret_id
 
   replication {
     auto {}
