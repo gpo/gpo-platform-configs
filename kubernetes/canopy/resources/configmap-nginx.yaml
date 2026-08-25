@@ -1,7 +1,6 @@
 # nginx fronts the php-fpm container over the shared pod network namespace.
-# The canopy image (see gpo/canopy Dockerfile) ships this same config under
-# docker/nginx/default.conf but doesn't run nginx itself - keep these in sync
-# until that image runs its own web server.
+# This is the single source of truth for the config - the canopy image
+# (gpo/canopy Dockerfile) doesn't run nginx or ship its own copy.
 apiVersion: v1
 kind: ConfigMap
 metadata:
