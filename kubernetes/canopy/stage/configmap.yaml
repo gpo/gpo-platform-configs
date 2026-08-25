@@ -1,7 +1,9 @@
-# genk8s:hash=3dc6a4a70ffeea6a9c482920f3cbbd71
+# genk8s:hash=37c33c7c53de4e904372bce109f20ad6
 apiVersion: v1
 data:
   WP_ENV: stage
+  WP_HOME: https://canopy.gpogear.ca
+  WP_SITEURL: https://canopy.gpogear.ca/wp
 kind: ConfigMap
 metadata:
   annotations:
