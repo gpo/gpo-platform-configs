@@ -18,6 +18,19 @@ spec:
       - name: canopy-nginx-config
         configMap:
           name: canopy-nginx
+      - name: static-assets
+        emptyDir: {}
+      initContainers:
+      - name: copy-static-assets
+        imagePullPolicy: IfNotPresent
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:latest
+        command:
+        - sh
+        - -c
+        - cp -R /app/web/. /tmp/static
+        volumeMounts:
+        - name: static-assets
+          mountPath: /tmp/static
       containers:
       - name: app
         imagePullPolicy: Always
@@ -34,6 +47,8 @@ spec:
         - name: canopy-nginx-config
           mountPath: /etc/nginx/conf.d/default.conf
           subPath: default.conf
+        - name: static-assets
+          mountPath: /app/web
         ports:
         - containerPort: 8080
           name: http
