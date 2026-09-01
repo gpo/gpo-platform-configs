@@ -446,7 +446,7 @@ resource "cloudflare_record" "brevo2__domainkey_gpo_ca" {
 resource "cloudflare_record" "brevo_code_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "gpo.ca"
-  content = "brevo-code:657cb9bf89e14e8c6c2dc17534c90baa"
+  content = "brevo-code:fd451e5873e98d8026c77d5adab32379"
   type    = "TXT"
   ttl     = 300
 }
@@ -454,7 +454,7 @@ resource "cloudflare_record" "brevo_code_gpo_ca" {
 resource "cloudflare_record" "brevo_code2_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "gpo.ca"
-  content = "brevo-code:fd451e5873e98d8026c77d5adab32379"
+  content = "brevo-code:657cb9bf89e14e8c6c2dc17534c90baa"
   type    = "TXT"
   ttl     = 300
 }
