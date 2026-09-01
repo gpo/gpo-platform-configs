@@ -7,6 +7,30 @@ supersetNode:
   connections:
     # default hostname provided by cnpg
     db_host: superset-rw
+  # MCP server sidecar. Runs `superset mcp run` in the same pod as the web
+  # process so it shares the superset-config (superset_config.py) and
+  # superset-env secrets. Exposed in-cluster on 5008 by the superset-mcp
+  # Service and routed publicly at /mcp by the HTTPRoute. Keep this image in
+  # sync with `image.tag` below.
+  extraContainers:
+  - name: mcp
+    image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset:v0.0.4
+    imagePullPolicy: IfNotPresent
+    command:
+    - /bin/sh
+    - -c
+    - . /app/pythonpath/superset_bootstrap.sh; superset mcp run --host 0.0.0.0 --port 5008
+    envFrom:
+    - secretRef:
+        name: superset-env
+    volumeMounts:
+    - name: superset-config
+      mountPath: /app/pythonpath
+      readOnly: true
+    ports:
+    - name: mcp
+      containerPort: 5008
+      protocol: TCP
 
 redis:
   image:
@@ -18,13 +42,21 @@ redis:
 # for MySQL and PostgreSQL drivers.
 image:
   repository: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/apache-superset
-  tag: v0.0.3
+  tag: v0.0.4
 # Enabling feature flags. Note this is Python code injected into config.py.
 # See https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
 # and https://github.com/apache/superset/tree/master/helm/superset#values for
 # details.
+#
+# NOTE: the helm-generated `superset-config` Secret is stripped by
+# filter-helm-templates.sh and replaced by an External Secret sourced from the
+# GCP Secret Manager secret `superset-config`. So this block is the intended
+# superset_config.py, but it only takes effect once its contents are pushed to
+# the GCP SM `superset-config` value. See README.md ("MCP server").
 configOverrides:
   superset_config.py: |
+    import os
+
     FEATURE_FLAGS = {
       'DASHBOARD_RBAC': True,
       'DASHBOARD_VIRTUALIZATION_DEFER_DATA': True,
@@ -51,3 +83,16 @@ configOverrides:
       'algorithm': 'dark',
       'token': _GPO_THEME_TOKENS,
     }
+
+    # --- MCP server (`superset mcp run` sidecar) ---
+    MCP_SERVICE_HOST = "0.0.0.0"
+    MCP_SERVICE_PORT = 5008
+    MCP_SERVICE_URL = "https://superset.gpotoolsstage.ca/mcp"
+    # Enforce Superset RBAC on every MCP tool call.
+    MCP_RBAC_ENABLED = True
+    # Require a signed bearer token (HS256, shared secret from superset-env).
+    MCP_AUTH_ENABLED = True
+    MCP_JWT_ALGORITHM = "HS256"
+    MCP_JWT_SECRET = os.environ.get("MCP_JWT_SECRET")
+    MCP_JWT_ISSUER = "gpo-superset-mcp"
+    MCP_JWT_AUDIENCE = "superset-mcp-stage"
