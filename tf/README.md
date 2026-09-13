@@ -63,3 +63,10 @@ This layout offers some desireable features:
 * It is extremely difficult to accidentally apply to the wrong environment. You don't have to remember to switch to the correct workspace, or export the right environment varaibles. All these things are hard coded into each composition. You have to `cd` into `./prod` to apply to production.
 
 * Heavy module reuse ensures the infrastructure configs we test in staging are identical to what we deploy in production. We do have _some_ tf states which directly create resources without modules, there are certain use cases where it makes sense. If you need to do this expect to get pushback on your PR and be ready to justify the need.
+
+
+---
+
+# "Infra as Code"
+
+This repo approaches IaC using [this definition](https://mitchellh.com/writing/as-code) of the words "as code". Which is to say that we want our infrastructure to be codified and not living in someone's head, but capturing infra in code does not mean we automatically apply all software development approaches to it. [Clarity](https://www.goodreads.com/quotes/9168-programs-must-be-written-for-people-to-read-and-only), confidence when making changes, and ability to reason about the system trumps typical SWE goals such as striving for clean abstractions and code reuse.
