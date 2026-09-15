@@ -42,6 +42,9 @@ output "canopy" {
     httproute = {
       hostname = module.canopy.hostname
     }
+    service_account = {
+      service_account_email = module.canopy.service_account.email
+    }
   }
 }
 
