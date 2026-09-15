@@ -9,7 +9,9 @@ locals {
     "projects/${data.google_client_config.current.project}/secrets/superset-postgres-db",
   ]
 
-  all_secrets = concat(local.secrets, var.secrets)
+  dynamic_secrets = [for s in var.secrets : "projects/${data.google_client_config.current.project}/secrets/${s}"]
+
+  all_secrets = concat(local.secrets, local.dynamic_secrets)
 }
 
 resource "google_service_account" "main" {
