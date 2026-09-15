@@ -56,10 +56,6 @@ module "external_secrets" {
     module.cert_manager.cf_gsm_secret_id,
     module.canopy.db_gsm_secret_id
   ]
-  depends_on = [
-    module.cert_manager,
-    module.canopy
-  ]
 }
 
 module "cert_manager" {
