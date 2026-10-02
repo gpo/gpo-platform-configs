@@ -22,13 +22,13 @@ Deliberately excluded from the rate limit: `/civicrm/payment/ipn*` (payment-proc
 
 | # | Rule | Action | Scope | Why it's safe |
 |---|---|---|---|---|
-| 1 | Known abusive IP (card-testing fraud) | block | zone-wide (pre-existing) | specific known-bad source, blocked outright |
-| 2 | Unused WP endpoints, user enumeration, PHP under upload dirs | block | staging hosts only (new) | nothing calls xmlrpc/comments-post/signup/register/trackback; the only REST namespace the front end uses is `gpo-action-blocks/v1`; nothing legitimate serves PHP from `/uploads` or `/sites/default/files` |
-| 3 | Non-CA traffic to admin surfaces, both sites | block | staging hosts only (new) | see path lists below; agreed policy |
-| 4 | WP admin/login surfaces | managed challenge | staging hosts only (new) | front end is fully anonymous; only staff hit these |
-| 5 | Non-CA/US traffic, zone-wide | managed challenge | zone-wide (pre-existing) | general card-testing-fraud mitigation on the donation forms; ordered last so rules 2-4's more specific blocks fire first for admin-path traffic |
+| 1 | Known abusive IPs | block | zone-wide | specific known-bad sources, blocked outright |
+| 2 | Unused WP endpoints, user enumeration, PHP under upload dirs | block | WordPress and secure hosts | nothing calls xmlrpc/comments-post/signup/register/trackback; the only REST namespace the front end uses is `gpo-action-blocks/v1`; `author=` is exempt under `/wordpress/wp-admin`, whose post list filters by author; nothing legitimate serves PHP from `/uploads` or `/sites/default/files` |
+| 3 | Non-CA traffic to admin surfaces, both sites | block | WordPress and secure hosts | see path lists below; agreed policy |
+| 4 | WP admin/login surfaces | managed challenge | WordPress hosts | front end is fully anonymous; only staff hit these |
+| 5 | Non-CA/US traffic, zone-wide | managed challenge | zone-wide | general card-testing-fraud mitigation on the donation forms; ordered last so rules 2-4's more specific blocks fire first for admin-path traffic |
 
-Rules 1 and 5 are zone-wide and already live in production — they are not part of the staged rollout below and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4 are the new admin-protection work and follow the staged rollout.
+Rules 1 and 5 are zone-wide and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4 and the rate limit are host-scoped; see Host scoping below.
 
 Path facts baked into the expressions:
 
@@ -37,18 +37,22 @@ Path facts baked into the expressions:
 
 Bot Fight Mode is deliberately absent: zone-wide, unscopable, unbypassable, and would hit secure.gpo.ca's CiviCRM API/webhook traffic with no staged rollout. Enable it only as its own decision.
 
-## Staged rollout
+## Host scoping
 
-Singletons has no stage tier, so staging happens inside the zone via two independent `http.host in {…}` lists:
+Rules 2-4 and the rate limit fire only on two `http.host in {…}` lists:
 
-- `waf_enforced_hosts = ["staging.gpo.ca"]` — WordPress rules. Phase 2 (follow-up PR after verification): add `"gpo.ca"` and `"www.gpo.ca"`. Nothing else changes, so staging ran exactly what prod gets.
-- `secure_admin_geo_hosts = ["staging.secure.gpo.ca"]` — secure branch of rules 3/5 and the rate limit. Phase 2: add `"secure.gpo.ca"`. **Currently blocked**: no edge cert for the second-level staging hostname (record left unproxied). Options: ACM (~$10 USD/mo, `*.secure.gpo.ca`); rename to first-level `staging-secure.gpo.ca` (free, needs origin vhost + cert); or skip staging for this branch and enable on `secure.gpo.ca` with a human watching the donation flow.
+- `waf_enforced_hosts = ["staging.gpo.ca", "gpo.ca", "www.gpo.ca"]`: WordPress rules.
+- `secure_admin_geo_hosts = ["staging.secure.gpo.ca", "secure.gpo.ca"]`: secure branch of rules 2 and 3 and the rate limit.
 
-### Verification, phase 1
+Singletons has no stage tier, so a rule change is staged inside the zone: narrow `waf_enforced_hosts` to `["staging.gpo.ca"]`, apply, verify, then restore the production hosts. Staging and production then run the same expressions.
 
-staging.gpo.ca: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms.
+The secure branch has no staging coverage: `staging.secure.gpo.ca` has no edge cert (second-level name, record left unproxied), so its rules are exercised on `secure.gpo.ca` only. To get staging coverage: ACM (~$10 USD/mo, `*.secure.gpo.ca`), or rename to first-level `staging-secure.gpo.ca` (free, needs origin vhost + cert).
 
-staging.secure (once unblocked): site loads over the proxy (origin cert must satisfy the zone SSL mode); admin paths blocked from non-CA; a donation page stays reachable from non-CA.
+### Verification
+
+WordPress hosts: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms; `/wp-json/wp/v2/users` and `/?author=1` blocked; the wp-admin post list still filters by author.
+
+secure.gpo.ca: admin paths blocked from non-CA; a donation page stays reachable from non-CA and a donation completes.
 
 ## Origin lockdown
 
