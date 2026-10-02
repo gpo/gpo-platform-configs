@@ -20,21 +20,20 @@
 # https://github.com/gpo/gpo-platform-configs/issues/202
 
 locals {
-  # Staged rollout: rules only fire on these hostnames. The singletons stack
-  # has no stage tier, so staging happens inside the zone — phase 1 enforces
-  # on staging.gpo.ca only; phase 2 (separate PR, after verifying staging)
-  # adds "gpo.ca" and "www.gpo.ca".
-  waf_enforced_hosts = ["staging.gpo.ca"]
+  # Rules only fire on these hostnames. The singletons stack has no stage
+  # tier, so a rule change is staged inside the zone: scope it to
+  # staging.gpo.ca alone, verify, then restore the production hosts.
+  waf_enforced_hosts = ["staging.gpo.ca", "gpo.ca", "www.gpo.ca"]
 
   waf_host_expression = format("(http.host in {%s})", join(" ", [for h in local.waf_enforced_hosts : format("%q", h)]))
 
   # secure.gpo.ca (Drupal + CiviCRM) shares this zone, and Cloudflare allows
   # only one http_request_firewall_custom ruleset per zone, so its admin geo
   # restriction lives in this ruleset too (folded into the non-CA block rule
-  # below; see docs/cloudflare-waf.md). It stages
-  # independently: phase 1 is staging.secure.gpo.ca only; a follow-up PR adds
-  # "secure.gpo.ca" after verifying the donation flow stays reachable.
-  secure_admin_geo_hosts = ["staging.secure.gpo.ca"]
+  # below; see docs/cloudflare-waf.md). staging.secure.gpo.ca is unproxied
+  # (no edge cert for a second-level name), so this branch has no staging
+  # coverage at the edge.
+  secure_admin_geo_hosts = ["staging.secure.gpo.ca", "secure.gpo.ca"]
 
   secure_host_expression = format("(http.host in {%s})", join(" ", [for h in local.secure_admin_geo_hosts : format("%q", h)]))
 
@@ -117,10 +116,9 @@ locals {
 # match production exactly and need adjusting before apply), and the three
 # new rules added.
 #
-# Rules 1-2 are zone-wide (unscoped by waf_host_expression) because they are
-# live fraud mitigations already protecting production — staging them would
-# turn off active protection. Rules 3-5 are the new admin-protection work
-# and stay staging-scoped per the rollout in docs/cloudflare-waf.md.
+# Rules 1 and 5 are zone-wide (unscoped by waf_host_expression) because they
+# are fraud mitigations that must never be narrowed to staging hosts. Rules
+# 2-4 are host-scoped; see docs/cloudflare-waf.md.
 # ---------------------------------------------------------------------------
 resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   zone_id = cloudflare_zone.gpo_ca.id
@@ -134,14 +132,13 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   kind  = "zone"
   phase = "http_request_firewall_custom"
 
-  # Pre-existing: blocks a known card-testing-fraud source IP outright,
-  # regardless of geography. Kept first so it's evaluated before the
-  # broader geo challenge below.
+  # Blocks known-bad source IPs outright, regardless of geography. Kept
+  # first so it's evaluated before the broader geo challenge below.
   rules {
     action      = "block"
-    description = "Block known abusive IP (card-testing fraud)"
+    description = "Block known abusive IPs"
     enabled     = true
-    expression  = "(ip.src eq 136.116.198.170)"
+    expression  = "(ip.src in {136.116.198.170 74.208.46.98})"
   }
 
   # Consolidated: unused WordPress endpoints, REST/author-archive user
@@ -153,7 +150,9 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   #   wp-signup/register — no public registration; only staff have accounts
   #   trackback          — pingback/trackback surface, unused with comments off
   #   /wp-json/wp/v2/users, ?author=<id> — leak usernames that feed credential
-  #     stuffing; the theme only uses the gpo-action-blocks/v1 REST namespace
+  #     stuffing; the theme only uses the gpo-action-blocks/v1 REST namespace.
+  #     wp-admin is exempt from the author match: its post list filters by
+  #     author with edit.php?...&author=<id>
   #   /uploads (gpo.ca), /sites/default/files (secure.gpo.ca) — WP_CONTENT_DIR
   #     is the web root and Drupal's public files dir doubles as CiviCRM's
   #     upload target; nothing legitimate serves PHP from either
@@ -165,7 +164,7 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     enabled     = true
     expression  = <<-EOT
       (${local.waf_host_expression} and ((http.request.uri.path in {"/wordpress/xmlrpc.php" "/xmlrpc.php" "/wordpress/wp-comments-post.php" "/wp-comments-post.php" "/wordpress/wp-signup.php" "/wp-signup.php" "/wordpress/wp-register.php" "/wp-register.php"}) or (ends_with(http.request.uri.path, "/trackback")) or (ends_with(http.request.uri.path, "/trackback/"))))
-      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users")) or (starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")))
+      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users")) or (((starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")) and not starts_with(http.request.uri.path, "/wordpress/wp-admin"))))
       or (((${local.waf_host_expression} and starts_with(http.request.uri.path, "/uploads/")) or (${local.secure_host_expression} and starts_with(http.request.uri.path, "/sites/default/files/"))) and ((ends_with(http.request.uri.path, ".php")) or (ends_with(http.request.uri.path, ".php3")) or (ends_with(http.request.uri.path, ".php4")) or (ends_with(http.request.uri.path, ".php5")) or (ends_with(http.request.uri.path, ".php7")) or (ends_with(http.request.uri.path, ".php8")) or (ends_with(http.request.uri.path, ".phtml")) or (ends_with(http.request.uri.path, ".phar"))))
     EOT
   }
