@@ -38,7 +38,7 @@ spec:
             path: /health
             port: http
       - name: web
-        image: ${image_repository_uri}/tax-receipts:staging
+        image: ${image_repository_uri}/tax-receipts-web:staging
         env:
         - name: API_UPSTREAM
           value: http://localhost:3000

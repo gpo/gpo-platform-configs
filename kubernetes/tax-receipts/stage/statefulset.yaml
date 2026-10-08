@@ -1,4 +1,4 @@
-# genk8s:hash=5fee89d2c518070324048875e2ec4beb
+# genk8s:hash=17bd99d6918e63213350f734486bd043
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,7 +39,7 @@ spec:
             path: /health
             port: http
       - name: web
-        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts:staging
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-web:staging
         env:
         - name: API_UPSTREAM
           value: http://localhost:3000
