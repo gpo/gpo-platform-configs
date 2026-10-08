@@ -1,4 +1,4 @@
-# genk8s:hash=f9f6e038ed7602c54c6a216fd1338877
+# genk8s:hash=72b5b8389a9b2733460e71ff109d5a52
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -35,7 +35,8 @@ spec:
       - name: web
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts:staging
         env:
-          API_UPSTREAM: http://localhost:3000
+        - name: API_UPSTREAM
+          value: http://localhost:3000
         ports:
         - containerPort: 8080
           name: http
