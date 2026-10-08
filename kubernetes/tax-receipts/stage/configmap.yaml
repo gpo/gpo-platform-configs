@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  EMAIL_LIVE_SENDING_ALLOWED: 'false'
+kind: ConfigMap
+metadata:
+  # this configmap is for things that are 1) static 2) not secret and 3) differ between prod / stage
+  name: tax-receipts-env

@@ -1,3 +1,12 @@
+output "tax-receipts" {
+  description = "All outputs required for kubernetes/tax-receipts."
+  value = {
+    statefulset = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+  }
+}
+
 output "grassroots" {
   description = "All outputs required for kubernetes/grassroots."
   sensitive   = true

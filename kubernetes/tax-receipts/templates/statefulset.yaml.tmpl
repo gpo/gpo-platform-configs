@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tax-receipts
+  labels:
+    app: tax-receipts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tax-receipts
+  template:
+    metadata:
+      labels:
+        app: tax-receipts
+    spec:
+      volumes:
+      - name: data
+        configMap:
+          name: tax-receipts-nginx
+      containers:
+      - name: api
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/tax-receipts-api:staging
+        envFrom:
+        - configMapRef:
+            name: tax-receipts
+        - secretRef:
+            name: tax-receipts-db
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+      - name: web
+        image: ${image_repository_uri}/tax-receipts:staging
+        env:
+          API_UPSTREAM: http://localhost:3000
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http

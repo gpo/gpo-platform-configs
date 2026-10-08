@@ -1,0 +1,49 @@
+# genk8s:hash=f9f6e038ed7602c54c6a216fd1338877
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tax-receipts
+  labels:
+    app: tax-receipts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tax-receipts
+  template:
+    metadata:
+      labels:
+        app: tax-receipts
+    spec:
+      volumes:
+      - name: data
+        configMap:
+          name: tax-receipts-nginx
+      containers:
+      - name: api
+        imagePullPolicy: Always
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-api:staging
+        envFrom:
+        - configMapRef:
+            name: tax-receipts
+        - secretRef:
+            name: tax-receipts-db
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+      - name: web
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts:staging
+        env:
+          API_UPSTREAM: http://localhost:3000
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
