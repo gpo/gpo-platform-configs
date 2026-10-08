@@ -1,4 +1,4 @@
-# genk8s:hash=17bd99d6918e63213350f734486bd043
+# genk8s:hash=967276fda52d56ab4b98c690b623082f
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -37,7 +37,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: http
+            port: 3000
       - name: web
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-web:staging
         env:
@@ -49,8 +49,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: 8080
         livenessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: 8080

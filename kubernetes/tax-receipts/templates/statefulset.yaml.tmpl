@@ -36,7 +36,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: http
+            port: 3000
       - name: web
         image: ${image_repository_uri}/tax-receipts-web:staging
         env:
@@ -48,8 +48,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: 8080
         livenessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: 8080
