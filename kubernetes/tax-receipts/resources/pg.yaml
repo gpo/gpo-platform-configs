@@ -11,15 +11,3 @@ spec:
     initdb:
       database: tax_receipts
       owner: gpo
-
-  managed:
-    roles:
-      - name: gpo
-        login: true
-        superuser: false
-        createdb: false
-        createrole: false
-        inherit: true
-        replication: false
-        passwordSecret:
-          name: tax-receipts-postgres-db
