@@ -1,4 +1,4 @@
-# genk8s:hash=e16119c74c95a9ed639a421b303b60a3
+# genk8s:hash=b2118bd597680c4c6f1c1f8ac5f15e5d
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -25,7 +25,7 @@ spec:
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-api:staging
         envFrom:
         - configMapRef:
-            name: tax-receipts
+            name: tax-receipts-env
         - secretRef:
             name: tax-receipts-app
         readinessProbe:

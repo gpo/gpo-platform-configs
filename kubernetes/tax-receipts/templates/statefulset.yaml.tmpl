@@ -24,7 +24,7 @@ spec:
         image: ${image_repository_uri}/tax-receipts-api:staging
         envFrom:
         - configMapRef:
-            name: tax-receipts
+            name: tax-receipts-env
         - secretRef:
             name: tax-receipts-app
         readinessProbe:
