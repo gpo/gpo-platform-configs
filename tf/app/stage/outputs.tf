@@ -3,6 +3,13 @@ output "tax-receipts" {
   value = {
     statefulset = {
       image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+      hostname             = module.tax_receipts.hostname
+    }
+    job = {
+      image_repository_uri = data.terraform_remote_state.infra.outputs.image_repository_uri
+    }
+    httproute = {
+      hostname = module.tax_receipts.hostname
     }
   }
 }

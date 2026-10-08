@@ -6,7 +6,12 @@ module "drupal" {
 }*/
 
 module "tax_receipts" {
-  source = "../../modules/app/tax-receipts"
+  source             = "../../modules/app/tax-receipts"
+  cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  ingress_ip_address = data.terraform_remote_state.infra.outputs.gke_ingress_ip
+  providers = {
+    google = google.gpo_eng
+  }
 }
 
 module "canopy" {
