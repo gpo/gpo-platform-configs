@@ -1,0 +1,26 @@
+# genk8s:hash=ca638cf11ade0547f7caaf860f730300
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tax-receipts-migration
+  labels:
+    app: tax-receipts-migration
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: api-tools
+        imagePullPolicy: Always
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-api-tools:staging
+        envFrom:
+        - configMapRef:
+            name: tax-receipts-env
+        - secretRef:
+            name: tax-receipts-session
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri
