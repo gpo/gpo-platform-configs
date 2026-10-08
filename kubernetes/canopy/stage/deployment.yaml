@@ -1,4 +1,4 @@
-# genk8s:hash=a17b40d816bb5415c7d9bd7cf22ad9fe
+# genk8s:hash=c107f6d868e6d0847f3fa992358c6787
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -61,3 +61,4 @@ spec:
           httpGet:
             path: /healthz
             port: http
+      serviceAccountName: canopy

@@ -1,3 +1,10 @@
+output "service_account" {
+  value = {
+    email = google_service_account.main.email
+    id    = google_service_account.main.id
+  }
+}
+
 output "hostname" {
   value = cloudflare_dns_record.canopy.name
 }
