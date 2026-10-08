@@ -1,4 +1,4 @@
-# genk8s:hash=1852168fa71df154ddeba26c2ead0102
+# genk8s:hash=5fee89d2c518070324048875e2ec4beb
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -26,6 +26,8 @@ spec:
         envFrom:
         - configMapRef:
             name: tax-receipts-env
+        - secretRef:
+            name: tax-receipts-session
         env:
         - name: DATABASE_URL
           valueFrom:

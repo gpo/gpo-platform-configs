@@ -25,6 +25,8 @@ spec:
         envFrom:
         - configMapRef:
             name: tax-receipts-env
+        - secretRef:
+            name: tax-receipts-session
         env:
         - name: DATABASE_URL
           valueFrom:
