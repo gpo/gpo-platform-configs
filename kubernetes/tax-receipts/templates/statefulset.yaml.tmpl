@@ -33,6 +33,10 @@ spec:
             secretKeyRef:
               name: tax-receipts-app
               key: uri
+        - name: TRUST_PROXY
+          value: true
+        - name: PUBLIC_WEB_URL
+          value: "https://${hostname}"
         readinessProbe:
           httpGet:
             path: /health
