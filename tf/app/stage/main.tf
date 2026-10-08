@@ -5,6 +5,10 @@ module "drupal" {
   environment = local.environment
 }*/
 
+module "tax_receipts" {
+  source = "../../modules/app/tax-receipts"
+}
+
 module "canopy" {
   source             = "../../modules/app/canopy"
   cloudflare_zone    = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
