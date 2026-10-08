@@ -25,8 +25,12 @@ spec:
         envFrom:
         - configMapRef:
             name: tax-receipts-env
-        - secretRef:
-            name: tax-receipts-app
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri
         readinessProbe:
           httpGet:
             path: /health

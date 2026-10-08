@@ -1,4 +1,4 @@
-# genk8s:hash=b2118bd597680c4c6f1c1f8ac5f15e5d
+# genk8s:hash=1852168fa71df154ddeba26c2ead0102
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -26,8 +26,12 @@ spec:
         envFrom:
         - configMapRef:
             name: tax-receipts-env
-        - secretRef:
-            name: tax-receipts-app
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri
         readinessProbe:
           httpGet:
             path: /health
