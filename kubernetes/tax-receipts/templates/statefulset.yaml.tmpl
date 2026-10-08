@@ -34,7 +34,8 @@ spec:
       - name: web
         image: ${image_repository_uri}/tax-receipts:staging
         env:
-          API_UPSTREAM: http://localhost:3000
+        - name: API_UPSTREAM
+          value: http://localhost:3000
         ports:
         - containerPort: 8080
           name: http
