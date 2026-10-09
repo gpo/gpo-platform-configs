@@ -1,4 +1,4 @@
-# genk8s:hash=9d6325d87afa358ab9c4178aff0b239d
+# genk8s:hash=5372f8ce2432adf2758a54dabfa41b98
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -10,15 +10,20 @@ spec:
   selector:
     matchLabels:
       app: tax-receipts
+  volumeClaimTemplates:
+  - metadata:
+      name: receipts
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 8Gi
   template:
     metadata:
       labels:
         app: tax-receipts
     spec:
-      volumes:
-      - name: data
-        configMap:
-          name: tax-receipts-nginx
       containers:
       - name: api
         imagePullPolicy: Always
@@ -38,10 +43,15 @@ spec:
           value: "true"
         - name: PUBLIC_WEB_URL
           value: "https://tax.gpotoolsstage.ca"
+        - name: ARTIFACT_STORAGE_DIR
+          value: "/data/artifacts"
         readinessProbe:
           httpGet:
             path: /health
             port: 3000
+        volumeMounts:
+        - name: receipts
+          mountPath: /data
       - name: web
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-web:staging
         env:

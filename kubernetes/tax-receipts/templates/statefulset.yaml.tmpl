@@ -9,15 +9,20 @@ spec:
   selector:
     matchLabels:
       app: tax-receipts
+  volumeClaimTemplates:
+  - metadata:
+      name: receipts
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 8Gi
   template:
     metadata:
       labels:
         app: tax-receipts
     spec:
-      volumes:
-      - name: data
-        configMap:
-          name: tax-receipts-nginx
       containers:
       - name: api
         imagePullPolicy: Always
@@ -37,10 +42,15 @@ spec:
           value: "true"
         - name: PUBLIC_WEB_URL
           value: "https://${hostname}"
+        - name: ARTIFACT_STORAGE_DIR
+          value: "/data/artifacts"
         readinessProbe:
           httpGet:
             path: /health
             port: 3000
+        volumeMounts:
+        - name: receipts
+          mountPath: /data
       - name: web
         image: ${image_repository_uri}/tax-receipts-web:staging
         env:
