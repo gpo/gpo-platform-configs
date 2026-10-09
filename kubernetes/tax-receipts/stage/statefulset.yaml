@@ -1,4 +1,4 @@
-# genk8s:hash=a428512c9a028282baeb55519444973d
+# genk8s:hash=9d6325d87afa358ab9c4178aff0b239d
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -35,7 +35,7 @@ spec:
               name: tax-receipts-app
               key: uri
         - name: TRUST_PROXY
-          value: true
+          value: "true"
         - name: PUBLIC_WEB_URL
           value: "https://tax.gpotoolsstage.ca"
         readinessProbe:
