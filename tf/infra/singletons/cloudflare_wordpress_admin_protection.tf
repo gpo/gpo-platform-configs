@@ -84,7 +84,17 @@ locals {
   # Composer-installed plugins (Gravity Forms, Popup Maker, TotalContest)
   # may use it from the anonymous front end. /wp-json is likewise untouched:
   # the public action blocks call /wp-json/gpo-action-blocks/v1/* directly.
-  wp_admin_route_expression = "((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\") or (starts_with(http.request.uri.path, \"/wordpress/wp-admin\") and http.request.uri.path ne \"/wordpress/wp-admin/admin-ajax.php\") or (starts_with(http.request.uri.path, \"/wp-admin\") and http.request.uri.path ne \"/wp-admin/admin-ajax.php\"))"
+  #
+  # Static assets under wp-admin's js/, css/, and images/ directories are
+  # excluded too. Public pages load some of them (the front-end editor used by
+  # the email-action block enqueues wp-admin/js/editor.min.js), and a browser
+  # fetching a script or stylesheet cannot display or solve a challenge, so a
+  # challenge there only breaks the page. They are stock WordPress core files.
+  # nginx only hands paths ending in .php to PHP-FPM, so a path that ends in a
+  # static extension cannot reach admin PHP.
+  wp_admin_static_asset_expression = "((http.request.method in {\"GET\" \"HEAD\"}) and (starts_with(http.request.uri.path, \"/wordpress/wp-admin/js/\") or starts_with(http.request.uri.path, \"/wordpress/wp-admin/css/\") or starts_with(http.request.uri.path, \"/wordpress/wp-admin/images/\")) and (http.request.uri.path.extension in {\"js\" \"css\" \"map\" \"png\" \"gif\" \"svg\" \"jpg\" \"webp\" \"woff\" \"woff2\"}))"
+
+  wp_admin_route_expression = "(((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\") or (starts_with(http.request.uri.path, \"/wordpress/wp-admin\") and http.request.uri.path ne \"/wordpress/wp-admin/admin-ajax.php\") or (starts_with(http.request.uri.path, \"/wp-admin\") and http.request.uri.path ne \"/wp-admin/admin-ajax.php\")) and not ${local.wp_admin_static_asset_expression})"
 
   wp_login_path_expression = "((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\"))"
 }
