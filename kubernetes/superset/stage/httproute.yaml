@@ -16,6 +16,15 @@ spec:
   hostnames:
   - "superset.gpotoolsstage.ca"
   rules:
+  # Route the MCP endpoint to the sidecar (port 5008). A longer path prefix
+  # takes precedence over the catch-all rule below, so /mcp* lands here.
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /mcp
+    backendRefs:
+    - name: superset-mcp
+      port: 5008
   - backendRefs:
     - name: superset
       port: 8088
