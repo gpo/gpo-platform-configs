@@ -23,6 +23,10 @@ spec:
       labels:
         app: tax-receipts
     spec:
+      # the api image runs as `node` (uid 1000); without this the PVC mounts
+      # root-owned and receipt PDFs fail to write
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: api
         imagePullPolicy: Always
@@ -52,6 +56,7 @@ spec:
         - name: receipts
           mountPath: /data
       - name: web
+        imagePullPolicy: Always
         image: ${image_repository_uri}/tax-receipts-web:staging
         env:
         - name: API_UPSTREAM
