@@ -32,7 +32,8 @@ kubectl --namespace=tax-receipts wait --for=condition=complete job/tax-receipts-
 kubectl --namespace=tax-receipts apply --filename=kubernetes/tax-receipts/stage/statefulset.yaml
 kubectl --namespace=tax-receipts rollout restart statefulset/tax-receipts-app
 kubectl --namespace=tax-receipts rollout status statefulset/tax-receipts-app
-curl https://tax.gpotoolsstage.ca/api/health   # gitSha must equal ${SHA}
+curl https://tax.gpotoolsstage.ca/api/version   # gitSha must equal ${SHA}
+curl https://tax.gpotoolsstage.ca/version.json  # same, for the SPA
 ```
 
 ## Load the mock data
