@@ -17,8 +17,9 @@ From the root of a `gpo/gpo-monolith` checkout at the commit to ship. `--platfor
 REGISTRY=northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo
 SHA=$(git rev-parse --short HEAD)
 for target in api api-tools web; do
-  docker buildx build --platform=linux/amd64 --file=apps/tax-receipts/Dockerfile --target="$target" \
-    --tag="$REGISTRY/tax-receipts-$target:staging" --tag="$REGISTRY/tax-receipts-$target:$SHA" --push .
+  docker buildx build --platform=linux/amd64 --file=apps/tax-receipts/Dockerfile --target="${target}" \
+    --build-arg="GIT_SHA=${SHA}" \
+    --tag="${REGISTRY}/tax-receipts-${target}:staging" --tag="${REGISTRY}/tax-receipts-${target}:${SHA}" --push .
 done
 ```
 
@@ -31,6 +32,7 @@ kubectl --namespace=tax-receipts wait --for=condition=complete job/tax-receipts-
 kubectl --namespace=tax-receipts apply --filename=kubernetes/tax-receipts/stage/statefulset.yaml
 kubectl --namespace=tax-receipts rollout restart statefulset/tax-receipts-app
 kubectl --namespace=tax-receipts rollout status statefulset/tax-receipts-app
+curl https://tax.gpotoolsstage.ca/api/health   # gitSha must equal ${SHA}
 ```
 
 ## Load the mock data
