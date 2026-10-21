@@ -1,8 +1,7 @@
-# Maintenance page for shut-down sites — gpo.ca and secure.gpo.ca
+# Maintenance page, on standby — no domains currently attached.
 #
 # A single static Cloudflare Pages project serves the maintenance message for
-# every domain attached to it. ontariogreens.ca needs no changes: its existing
-# redirect ruleset already lands visitors on gpo.ca.
+# every domain attached to it.
 
 # ---------------------------------------------------------------------------
 # GitHub repo holding the page content, managed entirely from Terraform
@@ -56,17 +55,6 @@ resource "cloudflare_pages_project" "maintenance" {
   }
 }
 
-# ---------------------------------------------------------------------------
-# Custom domains — both hosts serve the same page
-# ---------------------------------------------------------------------------
-resource "cloudflare_pages_domain" "maintenance_gpo_ca" {
-  account_id   = data.sops_file.secrets.data["cloudflare_account_id"]
-  project_name = cloudflare_pages_project.maintenance.name
-  domain       = "gpo.ca"
-}
-
-resource "cloudflare_pages_domain" "maintenance_secure_gpo_ca" {
-  account_id   = data.sops_file.secrets.data["cloudflare_account_id"]
-  project_name = cloudflare_pages_project.maintenance.name
-  domain       = "secure.gpo.ca"
-}
+# To put a site into maintenance: add a cloudflare_pages_domain for the host
+# and point its DNS record at cloudflare_pages_project.maintenance.subdomain
+# (proxied CNAME). Revert both to bring the site back.

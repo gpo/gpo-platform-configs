@@ -3,25 +3,21 @@ resource "cloudflare_zone" "gpo_ca" {
   zone       = "gpo.ca"
 }
 
-# Site shut down — serves the maintenance Pages project
-# (cloudflare_maintenance.tf).
 resource "cloudflare_record" "gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "gpo.ca"
-  content = cloudflare_pages_project.maintenance.subdomain
-  type    = "CNAME"
+  content = "143.244.200.166"
+  type    = "A"
   # TTL must be 1 when proxied == true
   ttl     = 1
   proxied = true
 }
 
-# Site shut down — serves the maintenance Pages project
-# (cloudflare_maintenance.tf).
 resource "cloudflare_record" "secure_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "secure.gpo.ca"
-  content = cloudflare_pages_project.maintenance.subdomain
-  type    = "CNAME"
+  content = "143.244.200.166"
+  type    = "A"
   ttl     = 1
   proxied = true
 }
