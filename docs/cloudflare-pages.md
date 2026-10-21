@@ -5,7 +5,7 @@
 | Project name | Repo | Domain | File |
 |---|---|---|---|
 | `1997-gpo-ca` | `gpo/1997` | `1997.gpo.ca` | `tf/infra/singletons/cloudflare_april_fools.tf` |
-| `gpo-maintenance` | `gpo/maintenance` | `gpo.ca`, `secure.gpo.ca` | `tf/infra/singletons/cloudflare_maintenance.tf` |
+| `gpo-maintenance` | `gpo/maintenance` | none (standby maintenance page) | `tf/infra/singletons/cloudflare_maintenance.tf` |
 
 ## Three resources required per project
 
