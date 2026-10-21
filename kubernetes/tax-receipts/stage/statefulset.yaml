@@ -1,4 +1,4 @@
-# genk8s:hash=5372f8ce2432adf2758a54dabfa41b98
+# genk8s:hash=cd0896fd5afbb4daa8f016d308a76ba2
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -24,6 +24,10 @@ spec:
       labels:
         app: tax-receipts
     spec:
+      # the api image runs as `node` (uid 1000); without this the PVC mounts
+      # root-owned and receipt PDFs fail to write
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: api
         imagePullPolicy: Always
@@ -53,6 +57,7 @@ spec:
         - name: receipts
           mountPath: /data
       - name: web
+        imagePullPolicy: Always
         image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-web:staging
         env:
         - name: API_UPSTREAM

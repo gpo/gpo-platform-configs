@@ -1,0 +1,46 @@
+# Loads the evaluation data set (seed.ts) and the mock contributors,
+# contributions, and receipts (seed-fixtures.ts) into STAGING. Never apply
+# this to prod. Argo CD does not sync this directory; apply it by hand,
+# following kubernetes/tax-receipts/README.md.
+#
+# seed-fixtures.ts issues receipts and writes their PDFs, so this Job mounts
+# the app's PVC. The PVC is ReadWriteOnce: scale the StatefulSet to 0 first.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tax-receipts-seed-fixtures
+  labels:
+    app: tax-receipts-seed-fixtures
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: api-tools
+        imagePullPolicy: Always
+        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/tax-receipts-api-tools:staging
+        command:
+        - sh
+        - -c
+        # both scripts are idempotent; chown so the api (uid 1000) can read
+        # and write the PDFs this Job creates as root
+        - >-
+          pnpm exec tsx prisma/seed.ts &&
+          pnpm exec tsx prisma/seed-fixtures.ts &&
+          chown -R 1000:1000 /data
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri
+        - name: ARTIFACT_STORAGE_DIR
+          value: /data/artifacts
+        volumeMounts:
+        - name: receipts
+          mountPath: /data
+      volumes:
+      - name: receipts
+        persistentVolumeClaim:
+          claimName: receipts-tax-receipts-app-0
