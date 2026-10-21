@@ -23,7 +23,7 @@ spec:
       initContainers:
       - name: copy-static-assets
         imagePullPolicy: IfNotPresent
-        image: northamerica-northeast2-docker.pkg.dev/gpo-eng-stage/gpo/canopy:latest
+        image: ${image_repository_uri}/canopy:latest
         command:
         - sh
         - -c

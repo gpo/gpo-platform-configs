@@ -31,14 +31,17 @@ module "external_secrets" {
     google = google.gpo_eng
   }
   secrets = [
-    module.cert_manager.gsm_secret_name
+    module.cert_manager.cf_gsm_secret_id,
   ]
 }
 
 module "cert_manager" {
-  source                = "../../modules/app/cert_manager"
-  environment           = local.environment
-  cloudflare_zone       = data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools
+  source      = "../../modules/app/cert_manager"
+  environment = local.environment
+  cloudflare_zones = [
+    data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_tools,
+    data.terraform_remote_state.infra.outputs.cloudflare_zone_gpo_gear
+  ]
   cloudflare_account_id = data.sops_file.secrets.data["cloudflare_account_id"]
   providers = {
     google = google.gpo_eng

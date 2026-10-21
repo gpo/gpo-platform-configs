@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tax-receipts-app
+  labels:
+    app: tax-receipts-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tax-receipts
+  volumeClaimTemplates:
+  - metadata:
+      name: receipts
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 8Gi
+  template:
+    metadata:
+      labels:
+        app: tax-receipts
+    spec:
+      containers:
+      - name: api
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/tax-receipts-api:staging
+        envFrom:
+        - configMapRef:
+            name: tax-receipts-env
+        - secretRef:
+            name: tax-receipts-session
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri
+        - name: TRUST_PROXY
+          value: "true"
+        - name: PUBLIC_WEB_URL
+          value: "https://${hostname}"
+        - name: ARTIFACT_STORAGE_DIR
+          value: "/data/artifacts"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+        volumeMounts:
+        - name: receipts
+          mountPath: /data
+      - name: web
+        image: ${image_repository_uri}/tax-receipts-web:staging
+        env:
+        - name: API_UPSTREAM
+          value: http://localhost:3000
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tax-receipts-migration
+  labels:
+    app: tax-receipts-migration
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: api-tools
+        imagePullPolicy: Always
+        image: ${image_repository_uri}/tax-receipts-api-tools:staging
+        envFrom:
+        - configMapRef:
+            name: tax-receipts-env
+        - secretRef:
+            name: tax-receipts-session
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: tax-receipts-app
+              key: uri

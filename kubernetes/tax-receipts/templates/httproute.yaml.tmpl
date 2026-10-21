@@ -1,0 +1,23 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: tax-receipts
+  namespace: tax-receipts
+  labels:
+    gateway: gpogear
+spec:
+  # this connects us to the gateway
+  parentRefs:
+  - kind: Gateway
+    name: gpotools
+    namespace: gateway
+    sectionName: tls-tools
+  hostnames:
+  - "${hostname}"
+  rules:
+  - matches:
+    backendRefs:
+    - group: ""
+      kind: Service
+      name: tax-receipts
+      port: 8080

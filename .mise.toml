@@ -30,7 +30,8 @@ run = [{tasks = [
  "argocd-apps:genk8s",
  "external-secrets:genk8s",
  "gateway:genk8s",
- "canopy:genk8s"
+ "canopy:genk8s",
+ "tax-receipts:genk8s"
 ]}]
 
 [tasks.render]
@@ -41,6 +42,11 @@ run = [{tasks = [
   "external-secrets:render",
   "superset:render",
 ]}]
+
+[tasks."tax-receipts:genk8s"]
+description = "Transform TF outputs into k8s manifests for tax-receipts."
+dir = "kubernetes/tax-receipts"
+run = "../../scripts/genk8s.sh"
 
 [tasks."canopy:genk8s"]
 description = "Transform TF outputs into k8s manifests for canopy."

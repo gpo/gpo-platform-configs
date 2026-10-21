@@ -1,0 +1,24 @@
+# genk8s:hash=aa7478813a33f8950c7a720d5b2266e0
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: tax-receipts
+  namespace: tax-receipts
+  labels:
+    gateway: gpogear
+spec:
+  # this connects us to the gateway
+  parentRefs:
+  - kind: Gateway
+    name: gpotools
+    namespace: gateway
+    sectionName: tls-tools
+  hostnames:
+  - "tax.gpotoolsstage.ca"
+  rules:
+  - matches:
+    backendRefs:
+    - group: ""
+      kind: Service
+      name: tax-receipts
+      port: 8080
