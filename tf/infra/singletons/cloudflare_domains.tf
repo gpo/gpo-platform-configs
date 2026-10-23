@@ -458,3 +458,11 @@ resource "cloudflare_record" "brevo_code2_gpo_ca" {
   type    = "TXT"
   ttl     = 300
 }
+
+resource "cloudflare_record" "brevo_code3_gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+  name    = "gpo.ca"
+  content = "brevo-code:814b5a2f52bd79bf79a471bc27bf8ee9"
+  type    = "TXT"
+  ttl     = 300
+}
