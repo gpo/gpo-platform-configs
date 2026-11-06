@@ -21,7 +21,7 @@ data "sops_file" "secrets" {
 
 ## Known keys (secrets.env)
 
-`cloudflare_api_key`, `cloudflare_account_id`, `github_ssh_user`, `github_ssh_host_stage`, `github_ssh_host_prod`, `github_ssh_private_key`, `github_ssh_public_key`
+`cloudflare_api_key`, `cloudflare_account_id`, `github_ssh_user`, `github_ssh_host_stage`, `github_ssh_host_prod`, `github_ssh_private_key`, `github_ssh_public_key`, `cf_smoke_test_token`
 
 ## KMS keys
 

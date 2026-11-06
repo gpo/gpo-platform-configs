@@ -96,6 +96,18 @@ locals {
 
   wp_admin_route_expression = "(((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\") or (starts_with(http.request.uri.path, \"/wordpress/wp-admin\") and http.request.uri.path ne \"/wordpress/wp-admin/admin-ajax.php\") or (starts_with(http.request.uri.path, \"/wp-admin\") and http.request.uri.path ne \"/wp-admin/admin-ajax.php\")) and not ${local.wp_admin_static_asset_expression})"
 
+  # Presence check only. A forged cookie just reaches the origin, which
+  # rejects unauthenticated REST requests outside its allowlist.
+  wp_logged_in_cookie_expression = "(http.cookie contains \"wordpress_logged_in_\")"
+
+  # Deploy smoke tests from GitHub Actions send this header with the value of
+  # the CF_SMOKE_TEST_TOKEN Actions secret, managed in github_secrets.tf.
+  smoke_test_expression = format(
+    "(%s and (http.request.method in {\"GET\" \"HEAD\"}) and (http.request.uri.path eq \"/\") and any(http.request.headers[\"x-gpo-smoke\"][*] eq %q))",
+    local.waf_host_expression,
+    data.sops_file.secrets.data["cf_smoke_test_token"],
+  )
+
   wp_login_path_expression = "((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\"))"
 }
 
@@ -126,9 +138,10 @@ locals {
 # match production exactly and need adjusting before apply), and the three
 # new rules added.
 #
-# Rules 1 and 5 are zone-wide (unscoped by waf_host_expression) because they
-# are fraud mitigations that must never be narrowed to staging hosts. Rules
-# 2-4 are host-scoped; see docs/cloudflare-waf.md.
+# Rule 1 and the non-CA/US branch of rule 5 are zone-wide (unscoped by
+# waf_host_expression) because they are fraud mitigations that must never be
+# narrowed to staging hosts. Rules 2-4 and the admin branch of rule 5 are
+# host-scoped; see docs/cloudflare-waf.md.
 # ---------------------------------------------------------------------------
 resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   zone_id = cloudflare_zone.gpo_ca.id
@@ -161,6 +174,8 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   #   trackback          — pingback/trackback surface, unused with comments off
   #   /wp-json/wp/v2/users, ?author=<id> — leak usernames that feed credential
   #     stuffing; the theme only uses the gpo-action-blocks/v1 REST namespace.
+  #     Requests carrying a WordPress login cookie pass through to the origin,
+  #     which enforces auth itself: the block editor loads users/me.
   #     wp-admin is exempt from the author match: its post list filters by
   #     author with edit.php?...&author=<id>
   #   /uploads (gpo.ca), /sites/default/files (secure.gpo.ca) — WP_CONTENT_DIR
@@ -174,7 +189,7 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     enabled     = true
     expression  = <<-EOT
       (${local.waf_host_expression} and ((http.request.uri.path in {"/wordpress/xmlrpc.php" "/xmlrpc.php" "/wordpress/wp-comments-post.php" "/wp-comments-post.php" "/wordpress/wp-signup.php" "/wp-signup.php" "/wordpress/wp-register.php" "/wp-register.php"}) or (ends_with(http.request.uri.path, "/trackback")) or (ends_with(http.request.uri.path, "/trackback/"))))
-      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users")) or (((starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")) and not starts_with(http.request.uri.path, "/wordpress/wp-admin"))))
+      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users") and not ${local.wp_logged_in_cookie_expression}) or (((starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")) and not starts_with(http.request.uri.path, "/wordpress/wp-admin"))))
       or (((${local.waf_host_expression} and starts_with(http.request.uri.path, "/uploads/")) or (${local.secure_host_expression} and starts_with(http.request.uri.path, "/sites/default/files/"))) and ((ends_with(http.request.uri.path, ".php")) or (ends_with(http.request.uri.path, ".php3")) or (ends_with(http.request.uri.path, ".php4")) or (ends_with(http.request.uri.path, ".php5")) or (ends_with(http.request.uri.path, ".php7")) or (ends_with(http.request.uri.path, ".php8")) or (ends_with(http.request.uri.path, ".phtml")) or (ends_with(http.request.uri.path, ".phar"))))
     EOT
   }
@@ -190,23 +205,36 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     expression  = "((${local.waf_host_expression} and ${local.wp_admin_route_expression}) or (${local.secure_host_expression} and ${local.secure_admin_route_expression})) and (ip.src.country ne \"CA\")"
   }
 
+  # Lets deploy smoke tests fetch the home page without a challenge. Placed
+  # after the block rules so it only bypasses challenges. Skips the rest of
+  # this ruleset plus the skippable zone security products; Bot Fight Mode
+  # cannot be skipped on the Free plan.
   rules {
-    action      = "managed_challenge"
-    description = "Challenge traffic to WordPress admin/login surfaces"
+    action      = "skip"
+    description = "Skip challenges for deploy smoke tests"
     enabled     = true
-    expression  = "${local.waf_host_expression} and ${local.wp_admin_route_expression}"
+    expression  = local.smoke_test_expression
+
+    action_parameters {
+      ruleset  = "current"
+      products = ["bic", "securityLevel", "uaBlock"]
+    }
+
+    logging {
+      enabled = true
+    }
   }
 
-  # Pre-existing: the zone's general card-testing-fraud mitigation, applying
-  # to every request (not just admin routes) since fraud hits the public
-  # donation/contribution forms. Kept last: rules 2-4 above should get first
-  # crack at admin-path traffic since they're more specific (block instead
-  # of challenge), and nothing follows this rule in the ruleset either way.
+  # One rule for both challenges, since the Free-plan budget is 5 rules: the
+  # WordPress admin/login surfaces, and the zone's pre-existing
+  # card-testing-fraud mitigation, which applies to every request (not just
+  # admin routes) because fraud hits the public donation/contribution forms.
+  # Kept last so rules 2-3 block admin-path traffic before it is challenged.
   rules {
     action      = "managed_challenge"
-    description = "IPs outside Canada receive challenge"
+    description = "Challenge WordPress admin/login surfaces and IPs outside Canada/US"
     enabled     = true
-    expression  = "(not ip.src.country in {\"CA\" \"US\"})"
+    expression  = "(${local.waf_host_expression} and ${local.wp_admin_route_expression}) or (not ip.src.country in {\"CA\" \"US\"})"
   }
 }
 
