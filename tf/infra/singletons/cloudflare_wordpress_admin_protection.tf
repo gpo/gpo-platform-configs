@@ -96,6 +96,10 @@ locals {
 
   wp_admin_route_expression = "(((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\") or (starts_with(http.request.uri.path, \"/wordpress/wp-admin\") and http.request.uri.path ne \"/wordpress/wp-admin/admin-ajax.php\") or (starts_with(http.request.uri.path, \"/wp-admin\") and http.request.uri.path ne \"/wp-admin/admin-ajax.php\")) and not ${local.wp_admin_static_asset_expression})"
 
+  # Presence check only. A forged cookie just reaches the origin, which
+  # rejects unauthenticated REST requests outside its allowlist.
+  wp_logged_in_cookie_expression = "(http.cookie contains \"wordpress_logged_in_\")"
+
   wp_login_path_expression = "((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\"))"
 }
 
@@ -161,6 +165,8 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   #   trackback          — pingback/trackback surface, unused with comments off
   #   /wp-json/wp/v2/users, ?author=<id> — leak usernames that feed credential
   #     stuffing; the theme only uses the gpo-action-blocks/v1 REST namespace.
+  #     Requests carrying a WordPress login cookie pass through to the origin,
+  #     which enforces auth itself: the block editor loads users/me.
   #     wp-admin is exempt from the author match: its post list filters by
   #     author with edit.php?...&author=<id>
   #   /uploads (gpo.ca), /sites/default/files (secure.gpo.ca) — WP_CONTENT_DIR
@@ -174,7 +180,7 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     enabled     = true
     expression  = <<-EOT
       (${local.waf_host_expression} and ((http.request.uri.path in {"/wordpress/xmlrpc.php" "/xmlrpc.php" "/wordpress/wp-comments-post.php" "/wp-comments-post.php" "/wordpress/wp-signup.php" "/wp-signup.php" "/wordpress/wp-register.php" "/wp-register.php"}) or (ends_with(http.request.uri.path, "/trackback")) or (ends_with(http.request.uri.path, "/trackback/"))))
-      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users")) or (((starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")) and not starts_with(http.request.uri.path, "/wordpress/wp-admin"))))
+      or (${local.waf_host_expression} and ((starts_with(http.request.uri.path, "/wp-json/wp/v2/users") and not ${local.wp_logged_in_cookie_expression}) or (((starts_with(http.request.uri.query, "author=")) or (http.request.uri.query contains "&author=")) and not starts_with(http.request.uri.path, "/wordpress/wp-admin"))))
       or (((${local.waf_host_expression} and starts_with(http.request.uri.path, "/uploads/")) or (${local.secure_host_expression} and starts_with(http.request.uri.path, "/sites/default/files/"))) and ((ends_with(http.request.uri.path, ".php")) or (ends_with(http.request.uri.path, ".php3")) or (ends_with(http.request.uri.path, ".php4")) or (ends_with(http.request.uri.path, ".php5")) or (ends_with(http.request.uri.path, ".php7")) or (ends_with(http.request.uri.path, ".php8")) or (ends_with(http.request.uri.path, ".phtml")) or (ends_with(http.request.uri.path, ".phar"))))
     EOT
   }
