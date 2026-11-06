@@ -100,14 +100,6 @@ locals {
   # rejects unauthenticated REST requests outside its allowlist.
   wp_logged_in_cookie_expression = "(http.cookie contains \"wordpress_logged_in_\")"
 
-  # Deploy smoke tests from GitHub Actions send this header with the value of
-  # the CF_SMOKE_TEST_TOKEN Actions secret, managed in github_secrets.tf.
-  smoke_test_expression = format(
-    "(%s and (http.request.method in {\"GET\" \"HEAD\"}) and (http.request.uri.path eq \"/\") and any(http.request.headers[\"x-gpo-smoke\"][*] eq %q))",
-    local.waf_host_expression,
-    data.sops_file.secrets.data["cf_smoke_test_token"],
-  )
-
   wp_login_path_expression = "((http.request.uri.path eq \"/wordpress/wp-login.php\") or (http.request.uri.path eq \"/wp-login.php\"))"
 }
 
@@ -138,10 +130,9 @@ locals {
 # match production exactly and need adjusting before apply), and the three
 # new rules added.
 #
-# Rule 1 and the non-CA/US branch of rule 5 are zone-wide (unscoped by
-# waf_host_expression) because they are fraud mitigations that must never be
-# narrowed to staging hosts. Rules 2-4 and the admin branch of rule 5 are
-# host-scoped; see docs/cloudflare-waf.md.
+# Rules 1 and 5 are zone-wide (unscoped by waf_host_expression) because they
+# are fraud mitigations that must never be narrowed to staging hosts. Rules
+# 2-4 are host-scoped; see docs/cloudflare-waf.md.
 # ---------------------------------------------------------------------------
 resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
   zone_id = cloudflare_zone.gpo_ca.id
@@ -205,36 +196,23 @@ resource "cloudflare_ruleset" "gpo_ca_admin_route_protection" {
     expression  = "((${local.waf_host_expression} and ${local.wp_admin_route_expression}) or (${local.secure_host_expression} and ${local.secure_admin_route_expression})) and (ip.src.country ne \"CA\")"
   }
 
-  # Lets deploy smoke tests fetch the home page without a challenge. Placed
-  # after the block rules so it only bypasses challenges. Skips the rest of
-  # this ruleset plus the skippable zone security products; Bot Fight Mode
-  # cannot be skipped on the Free plan.
-  rules {
-    action      = "skip"
-    description = "Skip challenges for deploy smoke tests"
-    enabled     = true
-    expression  = local.smoke_test_expression
-
-    action_parameters {
-      ruleset  = "current"
-      products = ["bic", "securityLevel", "uaBlock"]
-    }
-
-    logging {
-      enabled = true
-    }
-  }
-
-  # One rule for both challenges, since the Free-plan budget is 5 rules: the
-  # WordPress admin/login surfaces, and the zone's pre-existing
-  # card-testing-fraud mitigation, which applies to every request (not just
-  # admin routes) because fraud hits the public donation/contribution forms.
-  # Kept last so rules 2-3 block admin-path traffic before it is challenged.
   rules {
     action      = "managed_challenge"
-    description = "Challenge WordPress admin/login surfaces and IPs outside Canada/US"
+    description = "Challenge traffic to WordPress admin/login surfaces"
     enabled     = true
-    expression  = "(${local.waf_host_expression} and ${local.wp_admin_route_expression}) or (not ip.src.country in {\"CA\" \"US\"})"
+    expression  = "${local.waf_host_expression} and ${local.wp_admin_route_expression}"
+  }
+
+  # Pre-existing: the zone's general card-testing-fraud mitigation, applying
+  # to every request (not just admin routes) since fraud hits the public
+  # donation/contribution forms. Kept last: rules 2-4 above should get first
+  # crack at admin-path traffic since they're more specific (block instead
+  # of challenge), and nothing follows this rule in the ruleset either way.
+  rules {
+    action      = "managed_challenge"
+    description = "IPs outside Canada receive challenge"
+    enabled     = true
+    expression  = "(not ip.src.country in {\"CA\" \"US\"})"
   }
 }
 

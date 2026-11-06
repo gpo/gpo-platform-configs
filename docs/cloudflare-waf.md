@@ -25,21 +25,19 @@ Deliberately excluded from the rate limit: `/civicrm/payment/ipn*` (payment-proc
 | 1 | Known abusive IPs | block | zone-wide | specific known-bad sources, blocked outright |
 | 2 | Unused WP endpoints, user enumeration, PHP under upload dirs | block | WordPress and secure hosts | nothing calls xmlrpc/comments-post/signup/register/trackback; the only REST namespace the front end uses is `gpo-action-blocks/v1`; `author=` is exempt under `/wordpress/wp-admin`, whose post list filters by author; nothing legitimate serves PHP from `/uploads` or `/sites/default/files` |
 | 3 | Non-CA traffic to admin surfaces, both sites | block | WordPress and secure hosts | see path lists below; agreed policy |
-| 4 | Deploy smoke tests | skip | WordPress hosts, `GET`/`HEAD /` with header `X-GPO-Smoke` equal to `cf_smoke_test_token` | skips the rest of this ruleset plus Browser Integrity Check, Security Level, and User Agent Blocking; placed after the blocks so it only bypasses challenges |
-| 5 | WP admin/login surfaces, and non-CA/US traffic zone-wide | managed challenge | admin branch: WordPress hosts; geo branch: zone-wide | front end is fully anonymous and only staff hit the admin surfaces; the geo branch is the general card-testing-fraud mitigation on the donation forms. One rule because of the 5-rule budget; ordered last so rules 2-3 block admin-path traffic first |
+| 4 | WP admin/login surfaces | managed challenge | WordPress hosts | front end is fully anonymous; only staff hit these |
+| 5 | Non-CA/US traffic, zone-wide | managed challenge | zone-wide | general card-testing-fraud mitigation on the donation forms; ordered last so rules 2-4's more specific blocks fire first for admin-path traffic |
 
-Rule 1 and the geo branch of rule 5 are zone-wide and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4, the admin branch of rule 5, and the rate limit are host-scoped; see Host scoping below.
+Rules 1 and 5 are zone-wide and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4 and the rate limit are host-scoped; see Host scoping below.
 
 Rule 2's `/wp-json/wp/v2/users` block does not apply to requests carrying a `wordpress_logged_in_` cookie, because the block editor loads `users/me`. The cookie is only checked for presence; the origin enforces auth (the gpo-ca mu-plugin rejects anonymous REST requests outside its allowlist).
-
-The smoke-test token lives in `secrets.env` as `cf_smoke_test_token`. `github_secrets.tf` publishes the same value to the `gpo/gpo-ca` Actions secret `CF_SMOKE_TEST_TOKEN`, which the deploy workflow sends as `X-GPO-Smoke`. The rule expression is a sensitive value in plan output because it embeds the token.
 
 Path facts baked into the expressions:
 
 - gpo.ca is Bedrock-style: the real admin surface is `/wordpress/wp-admin` and `/wordpress/wp-login.php`. Bare `/wp-*` paths 404 at the origin (nginx, no alias) but are matched anyway for scanner absorption. `admin-ajax.php` and `/wp-json` are excluded — Gravity Forms, Popup Maker, and TotalContest use them anonymously (policy for those lives in the gpo-ca mu-plugin). GET/HEAD requests for static files under `/wordpress/wp-admin/{js,css,images}/` are excluded as well: public pages load some of them, and a challenge on a script or stylesheet cannot be solved, so it only breaks the page.
 - secure.gpo.ca (Drupal + CiviCRM) admin surface: `/admin*`, `/user/login`, `/civicrm/admin*`, `/civicrm/a/*`. **Never extend the block to** `/civicrm/contribute/*` (donations), `/civicrm/payment/ipn*` (PayPal/iATS callbacks), `/civicrm/extern/*`, `/civicrm/mailing/*` (open/click tracking), `/civicrm/ajax/*`, `/civicrm/event/*`, or `/civicrm/profile/*` — all hit legitimately from outside Canada. These are prefix-disjoint from the blocked paths, so no carve-outs exist in the expressions; keep it that way.
 
-Bot Fight Mode is enabled on the zone from the dashboard, outside this stack. It is zone-wide, unscopable, and cannot be skipped by custom rules on the Free plan, so rule 4 does not exempt smoke tests from it: GitHub-hosted runners (ASN 8075) receive its managed challenge. Smoke tests pass the edge only once Bot Fight Mode is off, or if they bypass Cloudflare.
+Bot Fight Mode is deliberately absent: zone-wide, unscopable, unbypassable, and would hit secure.gpo.ca's CiviCRM API/webhook traffic with no staged rollout. Enable it only as its own decision.
 
 ## Host scoping
 
@@ -54,7 +52,7 @@ The secure branch has no staging coverage: `staging.secure.gpo.ca` has no edge c
 
 ### Verification
 
-WordPress hosts: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms; anonymous `/wp-json/wp/v2/users` and `/?author=1` blocked; the block editor loads `users/me?context=edit` for a signed-in editor; `curl --header "X-GPO-Smoke: <token>" https://staging.gpo.ca/` returns 200 from a non-CA/US IP; the wp-admin post list still filters by author.
+WordPress hosts: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms; anonymous `/wp-json/wp/v2/users` and `/?author=1` blocked; the block editor loads `users/me?context=edit` for a signed-in editor; the wp-admin post list still filters by author.
 
 secure.gpo.ca: admin paths blocked from non-CA; a donation page stays reachable from non-CA and a donation completes.
 

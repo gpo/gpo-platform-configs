@@ -61,9 +61,3 @@ resource "github_actions_secret" "secure_gpo_ca_ssh_public_key" {
   secret_name     = "SSH_PUBLIC_KEY"
   plaintext_value = data.sops_file.secrets.data["ssh_public_key"]
 }
-
-resource "github_actions_secret" "gpo_ca_cf_smoke_test_token" {
-  repository      = "gpo.ca"
-  secret_name     = "CF_SMOKE_TEST_TOKEN"
-  plaintext_value = data.sops_file.secrets.data["cf_smoke_test_token"]
-}
