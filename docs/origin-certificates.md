@@ -10,7 +10,7 @@ Origin CA certificates are trusted only by Cloudflare, so serve this one only on
 scripts/install-origin-cert.sh forge@<host>
 ```
 
-The script reads the certificate and key from `tofu output`, writes `/home/forge/ssl/origin/cert.pem` and `key.pem` (0600) as `forge`, and reloads nginx when `service nginx configtest` passes. Re-running it changes nothing unless the certificate changed.
+The script reads the certificate and key from `tofu output`, writes `/home/forge/ssl/origin/cert.pem` and `key.pem` (0600) as `forge`, and reloads nginx. nginx validates the config on reload and keeps the running config if it is invalid. The script runs as `forge`, which can reload nginx but not run `nginx -t`; the one-time root steps use `sudo nginx -t && sudo service nginx reload`. Re-running it changes nothing unless the certificate changed.
 
 Each vhost that should serve the certificate needs a one-time root edit pointing `ssl_certificate` and `ssl_certificate_key` at those files, in both the site file and its `forge-conf/<site>/before/redirect.conf`. Forge rewrites those lines if its SSL settings are changed for the site, so manage the site's TLS here, not in Forge.
 

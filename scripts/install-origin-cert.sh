@@ -1,7 +1,7 @@
 #!/bin/bash
 # Installs the gpo.ca Cloudflare Origin CA certificate on a droplet as forge,
-# then reloads nginx if its config test passes. Safe to re-run: files are only
-# replaced, and nginx only reloaded, when the content changes.
+# then reloads nginx. Safe to re-run: files are only replaced, and nginx only
+# reloaded, when the content changes.
 #
 # Usage: scripts/install-origin-cert.sh forge@<host>
 
@@ -37,5 +37,8 @@ ssh "$target" "umask 077 && mkdir -p ${remote_dir} && cat > ${remote_dir}/key.pe
 ssh "$target" "umask 022 && cat > ${remote_dir}/cert.pem.new && mv ${remote_dir}/cert.pem.new ${remote_dir}/cert.pem" <<<"$cert"
 echo "${target}: wrote ${remote_dir}/cert.pem and key.pem."
 
-ssh "$target" "sudo -n service nginx configtest && sudo -n service nginx reload"
-echo "${target}: nginx config test passed and nginx reloaded."
+# nginx validates the config on reload and keeps the running config if it is
+# invalid, so a bad file cannot take the site down. forge cannot run nginx -t.
+ssh "$target" "sudo -n service nginx reload && sudo -n service nginx status | grep --quiet 'Active: active'"
+echo "${target}: nginx reloaded and active."
+
