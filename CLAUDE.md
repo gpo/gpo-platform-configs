@@ -45,6 +45,7 @@ Read [docs/pull-requests.md](docs/pull-requests.md) before opening or merging an
 | Add or change DNS records / zones | [docs/cloudflare-dns.md](docs/cloudflare-dns.md) |
 | Deploy a Cloudflare Pages site | [docs/cloudflare-pages.md](docs/cloudflare-pages.md) |
 | WAF admin protection (gpo.ca + secure.gpo.ca), rate limiting | [docs/cloudflare-waf.md](docs/cloudflare-waf.md) |
+| Origin TLS certificates on the WordPress droplets | [docs/origin-certificates.md](docs/origin-certificates.md) |
 | Create or configure a GitHub repository | [docs/github-repos.md](docs/github-repos.md) |
 | GKE, GCP projects, Artifact Registry | [docs/gke-and-gcp.md](docs/gke-and-gcp.md) |
 | EKS, VPC, ECR | [docs/aws-eks.md](docs/aws-eks.md) |
