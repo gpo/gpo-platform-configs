@@ -242,3 +242,14 @@ resource "cloudflare_ruleset" "gpo_ca_wp_login_rate_limit" {
     }
   }
 }
+
+# ---------------------------------------------------------------------------
+# Bot Fight Mode stays off. On the Free plan it is zone-wide and no rule can
+# exempt a path from it, and it challenges webhook traffic that cannot solve
+# a challenge, such as the SendGrid event webhook at secure.gpo.ca
+# /civicrm/airmail. Scoped bot protection needs Super Bot Fight Mode (Pro+).
+# ---------------------------------------------------------------------------
+resource "cloudflare_bot_management" "gpo_ca" {
+  zone_id    = cloudflare_zone.gpo_ca.id
+  fight_mode = false
+}
