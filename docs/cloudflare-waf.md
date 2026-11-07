@@ -30,6 +30,8 @@ Deliberately excluded from the rate limit: `/civicrm/payment/ipn*` (payment-proc
 
 Rules 1 and 5 are zone-wide and must not be scoped down to staging hosts, or active fraud protection goes dark on production. Rules 2-4 and the rate limit are host-scoped; see Host scoping below.
 
+Rule 2's `/wp-json/wp/v2/users` block does not apply to requests carrying a `wordpress_logged_in_` cookie, because the block editor loads `users/me`. The cookie is only checked for presence; the origin enforces auth (the gpo-ca mu-plugin rejects anonymous REST requests outside its allowlist).
+
 Path facts baked into the expressions:
 
 - gpo.ca is Bedrock-style: the real admin surface is `/wordpress/wp-admin` and `/wordpress/wp-login.php`. Bare `/wp-*` paths 404 at the origin (nginx, no alias) but are matched anyway for scanner absorption. `admin-ajax.php` and `/wp-json` are excluded — Gravity Forms, Popup Maker, and TotalContest use them anonymously (policy for those lives in the gpo-ca mu-plugin). GET/HEAD requests for static files under `/wordpress/wp-admin/{js,css,images}/` are excluded as well: public pages load some of them, and a challenge on a script or stylesheet cannot be solved, so it only breaks the page.
@@ -50,7 +52,7 @@ The secure branch has no staging coverage: `staging.secure.gpo.ca` has no edge c
 
 ### Verification
 
-WordPress hosts: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms; `/wp-json/wp/v2/users` and `/?author=1` blocked; the wp-admin post list still filters by author.
+WordPress hosts: public pages and `/wp-json/gpo-action-blocks/v1/*` unaffected; `/wordpress/wp-login.php` challenges then works from a Canadian IP and blocks from a non-CA VPN; 6 rapid login POSTs trip the rate limit; `xmlrpc.php` blocked on both path forms; anonymous `/wp-json/wp/v2/users` and `/?author=1` blocked; the block editor loads `users/me?context=edit` for a signed-in editor; the wp-admin post list still filters by author.
 
 secure.gpo.ca: admin paths blocked from non-CA; a donation page stays reachable from non-CA and a donation completes.
 
