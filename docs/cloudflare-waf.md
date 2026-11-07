@@ -35,7 +35,7 @@ Path facts baked into the expressions:
 - gpo.ca is Bedrock-style: the real admin surface is `/wordpress/wp-admin` and `/wordpress/wp-login.php`. Bare `/wp-*` paths 404 at the origin (nginx, no alias) but are matched anyway for scanner absorption. `admin-ajax.php` and `/wp-json` are excluded — Gravity Forms, Popup Maker, and TotalContest use them anonymously (policy for those lives in the gpo-ca mu-plugin). GET/HEAD requests for static files under `/wordpress/wp-admin/{js,css,images}/` are excluded as well: public pages load some of them, and a challenge on a script or stylesheet cannot be solved, so it only breaks the page.
 - secure.gpo.ca (Drupal + CiviCRM) admin surface: `/admin*`, `/user/login`, `/civicrm/admin*`, `/civicrm/a/*`. **Never extend the block to** `/civicrm/contribute/*` (donations), `/civicrm/payment/ipn*` (PayPal/iATS callbacks), `/civicrm/extern/*`, `/civicrm/mailing/*` (open/click tracking), `/civicrm/ajax/*`, `/civicrm/event/*`, or `/civicrm/profile/*` — all hit legitimately from outside Canada. These are prefix-disjoint from the blocked paths, so no carve-outs exist in the expressions; keep it that way.
 
-Bot Fight Mode is deliberately absent: zone-wide, unscopable, unbypassable, and would hit secure.gpo.ca's CiviCRM API/webhook traffic with no staged rollout. Enable it only as its own decision.
+Bot Fight Mode is off, managed by `cloudflare_bot_management.gpo_ca`. On the Free plan it is zone-wide and no rule can exempt a path, and it challenges webhooks that cannot solve a challenge, such as the SendGrid event webhook at `secure.gpo.ca/civicrm/airmail`. Scoped bot protection needs Super Bot Fight Mode (Pro plan), which a skip rule can bypass per path.
 
 ## Host scoping
 
