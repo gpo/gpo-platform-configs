@@ -3,6 +3,17 @@ resource "cloudflare_zone" "gpo_ca" {
   zone       = "gpo.ca"
 }
 
+# Strict: Cloudflare validates the origin certificate on every proxied
+# hostname. The WordPress droplets serve the Origin CA certificate from
+# cloudflare_origin_ca.tf; Pages hostnames are served by Cloudflare.
+resource "cloudflare_zone_settings_override" "gpo_ca" {
+  zone_id = cloudflare_zone.gpo_ca.id
+
+  settings {
+    ssl = "strict"
+  }
+}
+
 resource "cloudflare_record" "gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "gpo.ca"
@@ -31,15 +42,6 @@ resource "cloudflare_record" "staging_gpo_ca" {
   proxied = true
 }
 
-resource "cloudflare_record" "dev_gpo_ca" {
-  zone_id = cloudflare_zone.gpo_ca.id
-  name    = "dev.gpo.ca"
-  content = "134.122.120.190"
-  type    = "A"
-  ttl     = 1
-  proxied = true
-}
-
 # NOT proxied: Universal SSL on the Free plan covers only gpo.ca and
 # *.gpo.ca, so Cloudflare has no edge cert for this second-level name —
 # proxying it would serve a mismatched cert and break the site. Staging the
@@ -58,22 +60,6 @@ resource "cloudflare_record" "o1_list_gpo_ca" {
   zone_id = cloudflare_zone.gpo_ca.id
   name    = "o1.list.gpo.ca"
   content = "159.183.192.198"
-  type    = "A"
-  ttl     = 300
-}
-
-resource "cloudflare_record" "dev_secure_gpo_ca" {
-  zone_id = cloudflare_zone.gpo_ca.id
-  name    = "dev.secure.gpo.ca"
-  content = "134.122.120.190"
-  type    = "A"
-  ttl     = 300
-}
-
-resource "cloudflare_record" "mail_dev_secure_gpo_ca" {
-  zone_id = cloudflare_zone.gpo_ca.id
-  name    = "mail.dev.secure.gpo.ca"
-  content = "134.122.120.190"
   type    = "A"
   ttl     = 300
 }
