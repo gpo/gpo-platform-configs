@@ -4,6 +4,8 @@
 
 Origin CA certificates are trusted only by Cloudflare, so serve this one only on **proxied** hostnames. DNS-only hostnames such as `staging.secure.gpo.ca` keep a publicly trusted certificate.
 
+The zone's SSL mode is `strict` (`cloudflare_zone_settings_override.gpo_ca` in `cloudflare_domains.tf`), so every proxied hostname's origin must present a certificate valid for that name, or Cloudflare returns 526. Check this before proxying a new hostname.
+
 ## Installing on a droplet
 
 ```bash
