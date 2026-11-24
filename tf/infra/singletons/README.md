@@ -109,6 +109,7 @@ will *not* have a separate copy for stage and prod belongs here.
 | [cloudflare_record.www_mikeforguelph_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_record.www_ontariogreens_ca](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/record) | resource |
 | [cloudflare_ruleset.gpo_ca_admin_route_protection](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
+| [cloudflare_ruleset.gpo_ca_cache_settings](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_ruleset.gpo_ca_wp_login_rate_limit](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_ruleset.ontariogreens_ca_redirect](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
 | [cloudflare_ruleset.www_gpo_ca_redirect](https://registry.terraform.io/providers/cloudflare/cloudflare/4.48.0/docs/resources/ruleset) | resource |
