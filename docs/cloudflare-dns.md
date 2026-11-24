@@ -8,6 +8,7 @@
 | `gpotools.ca` | `cloudflare_zone.gpo_tools` | `tf/infra/prod/cloudflare_zone.tf` |
 | `gpotoolsstage.ca` | `cloudflare_zone.gpo_tools` | `tf/infra/stage/cloudflare_zone.tf` |
 | `islandgetaway.ca` | `cloudflare_zone.islandgetaway_ca` | `tf/infra/singletons/cloudflare_islandgetaway.tf` |
+| `mikeforguelph.ca` | `cloudflare_zone.mikeforguelph_ca` | `tf/infra/singletons/cloudflare_mikeforguelph.tf` |
 | `ontariogreens.ca` | `cloudflare_zone.ontariogreens_ca` | `tf/infra/singletons/cloudflare_ontariogreens.tf` |
 
 `gpo.ca` is global/production — no staging equivalent.
