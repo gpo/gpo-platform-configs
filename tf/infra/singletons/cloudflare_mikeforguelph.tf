@@ -48,7 +48,7 @@ resource "cloudflare_record" "mx_mikeforguelph_ca" {
 resource "cloudflare_record" "spf_mikeforguelph_ca" {
   zone_id = cloudflare_zone.mikeforguelph_ca.id
   name    = "mikeforguelph.ca"
-  content = "v=spf1 include:_spf.google.com ~all"
+  content = "\"v=spf1 include:_spf.google.com ~all\""
   type    = "TXT"
   ttl     = 300
 }
@@ -56,7 +56,7 @@ resource "cloudflare_record" "spf_mikeforguelph_ca" {
 resource "cloudflare_record" "google_site_verification_mikeforguelph_ca" {
   zone_id = cloudflare_zone.mikeforguelph_ca.id
   name    = "mikeforguelph.ca"
-  content = "google-site-verification=Xwfzc9jUaI4gI3oZTKEKQox_L7u41bgpDOgiDDctqV8"
+  content = "\"google-site-verification=Xwfzc9jUaI4gI3oZTKEKQox_L7u41bgpDOgiDDctqV8\""
   type    = "TXT"
   ttl     = 300
 }
@@ -64,7 +64,7 @@ resource "cloudflare_record" "google_site_verification_mikeforguelph_ca" {
 resource "cloudflare_record" "google_domainkey_mikeforguelph_ca" {
   zone_id = cloudflare_zone.mikeforguelph_ca.id
   name    = "google._domainkey.mikeforguelph.ca"
-  content = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsVUFj+Yg7tCMIROPHZsa3bdlr+BftsGALkAEkDa1SnphcL/TTmiotfxfnphM4SX3nqreWqZVUIz7DXou0AnOVbd+qI37EU0DsxBXPuNnzk2np8nC27sEKKhYpHU9IxwdqnamZJBhoo6fz2ZrfRz/iaDcuZpwvuO7CsEVDIFHb5xi3NxnOdsFtxyCmvUA3ZO7hdfWMO8rPVG8Im17+5WWGfTXkqJQyvWzvGqeIw6FG+CJo4iEAmMBfWFZyZvyNliN3csE0jsgs0pQat/ef0T6Df+PMyPAO10aAy/5+Yz0WoLV9tnRinaAysTiTlC5ZMuW7PZ8orYPkCcqxvwF+AO6awIDAQAB"
+  content = "\"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsVUFj+Yg7tCMIROPHZsa3bdlr+BftsGALkAEkDa1SnphcL/TTmiotfxfnphM4SX3nqreWqZVUIz7DXou0AnOVbd+qI37EU0DsxBXPuNnzk2np8nC27sEKKhYpHU9IxwdqnamZJBhoo6fz2ZrfRz/iaDcuZpwvuO7CsEVDIFHb5xi3NxnOdsFtxyCmvUA3ZO7h\" \"dfWMO8rPVG8Im17+5WWGfTXkqJQyvWzvGqeIw6FG+CJo4iEAmMBfWFZyZvyNliN3csE0jsgs0pQat/ef0T6Df+PMyPAO10aAy/5+Yz0WoLV9tnRinaAysTiTlC5ZMuW7PZ8orYPkCcqxvwF+AO6awIDAQAB\""
   type    = "TXT"
   ttl     = 300
 }
