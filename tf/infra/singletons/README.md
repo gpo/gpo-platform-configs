@@ -166,5 +166,4 @@ No inputs.
 | <a name="output_cloudflare_zone_id"></a> [cloudflare\_zone\_id](#output\_cloudflare\_zone\_id) | Cloudflare zone ID. Used by other TF infra layers that need to provision DNS records. |
 | <a name="output_gpo_ca_origin_certificate_pem"></a> [gpo\_ca\_origin\_certificate\_pem](#output\_gpo\_ca\_origin\_certificate\_pem) | Origin CA certificate for proxied gpo.ca hostnames. Installed by scripts/install-origin-cert.sh. |
 | <a name="output_gpo_ca_origin_private_key_pem"></a> [gpo\_ca\_origin\_private\_key\_pem](#output\_gpo\_ca\_origin\_private\_key\_pem) | Private key for gpo\_ca\_origin\_certificate\_pem. Installed by scripts/install-origin-cert.sh. |
-| <a name="output_mikeforguelph_ca_name_servers"></a> [mikeforguelph\_ca\_name\_servers](#output\_mikeforguelph\_ca\_name\_servers) | Cloudflare nameservers to set at the mikeforguelph.ca registrar (Namespro). |
 <!-- END_TF_DOCS -->
