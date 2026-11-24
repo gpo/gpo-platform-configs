@@ -1,0 +1,22 @@
+# Service for the MCP sidecar (superset mcp run, port 5008). The chart only
+# creates a Service for the web process (port 8088), so this is a plain
+# manifest. It selects the same supersetNode pods, where the `mcp` sidecar
+# listens on 5008. The HTTPRoute sends /mcp here.
+apiVersion: v1
+kind: Service
+metadata:
+  name: superset-mcp
+  namespace: superset
+  labels:
+    app: superset
+    release: superset
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5008
+    targetPort: mcp
+    protocol: TCP
+    name: mcp
+  selector:
+    app: superset
+    release: superset
